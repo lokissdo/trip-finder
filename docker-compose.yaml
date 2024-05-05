@@ -1,0 +1,89 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
+    ports:
+      - 9200:9200
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.20
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - 5672:5672
+      - 15672:15672
+  products:
+    build:
+      dockerfile: Dockerfile
+      context: ./products
+    container_name: products
+    ports:
+      - "8002:8002"
+    restart: always
+    depends_on:
+      - "rabbitmq"
+    volumes:
+      - .:/app
+      - /app/products/node_modules
+
+    env_file:
+      - ./products/.env.dev
+  shopping:
+    build:
+      dockerfile: Dockerfile
+      context: ./shopping
+    container_name: shopping
+    ports:
+      - "8003:8003"
+    restart: always
+    depends_on:
+      - "rabbitmq"
+    volumes:
+      - .:/app
+      - /app/shopping/node_modules
+    env_file:
+      - ./shopping/.env.dev
+  customer:
+    build:
+      dockerfile: Dockerfile
+      context: ./customer
+    container_name: customer
+    ports:
+      - "8001:8001"
+    restart: always
+    depends_on:
+      - "rabbitmq"
+    volumes:
+      - .:/app/
+      - /app/customer/node_modules
+    env_file:
+      - ./customer/.env.dev
+  gateway:
+    build:
+      dockerfile: Dockerfile
+      context: ./gateway
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - "customer"
+      - "shopping"
+      - "products"  
+    volumes:
+      - .:/app/
+      - /app/gateway/node_modules
+
+
+# networks:
+#   my-app-network:
+#     external: true

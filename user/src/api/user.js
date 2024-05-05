@@ -1,0 +1,92 @@
+const UserService = require('../services/user-service');
+const  UserAuth = require('./middlewares/auth');
+const { SubscribeMessage, PublishMessage, FormateData } = require('../utils');
+const { RPCObserver } = require('../utils/rpc');
+const { USER_SERVICE  } = require('../config');
+
+
+
+
+module.exports = (app, channel) => {
+    
+    const service = new UserService();
+
+    // To listen
+    SubscribeMessage(channel, service ,USER_SERVICE);
+
+    RPCObserver(USER_SERVICE,service);
+    app.post('/signup', async (req,res,next) => {
+        try{
+            const { email, password, phone, name } = req.body;
+            const { data } = await service.SignUp({ email, password, phone, name}); 
+            res.json(data);
+        } catch(err){
+            console.log(err);
+            res.status(500).json({msg: 'Internal Server Error' });
+        }
+    });
+
+    app.post('/login',  async (req,res,next) => {
+        try{
+            const { email, password } = req.body;
+
+            const { data } = await service.SignIn({ email, password});
+    
+            res.json(data);
+        }catch(err){
+            console.log(err);
+            res.status(500).json({msg: 'Internal Server Error' });
+        }
+    });
+
+    app.get('/profile', UserAuth ,async (req,res,next) => {
+
+        const { _id } = req.user;
+        const { data } = await service.GetProfile({ _id });
+        res.json(data);
+    });
+
+    app.post('/add-hobby', UserAuth, async (req,res,next) => {
+        const { _id } = req.user;
+        const { hobby } = req.body;
+        const { data } = await service.AddHobby(_id, hobby);
+        res.json(data);
+    });
+
+    app.post('/set-hobbies', UserAuth, async (req,res,next) => {
+        const { _id } = req.user;
+        const { hobbies } = req.body;
+
+        // const payload = {
+        //     event : 'SET_HOBBIES',
+        //     data: { userId: _id, hobbies }
+        // }
+        // PublishMessage(channel,USER_SERVICE,JSON.stringify(FormateData(payload)));
+        await service.SetHobbies(_id, hobbies);
+        res.json({msg: 'Hobbies are set'});
+    }
+    );
+
+    app.post('/add-itinerary', UserAuth, async (req,res,next) => {
+        const { _id } = req.user;
+        const { itineraryId } = req.body;
+        const { data } = await service.AddItineraryToUser(_id, itineraryId);
+        res.json(data);
+    });
+
+    app.post('/create-itinerary', UserAuth, async (req,res,next) => {
+        const { itinerary } = req.body;
+        const { data } = await service.CreateItinerary({ ...itinerary});
+        // const payload = {
+        //     event: 'CREATE_ITINERARY',
+        //     data: { ...itinerary }
+        // }
+        //PublishMessage(channel,USER_SERVICE,JSON.stringify(FormateData(payload)));
+        res.json(data);
+    });
+
+
+    app.get('/whoami', (req,res,next) => {
+        return res.status(200).json({msg: '/user : I am User Service'})
+    })
+}
