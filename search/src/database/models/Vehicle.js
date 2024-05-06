@@ -5,24 +5,31 @@ const VehicleSchema = new Schema({
     // type is enum, bus or plane
     type: {
         type: String,
-        enum: ['BUS', 'PLANE'],
+        enum: ['Xe Khách', 'Máy bay'],
         required: true
     },
-    departureDate: {
+    brand: {
+        type: String,
+        required: true
+    },
+    date: {
         type: Date,
+        required: true
+    },
+    departureTime: {
+        type: String,
+        required: true
+    },
+    duration: {
+        type: String,
         required: true
     },
     departure: {
         type: String,
         required: true
     },
-    destination: {
+    arrival: {
         type: String,
-        required: true
-    },
-
-    destinationDate: {
-        type: Date,
         required: true
     },
     rating: {
@@ -32,18 +39,17 @@ const VehicleSchema = new Schema({
         type: Number,
         required: true
     },
-    platform: {
+    coupon: {
+        type: String,
+    },
+    image_url: {
         type: String,
         required: true
     },
-    image: {
-        type: String,
-        required: true
-    },
-    description: {
+    detail: {
         type: String,
     },
-    link : {
+    page_url : {
         type: String,
     }
 }, {

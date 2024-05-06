@@ -18,13 +18,14 @@ module.exports = (app, channel) => {
 
     app.get('/hotels', async (req, res) => {
         try {
-            const { name, start, end, location, sort, page, pageSize } = req.query;
+            const { name, start, end, location, sort, page, province, pageSize } = req.query;
 
             // Assuming GetHotelsByParameters method exists in the HotelService to search for hotels
             const hotels = await service.GetHotelsByParameters({
                 name,
                 start,
                 end,
+                province,
                 location: location ? JSON.parse(location) : undefined,
                 sort,
                 page: parseInt(page) || undefined,

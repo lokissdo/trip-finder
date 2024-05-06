@@ -5,9 +5,9 @@ class SearchService {
         this.repository = new HotelRepository();
     }
 
-    async GetHotelsByParameters({name, start, end, location, sort, page, pageSize}) {
+    async GetHotelsByParameters({name, start, end,province, location, sort, page, pageSize}) {
         try {
-            const hotels = await this.repository.getHotelByName({name, start, end, location, sort, page, pageSize});
+            const hotels = await this.repository.getHotelByName({name, start, end, province,location, sort, page, pageSize});
             return hotels;
         } catch (error) {
             console.error('Error getting hotels by parameters:', error);
