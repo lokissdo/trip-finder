@@ -16,6 +16,8 @@ module.exports = {
   APP_SECRET: process.env.APP_SECRET,
   EXCHANGE_NAME: process.env.EXCHANGE_NAME,
   MSG_QUEUE_URL: process.env.MSG_QUEUE_URL,
-  SEARCH_SERVICE: process.env.SEARCH_SERVICE,
+  SEARCH_SERVICE:  process.env.SEARCH_SERVICE,
   ELASTICSEARCH_URL: process.env.ELASTICSEARCH_URL,
+  WEATHER_API_URL: process.env.WEATHER_API_URL,
+  WEATHER_API_KEY: process.env.WEATHER_API_KEY
 };

@@ -11,7 +11,7 @@ const dotEnv = require("dotenv");
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env.dev') })
 module.exports = {
-  PORT: process.env.SEARCH_PORT,
+  PORT: process.env.ANALYTIC_PORT,
   DB_URL: process.env.MONGODB_URI,
   APP_SECRET: process.env.APP_SECRET,
   EXCHANGE_NAME: process.env.EXCHANGE_NAME,
