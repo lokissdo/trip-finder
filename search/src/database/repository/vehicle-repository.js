@@ -1,7 +1,7 @@
 const Vehicle = require('../models/Vehicle'); // Import Vehicle model
 const elasticsearch = require('elasticsearch'); // Assuming you have Elasticsearch installed
 const { ELASTICSEARCH_URL } = require('../../config');
-
+const mongoose = require('mongoose');
 const VEHICLE_INDEX_NAME = 'vehicles';
 
 class VehicleRepository {
@@ -21,14 +21,11 @@ class VehicleRepository {
                         properties: {
                             type: { type: 'keyword' }, // Vehicle type as enum
                             brand: { type: 'text' },
-                            date: { type: 'date' },
-                            departureTime: { type: 'text' },
-                            duration: { type: 'text' },
+                            date: { type: 'keyword' },
                             departure: { type: 'text' },
                             arrival: { type: 'text' },
                             rating: { type: 'float' },
                             price: { type: 'float' },
-                            image_url: { type: 'text' }
                         }
                     }
                 }
@@ -51,14 +48,11 @@ class VehicleRepository {
             body.push({
                 type: vehicle.type,
                 brand: vehicle.brand,
-                date: vehicle.date,
-                departureTime: vehicle.departureTime,
-                duration: vehicle.duration,
+                date: (new Date(vehicle.date)).toISOString().split('T')[0],
                 departure: vehicle.departure,
                 arrival: vehicle.arrival,
                 rating: vehicle.rating,
                 price: vehicle.price,
-                image_url: vehicle.image_url
             });
         });
 
@@ -79,7 +73,7 @@ class VehicleRepository {
         }
     }
 
-    async getVehicleByType({ type, start, end, brand, sort, page = 1, pageSize = 20 }) {
+    async getVehicleByType({ type, start, end, date, departure, arrival, brand, sort, page = 1, pageSize = 20 }) {
         const mustQueries = [];
         if (type) {
             mustQueries.push({
@@ -111,19 +105,51 @@ class VehicleRepository {
             });
         }
 
+        if (departure) {
+            mustQueries.push({
+                match: {
+                    departure: {
+                        query: departure,
+                        fuzziness: "AUTO"
+                    }
+                }
+            });
+        }
+    
+        if (arrival) {
+            mustQueries.push({
+                match: {
+                    arrival: {
+                        query: arrival,
+                        fuzziness: "AUTO"
+                    }
+                }
+            });
+        }
+    
+        if (date) {
+            mustQueries.push({
+                term: {
+                    date: date // Exact checkinDate
+                }
+            });
+        }
         const query = {
             bool: {
                 must: mustQueries
             }
         };
-
+        let sortOption ;
+        // Sorting logic
         if (sort) {
-            query.sort = sort.split(',').reduce((acc, field) => {
+            sortOption = sort.split(',').map(field => {
                 const [key, order] = field.split(':');
-                acc[key] = { order: order };
-                return acc;
-            }, {});
+                return { [key]: { order } };
+              });
+
         }
+
+       
 
         const from = (page - 1) * pageSize;
         try {
@@ -133,11 +159,33 @@ class VehicleRepository {
                     query,
                     from,
                     size: pageSize,
-                    ...(sort ? { sort: query.sort } : {})
+                    ...(sort ? { sort: sortOption } : {})
                 }
             });
             const hits = response.hits.hits;
-            return hits.map(hit => ({ ...hit._source, id: hit._id }));
+            console.log('Hits:', hits[1]);
+    
+            const vehicleIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
+    
+
+            let sortMongo = {}
+
+            if (sort) {
+                sortMongo = sort.split(',').reduce((acc, field) => {
+                    const [key, order] = field.split(':');
+                    acc[key] = order === 'asc' ? 1 : -1;
+                    return acc;
+                }, {});
+            }
+            // Fetching hotel documents from MongoDB using the retrieved IDs
+            const vehiclesFromMongo = await Vehicle.find({
+                '_id': { $in: vehicleIds}
+            }).sort(sortMongo)
+
+            return vehiclesFromMongo.map(vehicle => ({
+                ...vehicle.toObject(), // Converting mongoose document to plain JavaScript object
+                id: vehicle._id // Adding the ID field
+            }));
         } catch (error) {
             console.error('Error searching vehicles:', error);
             return [];

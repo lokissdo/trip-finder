@@ -1,9 +1,10 @@
-const Hotel = require('../models/Hotel'); // Import Hotel model
+const Restaurant = require('../models/Restaurant'); // Import Restaurant model
 const elasticsearch = require('elasticsearch'); // Assuming you have Elasticsearch installed
 const { ELASTICSEARCH_URL } = require('../../config');
 const mongoose = require('mongoose');
-const HOTEL_INDEX_NAME = 'hotels'
-class HotelRepository {
+const RESTAURANT_INDEX_NAME = 'restaurants';
+
+class RestaurantRepository {
     constructor() {
         this.esClient = new elasticsearch.Client({
             host: ELASTICSEARCH_URL // Replace with your Elasticsearch connection details
@@ -11,18 +12,17 @@ class HotelRepository {
     }
 
     async createIndexMapping() {
-        const indexExists = await this.esClient.indices.exists({ index: HOTEL_INDEX_NAME });
+        const indexExists = await this.esClient.indices.exists({ index: RESTAURANT_INDEX_NAME });
         if (!indexExists) {
             await this.esClient.indices.create({
-                index: HOTEL_INDEX_NAME,
+                index: RESTAURANT_INDEX_NAME,
                 body: {
                     mappings: {
                         properties: {
                             name: { type: 'text' },
-                            province: { type: 'keyword' },
-                            location: { type: 'geo_point' }, // Geolocation field
+                            province: { type: 'text' },
+                            location: { type: 'geo_point' },
                             rating: { type: 'float' },
-                            checkin: { type: 'keyword' },
                             price: { type: 'float' },
                             platform: { type: 'text' },
                         }
@@ -32,51 +32,40 @@ class HotelRepository {
         }
     }
 
-    // Index data from MongoDB into Elasticsearch
     async indexWholeData() {
-
         await this.createIndexMapping();
-        const hotels = await Hotel.find();
+        const restaurants = await Restaurant.find();
 
-        // Initialize an array to hold bulk operations
         const body = [];
-
-        // Build the bulk request
-        hotels.forEach(hotel => {
+        restaurants.forEach(restaurant => {
             body.push({
                 index: {
-                    _index: HOTEL_INDEX_NAME,
-                    _id: hotel.id // Optionally include the document ID
+                    _index: RESTAURANT_INDEX_NAME,
+                    _id: restaurant.id
                 }
             });
             body.push({
-                name: hotel.name,
-                province: hotel.province,
+                name: restaurant.name,
+                province: restaurant.province,
                 location: {
-                    lat: hotel.latitude,
-                    lon: hotel.longitude
+                    lat: restaurant.latitude,
+                    lon: restaurant.longitude
                 },
-                rating: hotel.rating,
-                // parse moongoose date to yyyy-mm-dd
-                checkin: (new Date(hotel.checkin)).toISOString().split('T')[0],
-                price: hotel.price,
-                platform: hotel.platform,
+                rating: restaurant.rating,
+                price: restaurant.price,
+                platform: restaurant.platform,
             });
         });
 
-        // Perform the bulk indexing
         const response = await this.esClient.bulk({ refresh: true, body });
-
-        console.log('Indexed hotels:', response);
+        console.log('Indexed restaurants:', response);
         if (response.errors) {
-            const erroredDocuments = []
+            const erroredDocuments = [];
             response.items.forEach((action, i) => {
-                const operation = Object.keys(action)[0]
+                const operation = Object.keys(action)[0];
                 if (action[operation].error) {
                     erroredDocuments.push({
-                        // Original Hotel object causing the error
-                        hotel: hotels[i],
-                        // Error causing the failure
+                        restaurant: restaurants[i],
                         error: action[operation].error
                     });
                 }
@@ -85,11 +74,10 @@ class HotelRepository {
         }
     }
 
-
-    async getHotelByName({ name, start, end, checkinDate, checkoutDate, province, location, sort, page = 1, pageSize = 20 }) {
+    async searchRestaurants({ name,province,platform, start,end,location, sort, page = 1, pageSize = 20 }) {
         const mustQueries = [];
-        console.log(province)
-        // Fuzzy search for name
+    
+
         if (name) {
             mustQueries.push({
                 match: {
@@ -101,24 +89,27 @@ class HotelRepository {
             });
         }
 
-
-        if (checkinDate) {
-            mustQueries.push({
-                term: {
-                    checkin: checkinDate // Exact checkinDate
-                }
-            });
-        }
-
         if (province) {
             mustQueries.push({
-                match_phrase: {
-                    province: province
+                match: {
+                    province: {
+                        query: province,
+                        fuzziness: "AUTO"
+                    }
+                }
+            });
+        }
+        if (platform) {
+            mustQueries.push({
+                match: {
+                    platform: {
+                        query: platform,
+                        fuzziness: "AUTO"
+                    }
                 }
             });
         }
 
-        // Range filter for price
         if (start && end) {
             mustQueries.push({
                 range: {
@@ -142,12 +133,11 @@ class HotelRepository {
                 }
             });
         }
-        const query = {
+        const queryBody = {
             bool: {
                 must: mustQueries
             }
         };
-
         let sortOption ;
         // Sorting logic
         if (sort) {
@@ -156,27 +146,23 @@ class HotelRepository {
                 return { [key]: { order } };
               });
 
-            console.log('Query:', sortOption)
         }
 
-        // Pagination
         const from = (page - 1) * pageSize;
-
         try {
             const response = await this.esClient.search({
-                index: HOTEL_INDEX_NAME,
+                index: RESTAURANT_INDEX_NAME,
                 body: {
-                    query,
+                    query: queryBody,
                     from,
                     size: pageSize,
                     ...(sort ? { sort:sortOption } : {})
-                   
-                },
+                }
             });
             const hits = response.hits.hits;
-            console.log('Hits:', hits[1]);
 
-            const hotelIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
+            const restaurantIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
+
             let sortMongo = {}
 
             if (sort) {
@@ -187,23 +173,20 @@ class HotelRepository {
                 }, {});
             }
             // Fetching hotel documents from MongoDB using the retrieved IDs
-            const hotelsFromMongo = await Hotel.find({
-                '_id': { $in: hotelIds}
+            const restaurantsFromMongo = await Restaurant.find({
+                '_id': { $in: restaurantIds}
             }).sort(sortMongo)
 
-
-            
-            // Returning hotels fetched from MongoDB
-            return hotelsFromMongo.map(hotel => ({
-                ...hotel.toObject(), // Converting mongoose document to plain JavaScript object
-                id: hotel._id // Adding the ID field
+            // Returning restaurants fetched from MongoDB
+            return restaurantsFromMongo.map(restaurant => ({
+                ...restaurant.toObject(), // Converting mongoose document to plain JavaScript object
+                id: restaurant._id // Adding the ID field
             }));
         } catch (error) {
-            console.error('Error searching hotels:', error);
+            console.error('Error searching restaurants:', error);
             return [];
         }
     }
-
 }
 
-module.exports = HotelRepository;
+module.exports = RestaurantRepository;

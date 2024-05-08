@@ -12,5 +12,5 @@ app.use("/search", proxy("http://localhost:8002"));
 app.use("/", proxy("http://localhost:8002")); // products
 
 app.listen(8000, () => {
-  console.log("Gateway is Listening to Port 8000");
+  console.log("Gateway is Listening to Port 8000");
 });
