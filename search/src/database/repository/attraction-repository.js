@@ -148,7 +148,6 @@ class AttractionRepository {
                         lon: location.longitude
                     }
                 },
-                order: "desc",
             });
         }
         const query = {
