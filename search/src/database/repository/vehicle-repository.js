@@ -73,7 +73,7 @@ class VehicleRepository {
         }
     }
 
-    async getVehicleByType({ type, start, end, date, departure, arrival, brand, sort, page = 1, pageSize = 20 }) {
+    async getVehicleByType({ type, start, end, date, platform, departure, arrival, brand, sort, page = 1, pageSize = 20 }) {
         const mustQueries = [];
         if (type) {
             mustQueries.push({

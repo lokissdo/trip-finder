@@ -1,10 +1,11 @@
-const Restaurant = require('../models/Restaurant'); // Import Restaurant model
+const Attraction = require('../models/Attraction'); // Import Attraction model
 const elasticsearch = require('elasticsearch'); // Assuming you have Elasticsearch installed
 const { ELASTICSEARCH_URL } = require('../../config');
 const mongoose = require('mongoose');
-const RESTAURANT_INDEX_NAME = 'restaurants';
+const ATTRACTION_INDEX_NAME = 'attractions'
 
-class RestaurantRepository {
+class AttractionRepository {
+
     constructor() {
         this.esClient = new elasticsearch.Client({
             host: ELASTICSEARCH_URL // Replace with your Elasticsearch connection details
@@ -12,17 +13,16 @@ class RestaurantRepository {
     }
 
     async createIndexMapping() {
-        const indexExists = await this.esClient.indices.exists({ index: RESTAURANT_INDEX_NAME });
+        const indexExists = await this.esClient.indices.exists({ index: ATTRACTION_INDEX_NAME });
         if (!indexExists) {
             await this.esClient.indices.create({
-                index: RESTAURANT_INDEX_NAME,
+                index: ATTRACTION_INDEX_NAME,
                 body: {
                     mappings: {
                         properties: {
                             name: { type: 'text' },
-                            province: { type: 'text' },
-                            location: { type: 'geo_point' },
-                            rating: { type: 'float' },
+                            province: { type: 'keyword' },
+                            location: { type: 'geo_point' }, // Geolocation field
                             price: { type: 'float' },
                             platform: { type: 'text' },
                         }
@@ -32,40 +32,49 @@ class RestaurantRepository {
         }
     }
 
+    // Index data from MongoDB into Elasticsearch
     async indexWholeData() {
-        await this.createIndexMapping();
-        const restaurants = await Restaurant.find();
 
+        await this.createIndexMapping();
+        const attractions = await Attraction.find();
+
+        // Initialize an array to hold bulk operations
         const body = [];
-        restaurants.forEach(restaurant => {
-            body.push({
-                index: {
-                    _index: RESTAURANT_INDEX_NAME,
-                    _id: restaurant.id
-                }
-            });
-            body.push({
-                name: restaurant.name,
-                province: restaurant.province,
-                location: {
-                    lat: restaurant.latitude,
-                    lon: restaurant.longitude
-                },
-                rating: restaurant.rating,
-                price: restaurant.price,
-                platform: restaurant.platform,
-            });
+
+        // Build the bulk request
+        attractions.forEach(attraction => {
+            const esDocument = {
+                name: attraction.name,
+                province: attraction.province,
+                price: attraction.price,
+                platform: attraction.platform
+            };
+        
+            // Only add location if both lat and long are available
+            if (attraction.lat  && attraction.long) {
+                esDocument.location = {
+                    lat: attraction.lat,
+                    lon: attraction.long
+                };
+            }
+        
+            body.push({ index: { _index: ATTRACTION_INDEX_NAME, _id: attraction.id } });
+            body.push(esDocument);
         });
 
+        // Perform the bulk indexing
         const response = await this.esClient.bulk({ refresh: true, body });
-        console.log('Indexed restaurants:', response);
+
+        console.log('Indexed attractions:', response);
         if (response.errors) {
-            const erroredDocuments = [];
+            const erroredDocuments = []
             response.items.forEach((action, i) => {
-                const operation = Object.keys(action)[0];
+                const operation = Object.keys(action)[0]
                 if (action[operation].error) {
                     erroredDocuments.push({
-                        restaurant: restaurants[i],
+                        // Original Attraction object causing the error
+                        attraction: attractions[i],
+                        // Error causing the failure
                         error: action[operation].error
                     });
                 }
@@ -74,26 +83,16 @@ class RestaurantRepository {
         }
     }
 
-    async searchRestaurants({ name,province,platform, start,end,location, sort, page = 1, pageSize = 20 }) {
-        const mustQueries = [];
-    
 
+    async searchAttractions({ name, start, end, province, platform, location, sort, page = 1, pageSize = 20 }) {
+        const mustQueries = [];
+        console.log(province)
+        // Fuzzy search for name
         if (name) {
             mustQueries.push({
                 match: {
                     name: {
                         query: name,
-                        fuzziness: "AUTO"
-                    }
-                }
-            });
-        }
-
-        if (province) {
-            mustQueries.push({
-                match: {
-                    province: {
-                        query: province,
                         fuzziness: "AUTO"
                     }
                 }
@@ -110,6 +109,18 @@ class RestaurantRepository {
             });
         }
 
+
+       
+
+        if (province) {
+            mustQueries.push({
+                match_phrase: {
+                    province: province
+                }
+            });
+        }
+
+        // Range filter for price
         if (start && end) {
             mustQueries.push({
                 range: {
@@ -123,6 +134,12 @@ class RestaurantRepository {
 
         // Geo-distance filter for location
         if (location) {
+            console.log('Location:', location)
+            mustQueries.push({
+                exists: {
+                    field: "location" // Ensures the document has a location field
+                }
+            });
             mustQueries.push({
                 geo_distance: {
                     distance: location.distanceSearch,
@@ -130,19 +147,22 @@ class RestaurantRepository {
                         lat: location.latitude,
                         lon: location.longitude
                     }
-                }
+                },
+                order: "desc",
             });
         }
-        const queryBody = {
+        const query = {
             bool: {
                 must: mustQueries
             }
         };
+
         let sortOption ;
         // Sorting logic
         if (sort) {
             sortOption = sort.split(',').map(field => {
                 const [key, order] = field.split(':');
+
 
                 if (key == 'location' && location) {
                     return {
@@ -160,23 +180,27 @@ class RestaurantRepository {
                 return { [key]: { order } };
               });
 
+            console.log('Query:', sortOption)
         }
 
+        // Pagination
         const from = (page - 1) * pageSize;
+
         try {
             const response = await this.esClient.search({
-                index: RESTAURANT_INDEX_NAME,
+                index: ATTRACTION_INDEX_NAME,
                 body: {
-                    query: queryBody,
+                    query,
                     from,
                     size: pageSize,
                     ...(sort ? { sort:sortOption } : {})
-                }
+                   
+                },
             });
             const hits = response.hits.hits;
+            console.log('Hits:', hits[1]);
 
-            const restaurantIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
-
+            const attractionIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
             let sortMongo = {}
 
             if (sort) {
@@ -186,21 +210,24 @@ class RestaurantRepository {
                     return acc;
                 }, {});
             }
-            // Fetching hotel documents from MongoDB using the retrieved IDs
-            const restaurantsFromMongo = await Restaurant.find({
-                '_id': { $in: restaurantIds}
+            // Fetching attraction documents from MongoDB using the retrieved IDs
+            const attractionsFromMongo = await Attraction.find({
+                '_id': { $in: attractionIds}
             }).sort(sortMongo)
 
-            // Returning restaurants fetched from MongoDB
-            return restaurantsFromMongo.map(restaurant => ({
-                ...restaurant.toObject(), // Converting mongoose document to plain JavaScript object
-                id: restaurant._id // Adding the ID field
+
+            
+            // Returning attractions fetched from MongoDB
+            return attractionsFromMongo.map(attraction => ({
+                ...attraction.toObject(), // Converting mongoose document to plain JavaScript object
+                id: attraction._id // Adding the ID field
             }));
         } catch (error) {
-            console.error('Error searching restaurants:', error);
+            console.error('Error searching attractions:', error);
             return [];
         }
     }
+
 }
 
-module.exports = RestaurantRepository;
+module.exports = AttractionRepository;

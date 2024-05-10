@@ -86,7 +86,7 @@ class HotelRepository {
     }
 
 
-    async getHotelByName({ name, start, end, checkinDate, checkoutDate, province, location, sort, page = 1, pageSize = 20 }) {
+    async getHotelByName({ name, start, end, checkinDate, checkoutDate, platform, province, location, sort, page = 1, pageSize = 20 }) {
         const mustQueries = [];
         console.log(province)
         // Fuzzy search for name
@@ -95,6 +95,16 @@ class HotelRepository {
                 match: {
                     name: {
                         query: name,
+                        fuzziness: "AUTO"
+                    }
+                }
+            });
+        }
+        if (platform) {
+            mustQueries.push({
+                match: {
+                    platform: {
+                        query: platform,
                         fuzziness: "AUTO"
                     }
                 }
@@ -138,7 +148,7 @@ class HotelRepository {
                     "location": { // Ensure this matches the field name in the mapping
                         lat: location.latitude,
                         lon: location.longitude
-                    }
+                    },
                 }
             });
         }
@@ -148,15 +158,30 @@ class HotelRepository {
             }
         };
 
-        let sortOption ;
+        let sortOption;
         // Sorting logic
         if (sort) {
             sortOption = sort.split(',').map(field => {
                 const [key, order] = field.split(':');
-                return { [key]: { order } };
-              });
+                if (key == 'location') {
+                    return {
+                        _geo_distance:
+                        {
+                            location:
+                            {
+                                lat: location.latitude, lon: location.longitude
 
-            console.log('Query:', sortOption)
+                            }, 
+                            order: order, unit: 'km'
+                        }
+                    }
+                }
+                return { [key]: { order } };
+            });
+
+            console.log('Sort:', sortOption)
+
+
         }
 
         // Pagination
@@ -169,8 +194,8 @@ class HotelRepository {
                     query,
                     from,
                     size: pageSize,
-                    ...(sort ? { sort:sortOption } : {})
-                   
+                    ...(sort ? { sort: sortOption } : {})
+
                 },
             });
             const hits = response.hits.hits;
@@ -188,11 +213,11 @@ class HotelRepository {
             }
             // Fetching hotel documents from MongoDB using the retrieved IDs
             const hotelsFromMongo = await Hotel.find({
-                '_id': { $in: hotelIds}
+                '_id': { $in: hotelIds }
             }).sort(sortMongo)
 
 
-            
+
             // Returning hotels fetched from MongoDB
             return hotelsFromMongo.map(hotel => ({
                 ...hotel.toObject(), // Converting mongoose document to plain JavaScript object

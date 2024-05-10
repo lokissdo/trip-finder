@@ -1,27 +1,10 @@
 version: '3'
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
-    ports:
-      - 9200:9200
-    volumes:
-      - ./elasticsearch-data:/usr/share/elasticsearch/data
   redis:
     image: redis:latest
     ports:
       - 6379:6379
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.20
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-  rabbitmq:
-    image: rabbitmq:latest
-    ports:
-      - 5672:5672
-      - 15672:15672
-  products:
+  search:
     build:
       dockerfile: Dockerfile
       context: ./products
@@ -37,11 +20,11 @@ services:
 
     env_file:
       - ./products/.env.dev
-  shopping:
+  recommend:
     build:
       dockerfile: Dockerfile
       context: ./shopping
-    container_name: shopping
+    container_name: recommend
     ports:
       - "8003:8003"
     restart: always
@@ -52,7 +35,7 @@ services:
       - /app/shopping/node_modules
     env_file:
       - ./shopping/.env.dev
-  customer:
+  proxy:
     build:
       dockerfile: Dockerfile
       context: ./customer

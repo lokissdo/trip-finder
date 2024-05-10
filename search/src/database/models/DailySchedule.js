@@ -19,7 +19,7 @@ const DailyScheduleSchema = new Schema({
         },
         landscape: {
             type: Schema.Types.ObjectId,
-            ref: 'Landscape',
+            ref: 'Attraction',
             required: true
         },
     },
@@ -32,7 +32,7 @@ const DailyScheduleSchema = new Schema({
         },
         landscape: {
             type: Schema.Types.ObjectId,
-            ref: 'Landscape',
+            ref: 'Attraction',
             required: true
         },
     },
@@ -45,7 +45,7 @@ const DailyScheduleSchema = new Schema({
         },
         landscape: {
             type: Schema.Types.ObjectId,
-            ref: 'Landscape'
+            ref: 'Attraction'
         },
     },
 }
