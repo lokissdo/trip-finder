@@ -73,8 +73,6 @@ class UserService {
 
         console.log('Triggering.... User Events')
 
-        payload = JSON.parse(payload)
-
         const { event, data } = payload;
 
         console.log("data received", data)

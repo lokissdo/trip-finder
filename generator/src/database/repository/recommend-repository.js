@@ -139,7 +139,6 @@ class RecommendRepository {
 
         let weatherData = await this.weatherRepository.getWeather(destination, startDate);
 
-        console.log("Recommendation data:", weatherData)
         return {
             weather: weatherData,
             hotel,

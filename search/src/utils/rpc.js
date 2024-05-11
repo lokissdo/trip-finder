@@ -27,7 +27,6 @@ const RPCObserver = async (RPC_QUEUE_NAME, service) => {
         // DB Operation
         const payload = JSON.parse(msg.content.toString());
         const response = await service.ProcessRPC(payload) ; // call fake DB operation
-
         channel.sendToQueue(
           msg.properties.replyTo,
           Buffer.from(JSON.stringify(response)),

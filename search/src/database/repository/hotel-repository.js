@@ -88,8 +88,8 @@ class HotelRepository {
 
     async getHotelByName({ name, start, end, checkinDate, checkoutDate, platform, province, location, sort, page = 1, pageSize = 20 }) {
         const mustQueries = [];
-        console.log(province)
-        // Fuzzy search for name
+        //console.log(province)
+        // Fuzzy search for nam
         if (name) {
             mustQueries.push({
                 match: {
@@ -113,9 +113,10 @@ class HotelRepository {
 
 
         if (checkinDate) {
+            let shortCheckinDate = (new Date(checkinDate)).toISOString().split('T')[0];  
             mustQueries.push({
                 term: {
-                    checkin: checkinDate // Exact checkinDate
+                    checkin: shortCheckinDate // Exact checkinDate
                 }
             });
         }
@@ -179,7 +180,7 @@ class HotelRepository {
                 return { [key]: { order } };
             });
 
-            console.log('Sort:', sortOption)
+            console.log('\n - Search Serivce - Hotel-  Sort:', sortOption)
 
 
         }
@@ -188,6 +189,7 @@ class HotelRepository {
         const from = (page - 1) * pageSize;
 
         try {
+            // console.log('\n - Search Serivce - Hotel-  Query:', query.bool.must)
             const response = await this.esClient.search({
                 index: HOTEL_INDEX_NAME,
                 body: {
@@ -198,8 +200,10 @@ class HotelRepository {
 
                 },
             });
+
+            console.log('\nSearch Serivce - Hotel-  Query - Response:', response);
             const hits = response.hits.hits;
-            console.log('Hits:', hits[1]);
+            console.log('\n Search Serivce - Hotel-  Query - Hits:', hits[1]);
 
             const hotelIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
             let sortMongo = {}

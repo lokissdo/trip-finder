@@ -128,9 +128,10 @@ class VehicleRepository {
         }
     
         if (date) {
+            let shortDate = (new Date(date)).toISOString().split('T')[0]
             mustQueries.push({
                 term: {
-                    date: date // Exact checkinDate
+                    date: shortDate // Exact checkinDate
                 }
             });
         }

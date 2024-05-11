@@ -6,38 +6,34 @@ const { WEATHER_API_URL, WEATHER_API_KEY } = require('../../config');
 
 const Weather = require('../models/Weather');
 class WeatherRepository {
-    async getWeather(city, date, country = 'VN') {
+    async getWeather(city, date,  country = 'VN') {
         // get Weather from db,  if currentDate > created_at 1 days, call API to get new weather and push to db
         const weather = await Weather
             .findOne({ city: city, date: date })
             .exec();
-        if (!weather) {
-            const weatherData = await this.callWeatherAPI(city, date, country);
-            return weatherData;
+        
+        if (weather) {
+            const currentDate = new Date();
+            const diffTime = Math.abs(currentDate - weather.created_at);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 1) {
+                const weatherData = await this.callWeatherAPI(city, date, country);
+                return weatherData;
+            }
+            return weather;
         }
-        const currentDate = new Date();
-        const diffTime = Math.abs(currentDate - weather.created_at);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays > 1) {
-            const weatherData = await this.callWeatherAPI(city, date, country);
-            return weatherData;
-        }
-        return weather;
-        //throw new Error('Weather not found');
+        throw new Error('Weather not found');
     }
 
     async callWeatherAPI(city, date, country) {
-        const encodedCity = encodeURIComponent(city);
-        const url = `${WEATHER_API_URL}?city=${encodedCity}&country=${country}&key=${WEATHER_API_KEY}`;
+        const url = `${WEATHER_API_URL}?city=${city}&country=${country}&key=${WEATHER_API_KEY}`;
         // I want push all 16 days to db
 
-        console.log('Calling weather API:', url);
         const response = await axios.get(url);
-        const data = response.data.data;
+        const data = response.data;
 
-        console.log('Response from weather API:',data);
         let returnedWeather;
-
+ 
 
         // push to db
         const weathers = data.map(weather => {
@@ -52,11 +48,6 @@ class WeatherRepository {
             }
             return weatherToInsert
         });
-
-        if (!returnedWeather) {
-            //throw new Error('Weather not found');
-            returnedWeather = weathers[weathers.length - 1] 
-        }
 
         await Weather.insertMany(weathers);
         return returnedWeather;

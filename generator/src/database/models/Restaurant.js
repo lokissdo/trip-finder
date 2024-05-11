@@ -6,6 +6,7 @@ const LandscapeSchema = new Schema({
         type: String,
         required: true
     },
+    // location is obejct including lattiude and longitude and province
     location: {
         province: {
             type: String,
@@ -20,15 +21,18 @@ const LandscapeSchema = new Schema({
             required: true
         }
     },
-    platform: {
-        type: String,
-        required: true
-    },
     rating: {
         type: Number,
     },
+    link : {
+        type: String,
+    },
     price: {
         type: Number,
+        required: true
+    },
+    platform: {
+        type: String,
         required: true
     },
     image: {
@@ -40,10 +44,7 @@ const LandscapeSchema = new Schema({
     },
     description: {
         type: String,
-    },
-    link : {
-        type: String,
-    },
+    }
 }, {
     timestamps: true
 });

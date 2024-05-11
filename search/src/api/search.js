@@ -12,7 +12,7 @@ module.exports = (app, channel) => {
     const service = new SearchService();
 
     // To listen
-    //SubscribeMessage(channel, service, SEARCH_SERVICE);
+    SubscribeMessage(channel, service, SEARCH_SERVICE);
 
     RPCObserver(SEARCH_SERVICE, service);
 
