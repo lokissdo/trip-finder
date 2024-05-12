@@ -25,6 +25,7 @@ class RecommendRepository {
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
 
+        userOptions = userOptions ?? {};
         // console.log(startDateObj, endDateObj);
         // Check if the dates are valid
         if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
@@ -38,7 +39,7 @@ class RecommendRepository {
         if (!costOptions.itinerary) {
             throw new Error("Itinerary cost option is required");
         }
-        dailySchedules = await this.dailyScheduleRepository.createLandscapeScheduleByDays(destination, numOfDays, costOptions.itinerary, userOptions?.cheapestItinerary ? true : false);
+        dailySchedules = await this.dailyScheduleRepository.createLandscapeScheduleByDays(destination, numOfDays, costOptions.itinerary, userOptions.cheapestItinerary ? true : false);
 
         if (dailySchedules === -1) {
             throw new Error("Not enough suitable landscapes in the database");
@@ -55,7 +56,7 @@ class RecommendRepository {
                 data: {
                     startPrice: pricePerDay * (1 - COST_HOTEL_GAP_RATE),
                     endPrice: pricePerDay * (1 + COST_HOTEL_GAP_RATE),
-                    bestPrice: userOptions?.cheapestHotel ? true : false,
+                    bestPrice: userOptions.cheapestHotel ? true : false,
                     checkinDate: startDate,
                     province: destination,
                     location: {
@@ -74,9 +75,10 @@ class RecommendRepository {
             console.log("Hotel:", hotel);
         }
 
+        console.log("Recommend - User options", userOptions)
 
         if (costOptions.vehicle && departure !== destination) {
-            let vehicleType = userOptions?.vehicleType ?? 'Xe khách';
+            let vehicleType = userOptions.vehicleType ?? 'Xe Khách';
             const vehicleRequest = {
                 event: 'GET_RANDOM_VEHICLE_BY_PARAMETERS',
                 data: {
@@ -87,9 +89,10 @@ class RecommendRepository {
                     destination,
                     startPrice: costOptions.vehicle * (1 - COST_VEHICLE_GAP_RATE),
                     endPrice: costOptions.vehicle * (1 + COST_VEHICLE_GAP_RATE),
-                    bestPrice: userOptions?.cheapestVehicle ? true : false,
+                    bestPrice: userOptions.cheapestVehicle ? true : false,
                 }
             };
+            console.log("Vehicle request:", vehicleRequest);
             const vehicleResponse = await RPCRequest(SEARCH_SERVICE, vehicleRequest);
             if (vehicleResponse.error) {
                 //throw new Error(vehicleResponse.error);
@@ -108,7 +111,7 @@ class RecommendRepository {
                     data: {
                         startPrice: maxPriceQuery * (1 - COST_RESTAURANT_GAP_RATE),
                         endPrice: maxPriceQuery * (1 + COST_RESTAURANT_GAP_RATE),
-                        bestPrice: userOptions?.cheapestRestaurant ? true : false,
+                        bestPrice: userOptions.cheapestRestaurant ? true : false,
                         province: destination,
                         location: {
                             lat: schedule.morning.lat,
@@ -137,10 +140,11 @@ class RecommendRepository {
 
         }
 
-        let weatherData = await this.weatherRepository.getWeather(destination, startDate);
-
+       // let weatherData = await this.weatherRepository.getWeather(destination, startDate);
+        let weatherData = null
         console.log("Recommendation data:", weatherData)
         return {
+            
             weather: weatherData,
             hotel,
             vehicles,
@@ -169,6 +173,12 @@ class RecommendRepository {
             lat: lat / dailySchedules.length,
             long: long / dailySchedules.length
         };
+    }
+
+    async generateRecommendations(province,startDate, endDate) {
+
+        const dailySchedules = await this.dailyScheduleRepository.generateDailySchedules(province);
+        return dailySchedules;
     }
 
 

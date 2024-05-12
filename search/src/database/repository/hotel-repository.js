@@ -206,27 +206,30 @@ class HotelRepository {
             console.log('\n Search Serivce - Hotel-  Query - Hits:', hits[1]);
 
             const hotelIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
-            let sortMongo = {}
+            // let sortMongo = {}
 
-            if (sort) {
-                sortMongo = sort.split(',').reduce((acc, field) => {
-                    const [key, order] = field.split(':');
-                    acc[key] = order === 'asc' ? 1 : -1;
-                    return acc;
-                }, {});
-            }
+            // if (sort) {
+            //     sortMongo = sort.split(',').reduce((acc, field) => {
+            //         const [key, order] = field.split(':');
+            //         acc[key] = order === 'asc' ? 1 : -1;
+            //         return acc;
+            //     }, {});
+            // }
             // Fetching hotel documents from MongoDB using the retrieved IDs
             const hotelsFromMongo = await Hotel.find({
                 '_id': { $in: hotelIds }
-            }).sort(sortMongo)
+            })
+
+            // Reorder the hotels based on the search result
+            return hotelIds.map(id => hotelsFromMongo.find(hotel => hotel._id.toString() == id));
 
 
 
             // Returning hotels fetched from MongoDB
-            return hotelsFromMongo.map(hotel => ({
-                ...hotel.toObject(), // Converting mongoose document to plain JavaScript object
-                id: hotel._id // Adding the ID field
-            }));
+            // return hotelsReponse.map(hotel => ({
+            //     ...hotel.toObject(), // Converting mongoose document to plain JavaScript object
+            //     // id: hotel._id // Adding the ID field
+            // }));
         } catch (error) {
             console.error('Error searching hotels:', error);
             return [];

@@ -177,25 +177,27 @@ class RestaurantRepository {
 
             const restaurantIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
 
-            let sortMongo = {}
+            // let sortMongo = {}
 
-            if (sort) {
-                sortMongo = sort.split(',').reduce((acc, field) => {
-                    const [key, order] = field.split(':');
-                    acc[key] = order === 'asc' ? 1 : -1;
-                    return acc;
-                }, {});
-            }
+            // if (sort) {
+            //     sortMongo = sort.split(',').reduce((acc, field) => {
+            //         const [key, order] = field.split(':');
+            //         acc[key] = order === 'asc' ? 1 : -1;
+            //         return acc;
+            //     }, {});
+            // }
             // Fetching hotel documents from MongoDB using the retrieved IDs
             const restaurantsFromMongo = await Restaurant.find({
                 '_id': { $in: restaurantIds}
-            }).sort(sortMongo)
+            })
+            // .sort(sortMongo)
 
             // Returning restaurants fetched from MongoDB
-            return restaurantsFromMongo.map(restaurant => ({
-                ...restaurant.toObject(), // Converting mongoose document to plain JavaScript object
-                id: restaurant._id // Adding the ID field
-            }));
+            // return restaurantsFromMongo.map(restaurant => ({
+            //     ...restaurant.toObject(), // Converting mongoose document to plain JavaScript object
+            //     id: restaurant._id // Adding the ID field
+            // }));
+            return restaurantIds.map(id => restaurantsFromMongo.find(restaurant => restaurant._id.toString() == id));
         } catch (error) {
             console.error('Error searching restaurants:', error);
             return [];

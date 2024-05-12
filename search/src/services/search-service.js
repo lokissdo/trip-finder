@@ -117,8 +117,7 @@ class SearchService {
                 const {type, startDate, endDate, startPrice,departure, destination, endPrice, bestPrice} = data
                 const query = {
                     type,
-                    start: startPrice/2,
-                    end: endPrice/2,
+                    
                     date: startDate,
                     departure,
                     arrival: destination,
@@ -126,9 +125,12 @@ class SearchService {
                     pageSize: 10,
                 }
                 if (bestPrice) {
-                    query.sort += ',price:asc'
-                }
+                    query.sort = 'price:asc'
+                } else {
+                    query.start = startPrice/2
+                    query.end = endPrice/2
 
+                }
                 const firstVehicles =  await this.GetVehiclesByParameters(query)
                 query.arrival = departure
                 query.departure = destination
@@ -163,8 +165,7 @@ class SearchService {
 
                 const {startPrice, endPrice, bestPrice, province, location} = data
                 const query = {
-                    start: startPrice,
-                    end: endPrice,
+                   
                     province,
                     location:{
                         latitude: location.lat,
@@ -177,6 +178,9 @@ class SearchService {
                 }
                 if (bestPrice) {
                     query.sort += ',price:asc'
+                }else {
+                    query.start = startPrice
+                    query.end = endPrice
                 }
                 const restaurants =  await this.GetRestaurantsByParameters(query)
                 if (restaurants.length == 0) {
@@ -193,8 +197,7 @@ class SearchService {
                 console.log("Hotel data from RPC",data);
                 const {endPrice, startPrice, bestPrice, checkinDate, province, location} = data
                 const query = {
-                    start: startPrice,
-                    end: endPrice,
+                  
                     checkinDate: checkinDate,
                     province,
                     location:{
@@ -209,6 +212,9 @@ class SearchService {
                 }   
                 if (bestPrice) {
                     query.sort += ',price:asc'
+                } else {
+                    query.start = startPrice
+                    query.end = endPrice
                 }
                 const hotels =  await this.GetHotelsByParameters(query)
                 if (hotels.length == 0) {

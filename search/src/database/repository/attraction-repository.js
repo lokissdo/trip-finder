@@ -200,27 +200,29 @@ class AttractionRepository {
             console.log('Hits:', hits[1]);
 
             const attractionIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
-            let sortMongo = {}
+            // let sortMongo = {}
 
-            if (sort) {
-                sortMongo = sort.split(',').reduce((acc, field) => {
-                    const [key, order] = field.split(':');
-                    acc[key] = order === 'asc' ? 1 : -1;
-                    return acc;
-                }, {});
-            }
+            // if (sort) {
+            //     sortMongo = sort.split(',').reduce((acc, field) => {
+            //         const [key, order] = field.split(':');
+            //         acc[key] = order === 'asc' ? 1 : -1;
+            //         return acc;
+            //     }, {});
+            // }
             // Fetching attraction documents from MongoDB using the retrieved IDs
             const attractionsFromMongo = await Attraction.find({
                 '_id': { $in: attractionIds}
-            }).sort(sortMongo)
+            })
+            // .sort(sortMongo)
 
 
             
             // Returning attractions fetched from MongoDB
-            return attractionsFromMongo.map(attraction => ({
-                ...attraction.toObject(), // Converting mongoose document to plain JavaScript object
-                id: attraction._id // Adding the ID field
-            }));
+            // return attractionsFromMongo.map(attraction => ({
+            //     ...attraction.toObject(), // Converting mongoose document to plain JavaScript object
+            //     id: attraction._id // Adding the ID field
+            // }));
+            return attractionIds.map(id => attractionsFromMongo.find(attraction => attraction._id.toString() == id));
         } catch (error) {
             console.error('Error searching attractions:', error);
             return [];

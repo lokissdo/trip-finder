@@ -1,13 +1,13 @@
 FROM node
 
-WORKDIR /app/gateway
+WORKDIR /app
 
-COPY package.json .
+COPY package.json ./
 
-RUN npm install
+RUN  npm install
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["npm", "start"]
+CMD ["node", "index-product.js"]

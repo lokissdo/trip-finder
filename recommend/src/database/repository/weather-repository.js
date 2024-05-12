@@ -35,7 +35,7 @@ class WeatherRepository {
         const response = await axios.get(url);
         const data = response.data.data;
 
-        console.log('Response from weather API:',data);
+       // console.log('Response from weather API:',data);
         let returnedWeather;
 
 

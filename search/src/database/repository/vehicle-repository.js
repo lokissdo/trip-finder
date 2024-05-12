@@ -163,30 +163,34 @@ class VehicleRepository {
                     ...(sort ? { sort: sortOption } : {})
                 }
             });
+
+            console.log('Search - vehicle - Quẻy:', query.bool.must)
             const hits = response.hits.hits;
             console.log('Hits:', hits[1]);
     
             const vehicleIds = hits.map(hit => mongoose.Types.ObjectId(hit._id));
     
 
-            let sortMongo = {}
+            // let sortMongo = {}
 
-            if (sort) {
-                sortMongo = sort.split(',').reduce((acc, field) => {
-                    const [key, order] = field.split(':');
-                    acc[key] = order === 'asc' ? 1 : -1;
-                    return acc;
-                }, {});
-            }
+            // if (sort) {
+            //     sortMongo = sort.split(',').reduce((acc, field) => {
+            //         const [key, order] = field.split(':');
+            //         acc[key] = order === 'asc' ? 1 : -1;
+            //         return acc;
+            //     }, {});
+            // }
             // Fetching hotel documents from MongoDB using the retrieved IDs
             const vehiclesFromMongo = await Vehicle.find({
                 '_id': { $in: vehicleIds}
-            }).sort(sortMongo)
+            })
+            // .sort(sortMongo)
 
-            return vehiclesFromMongo.map(vehicle => ({
-                ...vehicle.toObject(), // Converting mongoose document to plain JavaScript object
-                id: vehicle._id // Adding the ID field
-            }));
+            // return vehiclesFromMongo.map(vehicle => ({
+            //     ...vehicle.toObject(), // Converting mongoose document to plain JavaScript object
+            //     id: vehicle._id // Adding the ID field
+            // }));
+            return vehicleIds.map(id => vehiclesFromMongo.find(vehicle => vehicle._id.toString() == id));
         } catch (error) {
             console.error('Error searching vehicles:', error);
             return [];

@@ -3,45 +3,35 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ItinerarySchema = new Schema({
-    departureDate: {
+    startDate: {
         type: Date,
         required: true
     },
-    returnDate: {
+    endDate: {
         type: Date,
         required: true
     },
-    province: {
+    depature: {
         type: String,
         required: true
     },
-    estimatedCost: {
-        type: Number,
+    arrival: {
+        type: String,
         required: true
     },
+    userOptions: {
+      
+    },
+    costOptions: {
+       
+    },
+    dailySchedules: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'DailySchedule'
+        }
     
-    weather: {
-        type: String,
-        required: true
-    },
-    departureVehicle: {
-        type: Schema.Types.ObjectId,
-        ref: 'Vehicle',
-    },
-    destinationVehicle: {
-        type: Schema.Types.ObjectId,
-        ref: 'Vehicle',
-    },
-    hotel: {
-        type: Schema.Types.ObjectId,
-        ref: 'Hotel',
-    },
-    schedules: [
-     {
-        type: Schema.Types.ObjectId,
-        ref: 'DailySchedule'
-     }
-    ]
+    ],
 },{
     timestamps: true
 });
