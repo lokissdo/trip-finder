@@ -1,5 +1,8 @@
 
 module.exports = {
-    UserModel: require('./User'),
-    ItineraryModel: require('./Itinerary'),
+    DailySchedule: require('./DailySchedule'),
+    Attraction: require('./Attraction'),
+    Hotel : require('./Hotel'),
+    Recommend : require('./Recommend')
+    
 }

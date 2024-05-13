@@ -12,45 +12,26 @@ const DailyScheduleSchema = new Schema({
         required: true
     },
     morning: {
-        // Meal is reference to Food and it optional
-        meal: {
-            type: Schema.Types.ObjectId,
-            ref: 'Food'
-        },
-        landscape: {
-            type: Schema.Types.ObjectId,
-            ref: 'Landscape',
-            required: true
-        },
+        type: Schema.Types.ObjectId,
+        ref: 'Attraction',
+        required: true
     },
     afternoon: {
-        // Meal is reference to Food and it optional
-        meal: {
-            type: Schema.Types.ObjectId,
-            ref: 'Food',
-            required: true
-        },
-        landscape: {
-            type: Schema.Types.ObjectId,
-            ref: 'Landscape',
-            required: true
-        },
+        type: Schema.Types.ObjectId,
+        ref: 'Attraction',
+        required: true
     },
     evening: {
-        // Meal is reference to Food and it optional
-        meal: {
-            type: Schema.Types.ObjectId,
-            ref: 'Food',
-            required: true
-        },
-        landscape: {
-            type: Schema.Types.ObjectId,
-            ref: 'Landscape'
-        },
+        type: Schema.Types.ObjectId,
+        ref: 'Attraction'
     },
+    generator: {
+        type: Number,
+        required: true
+    }
 }
-,{
-    timestamps: true
-});
- 
-module.exports =  mongoose.model('DailySchedule', DailyScheduleSchema);
+    , {
+        timestamps: true
+    });
+
+module.exports = mongoose.model('DailySchedule', DailyScheduleSchema);

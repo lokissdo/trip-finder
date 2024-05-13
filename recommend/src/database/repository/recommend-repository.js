@@ -2,6 +2,7 @@ const DailyScheduleRepository = require("./daily-schedule-repository");
 const WeatherRepository = require("./weather-repository");
 const { SEARCH_SERVICE } = require("../../config")
 const { RPCRequest } = require("../../utils/rpc");
+const Recommend = require("../models/Recommend");
 
 
 const COST_HOTEL_GAP_RATE = 0.4;
@@ -140,11 +141,28 @@ class RecommendRepository {
 
         }
 
-       // let weatherData = await this.weatherRepository.getWeather(destination, startDate);
-        let weatherData = null
+        let weatherData = await this.weatherRepository.getWeather(destination, startDate);
+       // let weatherData = null
         console.log("Recommendation data:", weatherData)
-        return {
+        const recommend = new Recommend();
+        Recommend.create({
+            _id : recommend._id,
+            destination,
+            departure,
+            startDate,
+            endDate,
+            costOptions,
+            userOptions,
+            output:{
+                hotel,
+                vehicles,
+                dailySchedules,
+                weather: weatherData
+            }
             
+        });
+        return {
+            _id : recommend._id,
             weather: weatherData,
             hotel,
             vehicles,

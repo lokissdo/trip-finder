@@ -16,7 +16,7 @@ class WeatherRepository {
             return weatherData;
         }
         const currentDate = new Date();
-        const diffTime = Math.abs(currentDate - weather.created_at);
+        const diffTime = Math.abs(currentDate - weather.updated_at);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if (diffDays > 1) {
             const weatherData = await this.callWeatherAPI(city, date, country);
@@ -58,9 +58,35 @@ class WeatherRepository {
             returnedWeather = weathers[weathers.length - 1] 
         }
 
-        await Weather.insertMany(weathers);
+         this.insertOrUpdateMany(weathers);
         return returnedWeather;
 
+    }
+
+
+
+
+
+    async insertOrUpdateMany(weatherRecords) {
+        const operations = weatherRecords.map(record => {
+            const { city, date, description, temperature } = record;
+            return {
+                updateOne: {
+                    filter: { city: city, date: date },
+                    update: {
+                        $set: {
+                            description: description,
+                            temperature: temperature,
+                            updated_at: new Date()  // Ensure there's an updated_at field in the schema
+                        }
+                    },
+                    upsert: true
+                }
+            };
+        });
+
+        const result = await Weather.bulkWrite(operations);
+        return result;
     }
 }
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
+
 const RecommendSchema = new Schema({
     count: {
         type: Number,
@@ -32,22 +33,8 @@ const RecommendSchema = new Schema({
         required: true
     },
     output: {
-        hotel: {
-            type: Schema.Types.ObjectId,
-            ref: 'Hotel' 
-        },
-        vehicles: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Vehicle' 
-        }],
-        dailySchedules: [{
-            type: Schema.Types.ObjectId,
-            ref: 'DailySchedule' 
-        }],
-        weather: {
-            type: Schema.Types.ObjectId,
-            ref: 'Weather' 
-        }
+        type: Object,
+        required: true
     }
 });
  

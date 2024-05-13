@@ -25,6 +25,10 @@ const DailyScheduleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Attraction'
     },
+    generator: {
+        type: Number,
+        required: true
+    }
 }
     , {
         timestamps: true

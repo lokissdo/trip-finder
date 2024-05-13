@@ -9,22 +9,14 @@ const UserSchema = new Schema({
     salt: String,
     phone: String,
     role : String,
-    hobbies:[
-        {
-            name: { type: String },
-        }
-    ],  
-    itineraries: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Itinerary'
-        }
-    ],
+    hobbies:{
+        type:Object,
+    },  
+   
     histories: [
         {
-            type: { type: String},
-            date: {type: Date, default: Date.now()},
-            amount: { type: String},
+            type: Schema.Types.ObjectId,
+            ref: 'Recommend',
         }
     ],
 },{

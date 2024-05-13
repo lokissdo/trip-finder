@@ -26,8 +26,7 @@ const DailyScheduleSchema = new Schema({
         ref: 'Attraction'
     },
     generator: {
-        type: String,
-        enum: ["outsource", "system"],
+        type: Number,
         required: true
     }
 }

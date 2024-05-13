@@ -1,8 +1,8 @@
 const RecommendService = require('../services/recommend-service');
 const UserAuth = require('./middlewares/auth');
-const { SubscribeMessage, PublishMessage, FormateData } = require('../utils');
-const { RPCObserver } = require('../utils/rpc');
-const { RECOMMEND_SERVICE } = require('../config');
+// const { SubscribeMessage, PublishMessage, FormateData } = require('../utils');
+// const { RPCObserver } = require('../utils/rpc');
+// const { RECOMMEND_SERVICE } = require('../config');
 
 
 
@@ -26,8 +26,8 @@ module.exports = (app, channel) => {
                 startDate, endDate,departure, destination});
             res.send(result);
         }catch(err){
-            console.error('Error getting recommendation:', err);
-            res.status(400).json({ msg: 'Internal Server Error' });
+            console.log('Error getting recommendation:', err);
+            res.status(400).json({ error: err.message });
         }
         
     });
