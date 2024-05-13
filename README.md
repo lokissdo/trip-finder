@@ -1,7 +1,7 @@
 # Trip Finder Backend
 
 ## Overview
-Travel Companion is a comprehensive backend system designed to enhance the travel experience through personalized recommendations and efficient search capabilities. The system is built using a microservices architecture, consisting of the following services:
+Trip Finder is a comprehensive backend system designed to enhance the travel experience through personalized recommendations and efficient search capabilities. The system is built using a microservices architecture, consisting of the following services:
 - **User Service**: Handles user authentication (login and signup), user profile management, and historical data tracking for recommendations.
 - **Search Service**: Provides search functionality for hotels, attractions, restaurants, and vehicles. Utilizes Redis for caching and Elasticsearch for high performance.
 - **Recommendation Service**: Offers personalized trip recommendations by analyzing user preferences and incorporating various travel factors.
