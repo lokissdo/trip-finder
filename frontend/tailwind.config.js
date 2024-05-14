@@ -9,6 +9,7 @@ export default {
     extend: {},
     fontFamily: {
       customTitle: ['"Volkhov"', "serif"],
+      customDetail: ['"Mulish"', "sans-serif"],
     },
   },
   plugins: [require("flowbite/plugin")],

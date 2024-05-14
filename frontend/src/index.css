@@ -38,3 +38,8 @@ input:hover {
   background: #c2c9d2;
   border-radius: 10px;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
