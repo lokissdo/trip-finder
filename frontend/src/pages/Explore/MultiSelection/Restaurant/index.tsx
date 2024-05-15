@@ -4,6 +4,7 @@ import { options } from "../../../../assets/locationSelecion";
 import { fetchRestaurant } from "./hooks/fetchRestaurant";
 import { TRestaurant } from "./restaurant";
 import { FaLocationDot, FaStar, FaUtensils } from "react-icons/fa6";
+import Navbar from "../../../../components/Navbar";
 
 const Restaurant: React.FC = () => {
   const [province, setProvince] = useState<{
@@ -13,6 +14,9 @@ const Restaurant: React.FC = () => {
   const [result, setResult] = useState<TRestaurant[]>();
   return (
     <div>
+      <div className="px-12 py-4 shadow-md">
+        <Navbar />
+      </div>
       <Select
         options={options}
         isClearable
@@ -52,7 +56,7 @@ const Restaurant: React.FC = () => {
                             </p>
                           </div>
                           <div className="pl-4 flex flex-row gap-2 items-center">
-                            <FaStar size={20} color="#ffe234CC" />
+                            <FaStar size={20} color="#858585CC" />
                             <p className="font-customDetail text-lg text-gray-400">
                               {res.rating}
                             </p>

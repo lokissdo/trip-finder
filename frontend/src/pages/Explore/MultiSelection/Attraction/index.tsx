@@ -4,6 +4,7 @@ import { options } from "../../../../assets/locationSelecion";
 import { fetchAttraction } from "./hooks/fetchAttraction";
 import { TAttraction } from "./attraction";
 import { FaLocationDot } from "react-icons/fa6";
+import Navbar from "../../../../components/Navbar";
 
 const Attraction: React.FC = () => {
   const [province, setProvince] = useState<{
@@ -13,6 +14,9 @@ const Attraction: React.FC = () => {
   const [result, setResult] = useState<TAttraction[]>();
   return (
     <div>
+      <div className="px-12 py-4 shadow-md">
+        <Navbar />
+      </div>
       <Select
         options={options}
         isClearable
@@ -48,13 +52,13 @@ const Attraction: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      <div>
+                      <div className="flex flex-col place-items-end">
                         <div className="text-green-400 font-bold font-customDetail text-xl">
                           {res.price === 0 ? "Free" : res.price + " VND"}
                         </div>
                         {res.price !== 0 && (
-                          <div className="text-gray-400 text-md font-customDetail font-semibold">
-                            per person
+                          <div className="text-gray-400 text-sm font-customDetail font-semibold">
+                            / person
                           </div>
                         )}
                       </div>
