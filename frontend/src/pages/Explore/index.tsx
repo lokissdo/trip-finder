@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
-import MultiSelection from "./MultiSelection";
+// import MultiSelection from "./MultiSelection";
 import { Variants, motion } from "framer-motion";
 import { cardExplore } from "../../assets/cardExplore";
 import { Link } from "react-router-dom";
