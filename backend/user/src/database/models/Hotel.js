@@ -1,36 +1,38 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const RestaurantSchema = new Schema({
+const HotelSchema = new Schema({
     name: {
         type: String,
         required: true
     },
-   status: {
-        type: String,
-    },
+    // location is obejct including lattiude and longitude and province
     province: {
         type: String,
         required: true
     },
     latitude: {
-        type: String,
+        type: Number,
         required: true
     },
     longitude: {
+        type: Number,
+        required: true
+    },
+    page_url: {
         type: String,
         required: true
     },
     rating: {
         type: Number,
     },
-    link: {
+    checkin: {
         type: String,
     },
-    description: {
+    checkout: {
         type: String,
     },
-    style: {
+    standard: {
         type: String,
     },
     price: {
@@ -41,8 +43,9 @@ const RestaurantSchema = new Schema({
         type: String,
         required: true
     },
-    image: {
+    image_url: {
         type: String,
+        required: true
     },
     description: {
         type: String,
@@ -51,4 +54,4 @@ const RestaurantSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+module.exports = mongoose.model('Hotel', HotelSchema);

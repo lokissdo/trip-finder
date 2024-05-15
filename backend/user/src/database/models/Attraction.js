@@ -1,39 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const RestaurantSchema = new Schema({
+const AttractionSchema = new Schema({
     name: {
         type: String,
         required: true
-    },
-   status: {
-        type: String,
     },
     province: {
         type: String,
         required: true
     },
-    latitude: {
-        type: String,
-        required: true
-    },
-    longitude: {
-        type: String,
-        required: true
-    },
-    rating: {
+    lat: {
         type: Number,
+        required: true
     },
-    link: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    style: {
-        type: String,
-    },
-    price: {
+    long: {
         type: Number,
         required: true
     },
@@ -41,14 +22,27 @@ const RestaurantSchema = new Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
+    rating: {
+        type: Number,
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    address: {
+        type: String
+    },
+    img_url: {
+        type: String
     },
     description: {
         type: String,
-    }
+    },
+    link: {
+        type: String,
+    },
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+module.exports = mongoose.model('Attraction', AttractionSchema);

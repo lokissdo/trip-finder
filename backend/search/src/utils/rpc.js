@@ -1,7 +1,7 @@
 const amqplib = require("amqplib");
 const { v4: uuid4 } = require("uuid");
 const { MSG_QUEUE_URL } = require("../config");
-const {  } = require("../services/user-service");
+const {  } = require("../services/indexing-service");
 let amqplibConnection = null;
 
 const getChannel = async () => {

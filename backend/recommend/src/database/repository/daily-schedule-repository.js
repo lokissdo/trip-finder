@@ -1,8 +1,7 @@
 
 
 
-const DailySchedule = require('../models/DailySchedule');
-const Attraction = require('../models/Attraction');
+const { DailySchedule, Attraction } = require('../models');
 const mongoose = require('mongoose');
 const COST_GAP_RATE = 0.2;
 class DailyScheduleRepository {
@@ -78,13 +77,11 @@ class DailyScheduleRepository {
         //     }},
         //     { $sample: { size: 1 } }
         // ]).exec();
-
         const attractions = await Attraction.find({
             province: province,
             lat: { $exists: true, $ne: null },
             long: { $exists: true, $ne: null }
         }).exec();
-
         // get 2 acctraction distance less than 10km is a DailySchedule
         let dailySchedules = [];
         for (let i = 0; i < attractions.length; i++) {
@@ -102,6 +99,7 @@ class DailyScheduleRepository {
             }
         }
 
+       
         return DailySchedule.insertMany(dailySchedules);
         //return dailySchedules;
 

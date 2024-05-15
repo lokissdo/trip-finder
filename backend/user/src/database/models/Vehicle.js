@@ -1,54 +1,59 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const RestaurantSchema = new Schema({
-    name: {
+const VehicleSchema = new Schema({
+    // type is enum, bus or plane
+    type: {
+        type: String,
+        enum: ['Xe Khách', 'Máy bay'],
+        required: true
+    },
+    brand: {
         type: String,
         required: true
     },
-   status: {
-        type: String,
+    date: {
+        type: Date,
+        required: true
     },
-    province: {
+    departureTime: {
         type: String,
         required: true
     },
-    latitude: {
+    duration: {
         type: String,
         required: true
     },
-    longitude: {
+    departure: {
+        type: String,
+        required: true
+    },
+    arrival: {
         type: String,
         required: true
     },
     rating: {
         type: Number,
     },
-    link: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    style: {
-        type: String,
-    },
     price: {
         type: Number,
         required: true
     },
-    platform: {
+    coupon: {
+        type: String,
+    },
+    image_url: {
         type: String,
         required: true
     },
-    image: {
+    detail: {
         type: String,
     },
-    description: {
+    page_url : {
         type: String,
     }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+module.exports =  mongoose.model('Vehicle', VehicleSchema);

@@ -35,7 +35,7 @@ class RestaurantRepository {
     async indexWholeData() {
         await this.createIndexMapping();
         const restaurants = await Restaurant.find();
-
+        console.log('Indexing restaurants:', restaurants.length, 'documents')
         const body = [];
         restaurants.forEach(restaurant => {
             body.push({

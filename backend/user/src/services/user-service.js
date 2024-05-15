@@ -1,4 +1,4 @@
-const { UserRepository, ItineraryRepository } = require("../database");
+const { UserRepository, RecommendRepository } = require("../database");
 const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../utils');
 
 // All Business logic will be here
@@ -6,7 +6,7 @@ class UserService {
 
     constructor() {
         this.repository = new UserRepository();
-        this.itineraryRepository = new ItineraryRepository();
+        this.itineraryRepository = new RecommendRepository();
     }
 
     async SignIn(userInputs) {
@@ -64,10 +64,6 @@ class UserService {
         return FormateData(itineraries);
     }
 
-    async CreateItinerary(itinerary) {
-        const itineraryResult = await this.itineraryRepository.CreateItinerary(itinerary);
-        return FormateData(itineraryResult);
-    }
 
     async SubscribeEvents(payload) {
 
