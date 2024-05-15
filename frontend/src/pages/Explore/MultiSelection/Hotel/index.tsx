@@ -5,6 +5,7 @@ import { DatePicker, GetProps } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
 import { fetchHotel } from "./hooks/fetchHotel";
+import Navbar from "../../../../components/Navbar";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -24,6 +25,9 @@ const Hotel: React.FC = () => {
   };
   return (
     <div>
+      <div className="px-12 py-4 shadow-md">
+        <Navbar />
+      </div>
       <Select
         options={options}
         isClearable

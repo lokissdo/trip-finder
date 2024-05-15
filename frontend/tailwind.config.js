@@ -9,6 +9,11 @@ export default {
     extend: {},
     fontFamily: {
       customTitle: ['"Volkhov"', "serif"],
+      customDetail: ['"Mulish"', "sans-serif"],
+      customCardTitle: ['"Montserrat"', "sans-serif"],
+    },
+    colors: {
+      icon: "#808080",
     },
   },
   plugins: [require("flowbite/plugin")],

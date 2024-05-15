@@ -1,6 +1,9 @@
+import { Dispatch, SetStateAction } from "react";
 import { backend_dev } from "../../../../../service";
+import { TVehicle } from "../vehicle";
 
 export const fetchVehicle = async (
+  setResult: Dispatch<SetStateAction<TVehicle[]>>,
   from?: { value: string; label: string } | null,
   to?: { value: string; label: string } | null,
   date?: string | string[],
@@ -21,6 +24,7 @@ export const fetchVehicle = async (
   };
   console.log(standardFrom);
   console.log(standardTo);
+  console.log(standardVehicle);
   console.log(date);
   console.log(startPrice);
   console.log(endPrice);
@@ -30,5 +34,6 @@ export const fetchVehicle = async (
   );
   const result = await response.json();
   console.log(await result);
+  setResult(result);
   return result;
 };
