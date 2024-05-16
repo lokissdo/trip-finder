@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from pymongo import MongoClient
 from src.chatbot import ChatBot  # Sử dụng import tuyệt đối
 import os
+import datetime
 
 app = Flask(__name__)
 
@@ -36,6 +37,13 @@ def ask():
     
     try:
         response = chatbot.send_prompt(location, places_list)
+        
+        # Lưu kết quả phản hồi vào tệp txt riêng biệt
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = f"response_{timestamp}.txt"
+        with open(filename, 'w') as file:
+            file.write(response)
+        
         return jsonify({'text': response})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
