@@ -13,7 +13,6 @@ class ChatBot:
         self.model = self.genai.GenerativeModel('gemini-pro')
         self.conversation = None
         self._conversation_history = []
-
         self.preload_conversation()
 
     def send_prompt(self, prompt, temperature=0.1):
