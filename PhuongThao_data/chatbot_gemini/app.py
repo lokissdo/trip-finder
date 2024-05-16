@@ -1,26 +1,26 @@
-import sys
+from flask import Flask, request, jsonify
 from configparser import ConfigParser
 from chatbot import ChatBot
 
-def main():
-    config = ConfigParser()
-    config.read('credentials.ini')
-    api_key = config['gemini_ai']['API_KEY']
+app = Flask(__name__)
 
-    chatbot = ChatBot(api_key=api_key)
-    chatbot.start_conversation()
-    
-    print("Gemini ChatBot.")
-    
-    while True:
-        user_input = input("Your Question: ")
-        if user_input.lower() == 'quit':
-            sys.exit('Exiting ChatBot CLI...')
-        try:
-            response = chatbot.send_prompt(user_input)
-            print(f"{chatbot.CHATBOT_NAME}: {response}")
-        except Exception as e:
-            print(f"Error: {e}")
+config = ConfigParser()
+config.read('credentials.ini')
+api_key = config['gemini_ai']['API_KEY']
+
+chatbot = ChatBot(api_key=api_key)
+chatbot.start_conversation()
+
+@app.route('/chatbotgemini', methods=['POST'])
+def ask():
+    user_input = request.json.get('question', '')
+    if not user_input:
+        return jsonify({'error': 'Question not provided'}), 400
+    try:
+        response = chatbot.send_prompt(user_input)
+        return jsonify({'text': response})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True, port=8000)
