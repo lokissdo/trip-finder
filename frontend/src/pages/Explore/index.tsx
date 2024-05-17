@@ -6,28 +6,13 @@ import { cardExplore } from "../../assets/cardExplore";
 import { Link } from "react-router-dom";
 import { FaPlane, FaUtensils, FaHotel, FaLocationDot } from "react-icons/fa6";
 const oddVariants: Variants = {
-  offscreen: {
-    x: -200,
-  },
-  onscreen: {
-    x: 0,
-    transition: {
-      type: "spring",
-      duration: 1.5,
-    },
-  },
+  offscreen: { x: -200 },
+  onscreen: { x: 0, transition: { type: "spring", duration: 1.5 } },
 };
+
 const evenVariants: Variants = {
-  offscreen: {
-    x: 200,
-  },
-  onscreen: {
-    x: 0,
-    transition: {
-      type: "spring",
-      duration: 1.5,
-    },
-  },
+  offscreen: { x: 200 },
+  onscreen: { x: 0, transition: { type: "spring", duration: 1.5 } },
 };
 const Explore: React.FC = () => {
   return (
@@ -55,12 +40,10 @@ const Explore: React.FC = () => {
                 whileInView="onscreen"
                 key={card.name}
                 viewport={{ once: true, amount: 0.8 }}
+                variants={index % 2 === 0 ? oddVariants : evenVariants}
               >
                 {index % 2 === 0 ? (
-                  <motion.div
-                    className="flex flex-row justify-between shadow-lg rounded-lg border-gray-100 border-t-2"
-                    variants={oddVariants}
-                  >
+                  <div className="flex flex-row justify-between shadow-lg rounded-lg border-gray-100 border-t-2">
                     <div className="flex flex-row">
                       <img
                         src={card.imageList[0]}
@@ -104,11 +87,11 @@ const Explore: React.FC = () => {
                         </button>
                       </Link>
                     </div>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.div
+                  <div
                     className="flex flex-row justify-between shadow-lg rounded-lg border-gray-100 border-t-2"
-                    variants={evenVariants}
+                    // variants={evenVariants}
                   >
                     <div className="flex flex-col justify-center gap-10 w-1/2 ml-6">
                       <div className="text-3xl font-customCardTitle text-gray-600 font-semibold">
@@ -153,7 +136,7 @@ const Explore: React.FC = () => {
                         className="w-96 h-72 rounded-tr-lg rounded-br-lg"
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 )}
               </motion.div>
             );
