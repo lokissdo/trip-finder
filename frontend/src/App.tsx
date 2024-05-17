@@ -13,6 +13,7 @@ import Attraction from "./pages/Explore/MultiSelection/Attraction";
 import Restaurant from "./pages/Explore/MultiSelection/Restaurant";
 import Vehicle from "./pages/Explore/MultiSelection/Vehicle";
 import Hotel from "./pages/Explore/MultiSelection/Hotel";
+import Recommend from "./pages/Recommend";
 const router = createBrowserRouter([{ path: "*", element: <Root /> }]);
 function Root() {
   return (
@@ -25,6 +26,7 @@ function Root() {
       <Route path="/culinary" element={<Restaurant />} />
       <Route path="/transportations" element={<Vehicle />} />
       <Route path="/hotels" element={<Hotel />} />
+      <Route path="/recommend" element={<Recommend />} />
     </Routes>
   );
 }
