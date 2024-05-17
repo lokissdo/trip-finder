@@ -31,6 +31,21 @@ module.exports = (app, channel) => {
         
     });
 
+
+
+
+
+    app.get('/recommend/top', async (req, res) => {
+        try{
+            const result = await service.getTopRecommendations();
+            res.send(result);
+        }catch(err){
+            console.log('Error getting top recommendations:', err);
+            res.status(400).json({ error: err.message });
+        }
+    });
+
+
     app.patch('/recommend/:recommendId',UserAuth, async (req, res) => {
         try{
             const { recommendId } = req.params;

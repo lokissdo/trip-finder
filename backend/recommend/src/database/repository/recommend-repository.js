@@ -4,6 +4,7 @@ const { SEARCH_SERVICE } = require("../../config")
 const { RPCRequest } = require("../../utils/rpc");
 const Recommend = require("../models/Recommend");
 
+const redisClient = require('../redis-connection'); 
 
 const COST_HOTEL_GAP_RATE = 0.4;
 const COST_VEHICLE_GAP_RATE = 0.5;
@@ -180,7 +181,7 @@ class RecommendRepository {
             }
     
             // Increment the recommendation count
-            recommendation.recommendationCount = (recommendation.recommendationCount || 0) + 1;
+            recommendation.count = (recommendation.count || 0) + 1;
     
             // Save the updated recommendation back to the database
             await recommendation.save();
@@ -213,6 +214,19 @@ class RecommendRepository {
             lat: lat / dailySchedules.length,
             long: long / dailySchedules.length
         };
+    }
+
+    async getTopRecommendations() {
+        try {
+            let key = 'topRecommendations';
+            
+            console.log('Fetching top recommendations from Redis cache...', redisClient)
+            let topRecommendations = await redisClient.get(key);
+            return JSON.parse(topRecommendations);
+        } catch (error) {
+            console.error('Error fetching top recommendations:', error);
+            throw error;
+        }
     }
 
 }

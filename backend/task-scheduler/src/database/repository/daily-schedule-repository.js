@@ -6,67 +6,6 @@ const mongoose = require('mongoose');
 const COST_GAP_RATE = 0.2;
 class DailyScheduleRepository {
 
-
-
-
-    async createLandscapeScheduleByDays(province, numOfDays, initialCost, bestPrice = false) {
-
-        var dailySchedules = [];
-        var usedAttractions = new Set();
-        if (bestPrice) {
-
-            for (let i = 0; i < numOfDays; i++) {
-                let schedule = await DailySchedule
-                    .findOne({ province: province, 'morning': { $nin: [...usedAttractions] }, 'afternoon': { $nin: [...usedAttractions] } })
-                    .sort({ initialPrice: -1 }) // Sort by price in descending order
-                    .populate('morning')
-                    .populate('afternoon')
-                    .exec();
-
-                if (schedule) {
-                    dailySchedules.push(schedule);
-                    usedAttractions.add(schedule.morning._id);
-                    usedAttractions.add(schedule.afternoon._id);
-                } else {
-                    break; // Break if no available schedule matches the criteria
-                }
-            }
-        } else {
-            // If bestPrice is false, select randomly within cost constraints
-            for (let i = 0; i < numOfDays; i++) {
-                let maxPriceQuery = initialCost * (1 + COST_GAP_RATE) / numOfDays;
-                let schedule = await DailySchedule.aggregate([
-                    { $match: { province: province, initialPrice: { $gte: 0, $lte: maxPriceQuery }, 'morning': { $nin: [...usedAttractions] }, 'afternoon': { $nin: [...usedAttractions] } } },
-                    { $sample: { size: 1 } }, // Select one document randomly
-                    { $lookup: { from: "attractions", localField: "morning", foreignField: "_id", as: "morning" } },
-                    { $lookup: { from: "attractions", localField: "afternoon", foreignField: "_id", as: "afternoon" } }
-                ]).exec();
-
-                if (schedule.length > 0) {
-                    schedule = schedule[0];
-                    schedule.morning = schedule.morning[0];
-                    schedule.afternoon = schedule.afternoon[0];
-                    dailySchedules.push(schedule);
-                    usedAttractions.add(schedule.morning._id);
-                    usedAttractions.add(schedule.afternoon._id);
-                } else {
-                    break; // Break if no available schedule matches the criteria
-                }
-            }
-        }
-
-
-        // dailySchedules < numOfDays return -1
-        console.log(dailySchedules.length);
-        console.log(numOfDays);
-        if (dailySchedules.length < numOfDays) {
-            return -1;
-        }
-        return dailySchedules;
-
-
-    }
-
     async generateDailySchedules(province) {
 
         // const randomAttraction = await Attraction.aggregate([
