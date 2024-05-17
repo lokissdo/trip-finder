@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
-import SearchBar from "../Home/components/SearchBar";
 import { useLocation } from "react-router-dom";
+import SearchBar from "../../components/Search";
 
 const Recommend: React.FC = () => {
   const { state } = useLocation();

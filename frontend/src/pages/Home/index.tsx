@@ -1,5 +1,5 @@
 import Navbar from "../../components/Navbar";
-import SearchBar from "./components/SearchBar";
+import SearchBar from "../../components/Search";
 
 const Home: React.FC = () => {
   return (

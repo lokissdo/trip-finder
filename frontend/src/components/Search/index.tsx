@@ -4,9 +4,9 @@ import type { GetProps } from "antd";
 import dayjs from "dayjs";
 import Select from "react-select";
 import { SwapRightOutlined } from "@ant-design/icons";
-import { options } from "../../../../assets/locationSelecion";
-import { getRecommend } from "../../hooks/getRecommend";
+import { getRecommend } from "./hooks/getRecommend";
 import { useNavigate } from "react-router-dom";
+import { options } from "../../assets/locationSelecion";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
