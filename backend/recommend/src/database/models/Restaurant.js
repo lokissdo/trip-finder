@@ -51,4 +51,6 @@ const RestaurantSchema = new Schema({
     timestamps: true
 });
 
+
+RestaurantSchema.index({ updatedAt: 1 });
 module.exports = mongoose.model('Restaurant', RestaurantSchema);

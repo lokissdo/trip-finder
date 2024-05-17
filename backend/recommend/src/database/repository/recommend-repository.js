@@ -125,7 +125,7 @@ class RecommendRepository {
                 if (midDayRestaurantResponse.error) {
                     //throw new Error(midDayRestaurantResponse.error);
                 }
-                schedule.midDayRestaurant = midDayRestaurantResponse.data;
+               const midDayRestaurant = midDayRestaurantResponse.data;
                 restaurantRequest.data.location = {
                     lat: schedule.afternoon.lat,
                     long: schedule.afternoon.long
@@ -134,13 +134,12 @@ class RecommendRepository {
                 if (afternoonRestaurantResponse.error) {
                   //  throw new Error(afternoonRestaurantResponse.error);
                 }
-                schedule.afternoonRestaurant = afternoonRestaurantResponse.data;
-                dailySchedules[i] = schedule;
+                const afternoonRestaurant = afternoonRestaurantResponse.data;
+                dailySchedules[i] = {schedule, midDayRestaurant, afternoonRestaurant};
 
             }
 
         }
-
         let weatherData = await this.weatherRepository.getWeather(destination, startDate);
        // let weatherData = null
         console.log("Recommendation data:", weatherData)
@@ -157,7 +156,7 @@ class RecommendRepository {
                 hotel,
                 vehicles,
                 dailySchedules,
-                weather: weatherData
+                weather: weatherData._id
             }
             
         });
@@ -171,6 +170,29 @@ class RecommendRepository {
 
     }
 
+
+    async incrementRecommendationCount(recommendId) {
+        try {
+            // Find the recommendation by its ID
+            const recommendation = await Recommend.findById(recommendId);
+            if (!recommendation) {
+                throw new Error("Recommendation not found");
+            }
+    
+            // Increment the recommendation count
+            recommendation.recommendationCount = (recommendation.recommendationCount || 0) + 1;
+    
+            // Save the updated recommendation back to the database
+            await recommendation.save();
+    
+            console.log(`Recommendation count for ID ${recommendId} incremented successfully`);
+        } catch (error) {
+            console.error(`Error incrementing recommendation count: ${error.message}`);
+            throw new Error("Failed to increment recommendation count");
+        }
+    }
+    
+    
     async getMiddlePointOfItinerary(dailySchedules) {
 
         let lat = 0;
@@ -192,13 +214,6 @@ class RecommendRepository {
             long: long / dailySchedules.length
         };
     }
-
-    async generateRecommendations(province,startDate, endDate) {
-
-        const dailySchedules = await this.dailyScheduleRepository.generateDailySchedules(province);
-        return dailySchedules;
-    }
-
 
 }
 

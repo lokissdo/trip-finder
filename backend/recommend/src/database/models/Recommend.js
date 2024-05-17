@@ -41,8 +41,18 @@ const RecommendSchema = new Schema({
             ref: 'Vehicle' 
         }],
         dailySchedules: [{
-            type: Schema.Types.ObjectId,
-            ref: 'DailySchedule' 
+            schedule: {
+                type: Schema.Types.ObjectId,
+                ref: 'DailySchedule' 
+            },
+            afternoonRestaurant: {
+                type: Schema.Types.ObjectId,
+                ref: 'Restaurant' 
+            },
+            midDayRestaurant: {
+                type: Schema.Types.ObjectId,
+                ref: 'Restaurant'
+            } 
         }],
         weather: {
             type: Schema.Types.ObjectId,

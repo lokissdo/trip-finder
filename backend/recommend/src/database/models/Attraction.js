@@ -45,4 +45,5 @@ const AttractionSchema = new Schema({
     timestamps: true
 });
 
+AttractionSchema.index({ updatedAt: 1 });
 module.exports = mongoose.model('Attraction', AttractionSchema);

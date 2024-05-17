@@ -1,4 +1,4 @@
-const { UserRepository, RecommendRepository } = require("../database");
+const { UserRepository } = require("../database");
 const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../utils');
 
 // All Business logic will be here
@@ -6,7 +6,6 @@ class UserService {
 
     constructor() {
         this.repository = new UserRepository();
-        this.itineraryRepository = new RecommendRepository();
     }
 
     async SignIn(userInputs) {
@@ -18,7 +17,7 @@ class UserService {
         if (existingUser) {
             const validPassword = await ValidatePassword(password, existingUser.password, existingUser.salt);
             if (validPassword) {
-                const token = await GenerateSignature({ email: existingUser.email, _id: existingUser._id, name: existingUser.name, role: existingUser.role});
+                const token = await GenerateSignature({ email: existingUser.email, _id: existingUser._id, name: existingUser.name, role: existingUser.role });
                 return FormateData({ id: existingUser._id, token });
             }
         }
@@ -48,6 +47,11 @@ class UserService {
         return FormateData(existingUser);
     }
 
+    async GetRecommendationHistories(userId) {
+        const histories = await this.repository.GetRecommendationHistories(userId);
+        return FormateData(histories);
+    }
+
 
 
     async AddHobby(userId, hobby) {
@@ -59,36 +63,36 @@ class UserService {
         const res = await this.repository.SetHobbies(userId, hobbies);
         return FormateData(res);
     }
-    async AddItineraryToUser(userId, itineraryId) {
-        const itineraries = await this.repository.AddItineraryToUser(userId, itineraryId);
-        return FormateData(itineraries);
+    async AddRecommendationToUser(userId, recommendId) {
+        const recommends = await this.repository.AddRecommendationToUser(userId, recommendId);
+        return FormateData(recommends);
     }
 
 
     async SubscribeEvents(payload) {
+        try {
+            console.log('Triggering.... User Events')
 
-        console.log('Triggering.... User Events')
+            const { event, data } = payload;
 
-        const { event, data } = payload;
-
-        console.log("data received", data)
-        switch (event) {
-            case 'SET_HOBBIES':
-                this.SetHobbies(data.userId, data.hobbies)
-                break;
-            case 'ADD_HOBBY':
-                this.AddHobby(data.userId, data.hobby);
-                break;
-            case 'ADD_ITINERARY_TO_USER':
-                this.AddItineraryToUser(data.userId, data.itineraryId);
-                break;
-            case 'CREATE_ITINERARY':
-                this.CreateItinerary(data.itinerary);
-                break;
-            default:
-                break;
+            console.log("data received", data)
+            switch (event) {
+                case 'SET_HOBBIES':
+                    this.SetHobbies(data.userId, data.hobbies)
+                    break;
+                case 'ADD_HOBBY':
+                    this.AddHobby(data.userId, data.hobby);
+                    break;
+                case 'ADD_RECOMMENDATION_TO_USER':
+                    this.AddRecommendationToUser( data.userId,data.recommendId);
+                    break;
+                default:
+                    break;
+            }
         }
-
+        catch (error) {
+            console.log(error)
+        }
     }
 
 
@@ -113,9 +117,9 @@ class UserService {
             case 'SET_HOBBIES':
                 return await this.SetHobbies(data.userId, data.hobbies)
             case 'ADD_ITINERARY_TO_USER':
-                return await this.AddItineraryToUser(data.userId, data.itineraryId);
+                return await this.AddRecommendToUser(data.userId, data.recommendId);
             case 'CREATE_ITINERARY':
-                return await this.CreateItinerary(data.itinerary);
+                return await this.CreateRecommend(data.recommend);
 
         }
     }

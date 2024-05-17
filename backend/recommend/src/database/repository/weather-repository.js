@@ -48,6 +48,7 @@ class WeatherRepository {
                 date: weather.valid_date
             };
             if (weather.valid_date == date) {
+                weatherToInsert._id = (new Weather())._id 
                 returnedWeather = weatherToInsert
             }
             return weatherToInsert
