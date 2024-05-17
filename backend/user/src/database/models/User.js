@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    email: String,
+    email: 
+    {
+        type: String,
+        required: true,
+    },
     name : String,
     password: String,
     salt: String,
@@ -15,8 +19,12 @@ const UserSchema = new Schema({
    
     histories: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Recommend',
+            note : String,
+            date: Date,
+            recommend: {
+                type: Schema.Types.ObjectId,
+                ref: 'Recommend',
+            }
         }
     ],
 },{
@@ -29,4 +37,5 @@ const UserSchema = new Schema({
     timestamps: true
 });
 
+UserSchema.index({ email: 1 }, { unique: true });
 module.exports =  mongoose.model('User', UserSchema);

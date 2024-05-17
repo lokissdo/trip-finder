@@ -54,4 +54,5 @@ const HotelSchema = new Schema({
     timestamps: true
 });
 
+HotelSchema.index({ updatedAt: 1 });
 module.exports = mongoose.model('Hotel', HotelSchema);

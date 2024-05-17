@@ -34,4 +34,8 @@ const DailyScheduleSchema = new Schema({
         timestamps: true
     });
 
+
+DailyScheduleSchema.index({ morning: 1, afternoon: 1 }, { unique: true });
+DailyScheduleSchema.index({ initialPrice: 1 });
+DailyScheduleSchema.index({ province: 1 });
 module.exports = mongoose.model('DailySchedule', DailyScheduleSchema);

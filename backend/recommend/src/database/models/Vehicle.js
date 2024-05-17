@@ -56,4 +56,6 @@ const VehicleSchema = new Schema({
     timestamps: true
 });
 
+
+VehicleSchema.index({ updatedAt: 1 });
 module.exports =  mongoose.model('Vehicle', VehicleSchema);

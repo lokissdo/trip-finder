@@ -4,7 +4,7 @@ const { SubscribeMessage, PublishMessage, FormateData } = require('../utils');
 const { RPCObserver } = require('../utils/rpc');
 const { SEARCH_SERVICE } = require('../config');
 
-
+const cacheMiddleware = require('./middlewares/cache');
 
 
 module.exports = (app, channel) => {
@@ -16,7 +16,7 @@ module.exports = (app, channel) => {
 
     RPCObserver(SEARCH_SERVICE, service);
 
-    app.get('/hotels', async (req, res) => {
+    app.get('/hotels',cacheMiddleware, async (req, res) => {
         try {
             const { name, start, end, location, checkinDate,platform, sort, page, province, pageSize } = req.query;
 
@@ -46,7 +46,7 @@ module.exports = (app, channel) => {
 
 
 
-    app.get('/vehicles', async (req, res) => {
+    app.get('/vehicles', cacheMiddleware, async (req, res) => {
         try {
             const { type, start, end, date,platform, departure, arrival, departureTime, brand, sort, page, pageSize } = req.query;
 
@@ -83,7 +83,7 @@ module.exports = (app, channel) => {
     
 
     // Search restaurants
-    app.get('/restaurants', async (req, res) => {
+    app.get('/restaurants',cacheMiddleware, async (req, res) => {
         try {
             const { name, province, platform, start, end, location, sort, page, pageSize } = req.query;
 
@@ -109,7 +109,7 @@ module.exports = (app, channel) => {
 
 
     // Search attractions
-    app.get('/attractions', async (req, res) => {
+    app.get('/attractions',cacheMiddleware, async (req, res) => {
         try {
             const { name, province, platform, start, end, location, sort, page, pageSize } = req.query;
 

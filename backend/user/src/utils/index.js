@@ -72,7 +72,7 @@ module.exports.CreateChannel = async () => {
 };
 
 module.exports.PublishMessage = (channel, service_name, msg) => {
-  channel.publish(EXCHANGE_NAME, service_name, Buffer.from(msg));
+  channel.publish(EXCHANGE_NAME, service_name, Buffer.from(JSON.stringify(msg)));
   console.log("Sent: ", msg);
 };
 
@@ -88,8 +88,9 @@ module.exports.SubscribeMessage = async (channel, service, service_name) => {
     q.queue,
     (msg) => {
       if (msg.content) {
-        console.log("the message is:", msg.content.toString());
-        service.SubscribeEvents(msg.content.toString());
+        const payload = JSON.parse(msg.content.toString());
+        console.log("the message is:", payload);
+        service.SubscribeEvents(payload);
       }
       console.log("[X] received");
     },

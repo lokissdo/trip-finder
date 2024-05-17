@@ -22,6 +22,9 @@ module.exports = (app, channel) => {
             res.json(data);
         } catch(err){
             console.log(err);
+            if (err.code === 11000){
+                return res.status(400).json({msg: 'Email already exists'});
+            }
             res.status(500).json({msg: 'Internal Server Error' });
         }
     });
@@ -88,5 +91,11 @@ module.exports = (app, channel) => {
 
     app.get('/whoami', (req,res,next) => {
         return res.status(200).json({msg: '/user : I am User Service'})
+    })
+
+    app.get('/recommendation', UserAuth, async (req,res,next) => {
+        const { _id } = req.user;
+        const { data } = await service.GetRecommendationHistories(_id);
+        res.json(data);
     })
 }
