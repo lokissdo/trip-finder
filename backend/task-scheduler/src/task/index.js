@@ -20,6 +20,8 @@ const runAllTasks = async () => {
 
     });
 
+    // await generatorTaskScheduler.generatorDailySchedules()
+    await recommendTaskScheduler.getTopRecommendations()
 
 }
 module.exports = runAllTasks
