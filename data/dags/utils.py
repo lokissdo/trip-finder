@@ -239,4 +239,9 @@ def attraction_preprocess(df):
     df['opening_hours'] = df['opening_hours'].str.replace('Cả ngày', 'Mở cả ngày')\
         .str.replace('Luôn mở cửa', 'Mở cả ngày').str.replace(' đến ','-').str.replace(' giờ','h00')
     df['platform']='news'
-    
+    def extract_name(description):
+        parts = description.split("-")
+        name = parts[0].split(".")[-1].strip()
+        
+        return name
+    df['name'] = df['name'].apply(extract_name)
