@@ -1,7 +1,8 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
-import SearchBar from "../Home/components/SearchBar";
 import { useLocation } from "react-router-dom";
+import SearchBar from "../../components/Search";
+import { FaLocationDot } from "react-icons/fa6";
 
 const Recommend: React.FC = () => {
   const { state } = useLocation();
@@ -18,7 +19,7 @@ const Recommend: React.FC = () => {
         <SearchBar />
       </div>
       {data && (
-        <div className="mx-auto w-4/5">
+        <div className="mx-auto w-5/6">
           <div className="flex flex-row gap-5">
             <div className="basis-1/3">
               <div>Sidebar</div>
@@ -35,20 +36,39 @@ const Recommend: React.FC = () => {
                   const dayData = day.schedule;
                   return (
                     <div key={index}>
-                      <div>day {index + 1}</div>
-                      <div>{dayData.morning.name}</div>
+                      <div className="font-semibold text-lg">
+                        day {index + 1} : {dayData.morning.name},
+                        {dayData.afternoon.name}
+                      </div>
+                      <div className="text-lg font-semibold">
+                        {dayData.morning.name}
+                      </div>
                       <img
                         src={dayData.morning.img_url}
-                        width={400}
-                        height={300}
+                        width={500}
+                        height={400}
                       />
+                      <div className="flex flex-row gap-1.5 items-center">
+                        <FaLocationDot size={20} color="#858585CC" />
+                        <p className="font-customDetail text-lg text-gray-600">
+                          {dayData.morning.address}
+                        </p>
+                      </div>
                       <div>{dayData.morning.description}</div>
-                      <div>{dayData.afternoon.name}</div>
+                      <div className="text-lg font-semibold">
+                        {dayData.afternoon.name}
+                      </div>
                       <img
                         src={dayData.afternoon.img_url}
-                        width={400}
-                        height={300}
+                        width={500}
+                        height={400}
                       />
+                      <div className="flex flex-row gap-1.5 items-center">
+                        <FaLocationDot size={20} color="#858585CC" />
+                        <p className="font-customDetail text-lg text-gray-600">
+                          {dayData.afternoon.address}
+                        </p>
+                      </div>
                       <div>{dayData.afternoon.description}</div>
                     </div>
                   );
