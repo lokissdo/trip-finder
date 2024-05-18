@@ -197,6 +197,7 @@ class RestaurantRepository {
             //     ...restaurant.toObject(), // Converting mongoose document to plain JavaScript object
             //     id: restaurant._id // Adding the ID field
             // }));
+            
             return restaurantIds.map(id => restaurantsFromMongo.find(restaurant => restaurant._id.toString() == id));
         } catch (error) {
             console.error('Error searching restaurants:', error);

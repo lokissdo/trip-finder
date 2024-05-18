@@ -4,12 +4,12 @@ const { SEARCH_SERVICE } = require("../../config")
 const { RPCRequest } = require("../../utils/rpc");
 const Recommend = require("../models/Recommend");
 
-const redisClient = require('../redis-connection'); 
+const redisClient = require('../redis-connection');
 
 const COST_HOTEL_GAP_RATE = 0.4;
 const COST_VEHICLE_GAP_RATE = 0.5;
 const COST_RESTAURANT_GAP_RATE = 0.5;
-
+const COST_ITINERARY_GAP_RATE = 0.5;
 
 class RecommendRepository {
     constructor() {
@@ -19,15 +19,22 @@ class RecommendRepository {
 
     }
 
-    async GetRecommendationsByParameters({ costOptions, startDate, endDate, departure, destination, userOptions }) {
+    async GenerateRecommendationsByParameters({ costOptions, startDate, endDate, departure, destination, userOptions }) {
 
         // Get the number of days between the start and end date
         // console.log(endDate, startDate)
 
+
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
-
-        userOptions = userOptions ?? {};
+        const existUserOptions = userOptions;
+        const existCostOptions = costOptions;
+        if (!existUserOptions)
+            userOptions = {};
+        if (!existCostOptions)
+            costOptions = {};
+        const tasks = [];
+        console.log("User options:", userOptions)
         // console.log(startDateObj, endDateObj);
         // Check if the dates are valid
         if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
@@ -36,7 +43,7 @@ class RecommendRepository {
 
         const numOfDays = Math.floor(((new Date(endDate)) - (new Date(startDate))) / (1000 * 60 * 60 * 24));
 
-        var hotel = null, vehicles = null,dailySchedules = [];
+        var hotel = null, vehicles = null, dailySchedules = [], weatherData = null;
 
         if (!costOptions.itinerary) {
             throw new Error("Itinerary cost option is required");
@@ -68,13 +75,16 @@ class RecommendRepository {
                     // get closest hotel to the middle point of the itinerary
                 }
             };
-            const hotelResponse = await RPCRequest(SEARCH_SERVICE, hotelRequest);
-            if (hotelResponse.error) {
-                //throw new Error(hotelResponse.error);
-            }
-            hotel = hotelResponse.data;
+            // const hotelResponse = await RPCRequest(SEARCH_SERVICE, hotelRequest);
 
-            console.log("Hotel:", hotel);
+
+            tasks.push(RPCRequest(SEARCH_SERVICE, hotelRequest).then(response => { hotel = response.data}));
+            // if (hotelResponse.error) {
+            //     //throw new Error(hotelResponse.error);
+            // }
+            // hotel = hotelResponse.data;
+
+            // console.log("Hotel:", hotel);
         }
 
         console.log("Recommend - User options", userOptions)
@@ -95,74 +105,146 @@ class RecommendRepository {
                 }
             };
             console.log("Vehicle request:", vehicleRequest);
-            const vehicleResponse = await RPCRequest(SEARCH_SERVICE, vehicleRequest);
-            if (vehicleResponse.error) {
-                //throw new Error(vehicleResponse.error);
-            }
-            vehicles = vehicleResponse.data;
+            // const vehicleResponse = await RPCRequest(SEARCH_SERVICE, vehicleRequest);
+            // if (vehicleResponse.error) {
+            //     //throw new Error(vehicleResponse.error);
+            // }
+            // vehicles = vehicleResponse.data;
+
+
+            tasks.push(RPCRequest(SEARCH_SERVICE, vehicleRequest).then(response => { vehicles = response.data }));
         }
 
 
 
         if (costOptions.restaurant) {
             let maxPriceQuery = costOptions.restaurant * (1 + COST_RESTAURANT_GAP_RATE) / (2 * numOfDays); // for midday and afternoon
-            for (let i = 0; i < dailySchedules.length; i++) {
-                const schedule = dailySchedules[i];
-                const restaurantRequest = {
+            // for (let i = 0; i < dailySchedules.length; i++) {
+            //     const schedule = dailySchedules[i];
+            //     const restaurantRequest = {
+            //         event: 'GET_RANDOM_RESTAURANT_BY_PARAMETERS',
+            //         data: {
+            //             startPrice: maxPriceQuery * (1 - COST_RESTAURANT_GAP_RATE),
+            //             endPrice: maxPriceQuery * (1 + COST_RESTAURANT_GAP_RATE),
+            //             bestPrice: userOptions.cheapestRestaurant ? true : false,
+            //             province: destination,
+            //             location: {
+            //                 lat: schedule.morning.lat,
+            //                 long: schedule.morning.long
+            //             },
+            //             // closest restaurant to the morning landscape
+            //         }
+            //     };
+            //     const midDayRestaurantResponse = await RPCRequest(SEARCH_SERVICE, restaurantRequest);
+            //     if (midDayRestaurantResponse.error) {
+            //         //throw new Error(midDayRestaurantResponse.error);
+            //     }
+            //     const midDayRestaurant = midDayRestaurantResponse.data;
+            //     restaurantRequest.data.location = {
+            //         lat: schedule.afternoon.lat,
+            //         long: schedule.afternoon.long
+            //     };
+            //     const afternoonRestaurantResponse = await RPCRequest(SEARCH_SERVICE, restaurantRequest);
+            //     if (afternoonRestaurantResponse.error) {
+            //         //  throw new Error(afternoonRestaurantResponse.error);
+            //     }
+            //     const afternoonRestaurant = afternoonRestaurantResponse.data;
+            //     dailySchedules[i] = { schedule, midDayRestaurant, afternoonRestaurant };
+
+            // }
+
+
+
+            dailySchedules.forEach((schedule,index) => {
+                const baseRestaurantRequest = {
                     event: 'GET_RANDOM_RESTAURANT_BY_PARAMETERS',
                     data: {
                         startPrice: maxPriceQuery * (1 - COST_RESTAURANT_GAP_RATE),
                         endPrice: maxPriceQuery * (1 + COST_RESTAURANT_GAP_RATE),
                         bestPrice: userOptions.cheapestRestaurant ? true : false,
                         province: destination,
-                        location: {
-                            lat: schedule.morning.lat,
-                            long: schedule.morning.long
-                        },
-                        // closest restaurant to the morning landscape
                     }
                 };
-                const midDayRestaurantResponse = await RPCRequest(SEARCH_SERVICE, restaurantRequest);
-                if (midDayRestaurantResponse.error) {
-                    //throw new Error(midDayRestaurantResponse.error);
-                }
-               const midDayRestaurant = midDayRestaurantResponse.data;
-                restaurantRequest.data.location = {
-                    lat: schedule.afternoon.lat,
-                    long: schedule.afternoon.long
-                };
-                const afternoonRestaurantResponse = await RPCRequest(SEARCH_SERVICE, restaurantRequest);
-                if (afternoonRestaurantResponse.error) {
-                  //  throw new Error(afternoonRestaurantResponse.error);
-                }
-                const afternoonRestaurant = afternoonRestaurantResponse.data;
-                dailySchedules[i] = {schedule, midDayRestaurant, afternoonRestaurant};
 
-            }
+                const midDayRestaurantRequest = {
+                    ...baseRestaurantRequest,
+                    data: {
+                        ...baseRestaurantRequest.data,
+                        location: { lat: schedule.morning.lat, long: schedule.morning.long }
+                    }
+                };
+
+                const afternoonRestaurantRequest = {
+                    ...baseRestaurantRequest,
+                    data: {
+                        ...baseRestaurantRequest.data,
+                        location: { lat: schedule.afternoon.lat, long: schedule.afternoon.long }
+                    }
+                };
+                dailySchedules[index] = { schedule };
+                tasks.push(
+                    RPCRequest(SEARCH_SERVICE, midDayRestaurantRequest).then(response => {
+                        dailySchedules[index].midDayRestaurant = response.data;
+                    })
+                );
+                tasks.push(
+                    RPCRequest(SEARCH_SERVICE, afternoonRestaurantRequest).then(response => {
+                        dailySchedules[index].afternoonRestaurant = response.data;
+                    })
+                );
+            });
 
         }
-        let weatherData = await this.weatherRepository.getWeather(destination, startDate);
-       // let weatherData = null
-        console.log("Recommendation data:", weatherData)
+        // let weatherData = await this.weatherRepository.getWeather(destination, startDate);
+
+
+
+
+        tasks.push(this.weatherRepository.getWeather(destination, startDate).then(response => { weatherData = response }));
+
+
+        await Promise.all(tasks);
+
+
+
+        // let weatherData = null
+        console.log("weatherData data:", weatherData)
+
+        console.log("Hotel:", hotel);
+        console.log("Vehicles:", vehicles);
+        console.log("Daily schedules:", dailySchedules);
+
         const recommend = new Recommend();
+
+        if (!existUserOptions) {
+            userOptions = undefined;
+        }
+        if (!existCostOptions) {
+            costOptions = undefined;
+        }
         Recommend.create({
-            _id : recommend._id,
+            _id: recommend._id,
             destination,
             departure,
             startDate,
             endDate,
             costOptions,
             userOptions,
-            output:{
+            output: {
                 hotel,
                 vehicles,
                 dailySchedules,
                 weather: weatherData._id
             }
-            
+
+        }).then((recommend) => {
+            console.log("Recommendation created:", recommend);
+        }).catch((err) => {
+            console.log("Error creating recommendation:", err);
         });
+
         return {
-            _id : recommend._id,
+            _id: recommend._id,
             weather: weatherData,
             hotel,
             vehicles,
@@ -170,6 +252,25 @@ class RecommendRepository {
         };
 
     }
+
+    // async createRecommendation() {
+    //     Recommend.create({
+    //         _id : recommend._id,
+    //         destination,
+    //         departure,
+    //         startDate,
+    //         endDate,
+    //         costOptions ,
+    //         userOptions,
+    //         output:{
+    //             hotel,
+    //             vehicles,
+    //             dailySchedules,
+    //             weather: weatherData._id
+    //         }
+
+    //     });
+    // }
 
 
     async incrementRecommendationCount(recommendId) {
@@ -179,21 +280,21 @@ class RecommendRepository {
             if (!recommendation) {
                 throw new Error("Recommendation not found");
             }
-    
+
             // Increment the recommendation count
             recommendation.count = (recommendation.count || 0) + 1;
-    
+
             // Save the updated recommendation back to the database
             await recommendation.save();
-    
+
             console.log(`Recommendation count for ID ${recommendId} incremented successfully`);
         } catch (error) {
             console.error(`Error incrementing recommendation count: ${error.message}`);
             throw new Error("Failed to increment recommendation count");
         }
     }
-    
-    
+
+
     async getMiddlePointOfItinerary(dailySchedules) {
 
         let lat = 0;
@@ -219,7 +320,7 @@ class RecommendRepository {
     async getTopRecommendations() {
         try {
             let key = 'topRecommendations';
-            
+
             console.log('Fetching top recommendations from Redis cache...', redisClient)
             let topRecommendations = await redisClient.get(key);
             return JSON.parse(topRecommendations);
@@ -228,6 +329,85 @@ class RecommendRepository {
             throw error;
         }
     }
+
+
+    async GetRecommendationsByParameters({ costOptions, startDate, endDate, departure, destination, userOptions }) {
+        const costOptionsQuery = {};
+
+        const existUserOptions = userOptions;
+        const existCostOptions = costOptions;
+
+        if (!existUserOptions)
+            userOptions = {};
+        if (!existCostOptions)
+            costOptions = {};
+
+
+        if (costOptions.itinerary) {
+            costOptionsQuery['costOptions.itinerary'] = { $lte: costOptions.itinerary * (1 + COST_ITINERARY_GAP_RATE) };
+        }
+        if (costOptions.hotel) {
+            costOptionsQuery['costOptions.hotel'] = { $gte: costOptions.hotel * (1 - COST_HOTEL_GAP_RATE), $lte: costOptions.hotel * (1 + COST_HOTEL_GAP_RATE) };
+        }
+        if (costOptions.vehicle && departure !== destination) {
+            costOptionsQuery['costOptions.vehicle'] = { $gte: costOptions.vehicle * (1 - COST_VEHICLE_GAP_RATE), $lte: costOptions.vehicle * (1 + COST_VEHICLE_GAP_RATE) };
+        }
+        if (costOptions.restaurant) {
+            costOptionsQuery['costOptions.restaurant'] = { $gte: costOptions.restaurant * (1 - COST_RESTAURANT_GAP_RATE), $lte: costOptions.restaurant * (1 + COST_RESTAURANT_GAP_RATE) };
+        }
+
+
+        var query = {
+            destination,
+            departure,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+        }
+
+
+        if (existUserOptions) {
+            query.userOptions = userOptions;
+        }
+        if (existCostOptions) {
+            query = { ...query, ...costOptionsQuery };
+        }
+
+        const recommendations = await Recommend.find(query).sort({ count: -1 }).limit(10).populate([
+            { path: 'output.hotel' },
+            { path: 'output.vehicles' },
+            {
+                path: 'output.dailySchedules',
+                populate: [
+                    {
+                        path: 'schedule',
+                        populate: [
+                            { path: 'morning' },
+                            { path: 'afternoon' },
+                            { path: 'evening' },
+                        ]
+
+                    },
+                    {
+                        path: 'afternoonRestaurant'
+
+                    },
+                    { path: 'midDayRestaurant' }
+                ]
+            },
+            { path: 'output.weather' }
+        ]);
+
+        return recommendations.map(rec => ({
+            _id: rec._id,
+            weather: rec.output.weather,
+            hotel: rec.output.hotel,
+            vehicles: rec.output.vehicles,
+            dailySchedules: rec.output.dailySchedules
+        }));
+    }
+
+
+
 
 }
 
