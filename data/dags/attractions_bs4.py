@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-
 def scrape_destinations(url):
     response = requests.get(url, verify=False)
 
