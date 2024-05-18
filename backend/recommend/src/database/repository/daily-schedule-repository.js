@@ -8,7 +8,7 @@ class DailyScheduleRepository {
 
 
 
-
+    // if best price, system will seelct from  0 -> initialCost
     async createLandscapeScheduleByDays(province, numOfDays, initialCost, bestPrice = false) {
 
         var dailySchedules = [];
@@ -36,12 +36,22 @@ class DailyScheduleRepository {
             for (let i = 0; i < numOfDays; i++) {
                 let maxPriceQuery = initialCost * (1 + COST_GAP_RATE) / numOfDays;
                 let schedule = await DailySchedule.aggregate([
-                    { $match: { province: province, initialPrice: { $gte: 0, $lte: maxPriceQuery }, 'morning': { $nin: [...usedAttractions] }, 'afternoon': { $nin: [...usedAttractions] } } },
+                    { $match: { province: province, initialPrice: { $gte: 0, $lte: maxPriceQuery }, 'morning': { $nin: [...usedAttractions] }, 'afternoon': { $nin: [...usedAttractions] }, generator: 1 } },
                     { $sample: { size: 1 } }, // Select one document randomly
                     { $lookup: { from: "attractions", localField: "morning", foreignField: "_id", as: "morning" } },
                     { $lookup: { from: "attractions", localField: "afternoon", foreignField: "_id", as: "afternoon" } }
                 ]).exec();
-
+            
+                if (schedule.length === 0) {
+                    // If no schedule with generator = 1, try with generator = 0
+                    schedule = await DailySchedule.aggregate([
+                        { $match: { province: province, initialPrice: { $gte: 0, $lte: maxPriceQuery }, 'morning': { $nin: [...usedAttractions] }, 'afternoon': { $nin: [...usedAttractions] }, generator: 0 } },
+                        { $sample: { size: 1 } }, // Select one document randomly
+                        { $lookup: { from: "attractions", localField: "morning", foreignField: "_id", as: "morning" } },
+                        { $lookup: { from: "attractions", localField: "afternoon", foreignField: "_id", as: "afternoon" } }
+                    ]).exec();
+                }
+            
                 if (schedule.length > 0) {
                     schedule = schedule[0];
                     schedule.morning = schedule.morning[0];

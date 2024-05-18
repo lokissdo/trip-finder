@@ -1,4 +1,4 @@
-const { RecommendRepository, DailyScheduleRepository } = require("../database");
+const { RecommendRepository } = require("../database");
 
 class RecommendService {
     constructor() {
@@ -7,13 +7,23 @@ class RecommendService {
 
 
     async getRecommendation({ costOptions, startDate, endDate,departure, destination, userOptions }) {
-        return await this.recommendRepository.GetRecommendationsByParameters({ costOptions, startDate, endDate,departure, destination, userOptions });
+        const  availableRecommendations = await this.recommendRepository.GetRecommendationsByParameters({ costOptions, startDate, endDate,departure, destination, userOptions });
+        if(availableRecommendations.length === 0){
+            return await this.recommendRepository.GenerateRecommendationsByParameters({ costOptions, startDate, endDate,departure, destination, userOptions });
+        }
+        return availableRecommendations;
     }
+
 
     async incrementRecommendationCount(recommendId) {
         
         return await this.recommendRepository.incrementRecommendationCount(recommendId);
     }
+
+    async generateRecommendations({ costOptions, startDate, endDate,departure, destination, userOptions }) {
+        return await this.recommendRepository.GenerateRecommendationsByParameters({ costOptions, startDate, endDate,departure, destination, userOptions });
+    }
+
     async getTopRecommendations() {
         try {
             const data = await this.recommendRepository.getTopRecommendations();

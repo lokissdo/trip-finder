@@ -19,6 +19,7 @@ module.exports = (app, channel) => {
     app.get('/recommend', async (req, res) => {
         try{
             const { costOptions, startDate, endDate,departure, destination, userOptions } = req.query;
+            console.log('userOptions Options:', userOptions);
             const result = await service.getRecommendation({
                 costOptions: costOptions ? JSON.parse(costOptions) : undefined, 
                 userOptions: userOptions ? JSON.parse(userOptions) : undefined,
@@ -30,6 +31,23 @@ module.exports = (app, channel) => {
         }
         
     });
+
+
+    app.get('/recommend/generator', async (req, res) => {
+        try{
+            const { costOptions, startDate, endDate,departure, destination, userOptions } = req.query;
+            console.log('userOptions Options:', userOptions);
+            const result = await service.generateRecommendations({
+                costOptions: costOptions ? JSON.parse(costOptions) : undefined, 
+                userOptions: userOptions ? JSON.parse(userOptions) : undefined,
+                startDate, endDate,departure, destination});
+            res.send(result);
+        }catch(err){
+            console.log('Error getting recommendation:', err);
+            res.status(400).json({ error: err.message });
+        }
+    });
+
 
 
 

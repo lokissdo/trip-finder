@@ -21,6 +21,20 @@ class RecommendService {
         }
     }
 
+    async duplicateRecommendation() {
+        try {
+            const endDate = new Date();
+
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 3);
+
+            return  await this.recommendRepository.duplicateRecommendation(startDate, endDate);
+        }
+        catch (error) {
+            console.error('Error duplicating recommendation:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = RecommendService;

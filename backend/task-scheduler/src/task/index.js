@@ -12,17 +12,14 @@ const indexingTaskScheduler = require('./indexing');
 const runAllTasks = async () => {
     cron.schedule('0 0 0 */1 * *', async () => {
         await recommendTaskScheduler.getTopRecommendations()
-        await generatorTaskScheduler.generatorDailySchedules()
         await indexingTaskScheduler.removeOldData()
         await indexingTaskScheduler.indexDataForUpdate()
+        await generatorTaskScheduler.generatorDailySchedules()
+        await recommendTaskScheduler.duplicateRecommendation()
+
 
     });
 
-    // cron.schedule('*/1 * * * * *', async () => {
-    //     await recommendTaskScheduler.getTopRecommendations()
-    // });
-
-    //    return await recommendTaskScheduler.getTopRecommendations();
 
 }
 module.exports = runAllTasks

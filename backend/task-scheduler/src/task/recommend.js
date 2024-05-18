@@ -21,6 +21,16 @@ class RecommendTaskScheduler {
             console.error('Error fetching top recommendations:', error);
         }
     }
+
+
+    async duplicateRecommendation() {
+        console.log('Running task to duplicate recommendation...');
+        try {
+            await this.recommendService.duplicateRecommendation();
+        } catch (error) {
+            console.error('Error duplicating recommendation:', error);
+        }
+    }
 }
 
 module.exports = new RecommendTaskScheduler();
