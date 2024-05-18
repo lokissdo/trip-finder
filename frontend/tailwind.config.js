@@ -11,6 +11,7 @@ export default {
       customTitle: ['"Volkhov"', "serif"],
       customDetail: ['"Mulish"', "sans-serif"],
       customCardTitle: ['"Montserrat"', "sans-serif"],
+      customHandWriting: ['"Comforter Brush"', "cursive"],
     },
     colors: {
       icon: "#808080",

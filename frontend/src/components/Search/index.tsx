@@ -106,7 +106,12 @@ const SearchBar: React.FC = () => {
           Search
         </button>
       </div>
-      {isLoading && <Spin size="large" />}
+      {isLoading && (
+        <div className="px-4 py-3 flex flex-row items-center gap-3">
+          <Spin size="large" />
+          <span>Finding a journey for you</span>
+        </div>
+      )}
     </>
   );
 };
