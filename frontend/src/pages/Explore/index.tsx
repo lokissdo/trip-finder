@@ -1,6 +1,5 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
-// import MultiSelection from "./MultiSelection";
 import { Variants, motion } from "framer-motion";
 import { cardExplore } from "../../assets/cardExplore";
 import { Link } from "react-router-dom";
@@ -20,22 +19,34 @@ const Explore: React.FC = () => {
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
+      <div className="relative">
+        <div style={{ height: 550 }} className="overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1504457047772-27faf1c00561" />
+          <div className="absolute top-32 m-auto left-0 right-0 flex flex-col">
+            <h3 className="text-5xl text-white font-semibold font-customHandWriting">
+              Discover
+            </h3>
+            <div className="text-9xl text-white font-semibold font-customHandWriting mt-2">
+              Vietnam
+            </div>
+            <div className="text-3xl text-white font-semibold font-customHandWriting mt-2">
+              by your style
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="bg-neutral-50 pt-6 flex flex-col gap-3">
-        <h3 className="text-4xl font-semibold font-customTitle">
-          Let's explore Vietnam with your choice
-        </h3>
         <div className="px-40 text-lg">
           Vietnam offers a thrilling mix of historical sites like tunnels and
           mausoleums, alongside stunning natural beauty with islands and
           breathtaking landscapes. Apart from that culinary is another aspect
           that worth considering
         </div>
-        {/* <MultiSelection /> */}
         <div className="mx-20 my-4">
           {cardExplore.map((card, index) => {
             return (
               <motion.div
-                className="mt-4"
+                className="my-8 hover:mt-10 hover:mb-10 hover:shadow-xl"
                 initial="offscreen"
                 whileInView="onscreen"
                 key={card.name}
@@ -43,19 +54,22 @@ const Explore: React.FC = () => {
                 variants={index % 2 === 0 ? oddVariants : evenVariants}
               >
                 {index % 2 === 0 ? (
-                  <div className="flex flex-row justify-between shadow-lg rounded-lg border-gray-100 border-t-2">
+                  <div className="flex flex-row justify-between shadow-md rounded-lg border-gray-100 border-t-2">
                     <div className="flex flex-row">
                       <img
                         src={card.imageList[0]}
+                        loading="lazy"
                         className="w-96 h-72 rounded-tl-lg rounded-bl-lg"
                       />
                       <div className="flex flex-col">
                         <img
                           src={card.imageList[1]}
+                          loading="lazy"
                           className="w-60 h-36 rounded-tr-lg"
                         />
                         <img
                           src={card.imageList[2]}
+                          loading="lazy"
                           className="w-60 h-36 rounded-br-lg"
                         />
                       </div>
@@ -124,15 +138,18 @@ const Explore: React.FC = () => {
                       <div className="flex flex-col">
                         <img
                           src={card.imageList[0]}
+                          loading="lazy"
                           className="w-60 h-36 rounded-tl-lg"
                         />
                         <img
                           src={card.imageList[1]}
+                          loading="lazy"
                           className="w-60 h-36 rounded-bl-lg"
                         />
                       </div>
                       <img
                         src={card.imageList[2]}
+                        loading="lazy"
                         className="w-96 h-72 rounded-tr-lg rounded-br-lg"
                       />
                     </div>
