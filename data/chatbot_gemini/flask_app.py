@@ -4,13 +4,13 @@ from chatbot import ChatBot, ChatBotException
 
 app = Flask(__name__)
 
-# Function to load API key from api_credentials.ini file
+# Function to load API key from credentials.ini file
 def load_api_key():
     config = ConfigParser()
-    config.read('api_credentials.ini')
+    config.read('credentials.ini')
     return config['gemini_ai']['API_KEY']
 
-# Initialize the chatbot with the API key loaded from api_credentials.ini
+# Initialize the chatbot with the API key loaded from credentials.ini
 api_key = load_api_key()
 chatbot = ChatBot(api_key=api_key)
 

@@ -66,6 +66,7 @@ class ChatBot:
         if isinstance(conversation_history, list):
             self._conversation_history = conversation_history
         else:
-            self.clear_conversation()
-            self.start_conversation()
-
+            self._conversation_history = [
+                self._construct_message('From now on, return the output as a JSON object that can be loaded in Python with the key as "text". For example, {"text": "<output goes here>"}'),
+                self._construct_message('{"text": "Sure, I can return the output as a regular JSON object with the key as "text". Here is an example: {"text": "Your Output"}."}', 'model')
+            ]
