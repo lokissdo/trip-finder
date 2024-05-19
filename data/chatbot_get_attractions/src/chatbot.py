@@ -4,7 +4,7 @@ class GeniAIException(Exception):
     """GenAI Exception base class"""
 
 class ChatBot:
-    """ 
+    """
     A chatbot implementation using Google Generative AI.
     """
 
@@ -46,7 +46,7 @@ class ChatBot:
         prompt = (f'Tôi có DANH SÁCH các địa điểm ở {location} là: {places_list}\n'
                   'Liệt kê 10 địa điểm NỔI TIẾNG nhất trong DANH SÁCH trên.\n'
                   'YÊU CẦU phải viết đúng hệt định dạng, chữ hoa và chữ thường giống với địa điểm trong DANH SÁCH đó.')
-        
+
         try:
             response = self.conversation.send_message(
                 content=prompt,
