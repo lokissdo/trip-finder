@@ -1,6 +1,5 @@
 import React from "react";
 import { THotel } from "../../hotel";
-import { Divider } from "antd";
 
 const HotelCard: React.FC<{ data: THotel }> = ({ data }) => {
   return (
