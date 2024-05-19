@@ -29,12 +29,12 @@ def ask():
     if not location:
         return jsonify({'error': 'Location not provided'}), 400
 
-    # Query MongoDB for places in the given location
-    places = collection.find({'province': location}, {'_id': 0, 'name': 1})
-    places_list = list(set([place['name'] for place in places]))  # Remove duplicates
+    # Query MongoDB for places in the given location with platform 'news'
+    places_cursor = collection.find({'province': location, 'platform': 'news'}, {'_id': 0, 'name': 1})
+    places_list = list(set([place['name'] for place in places_cursor]))  # Remove duplicates
 
     if not places_list:
-        return jsonify({'error': f'No places found for location: {location}'}), 404
+        return jsonify({'error': f'No places found with platform "news" for location: {location}'}), 404
 
     try:
         response = chatbot.send_prompt(location, places_list)
