@@ -22,8 +22,8 @@ class VehicleRepository {
                             type: { type: 'keyword' }, // Vehicle type as enum
                             brand: { type: 'text' },
                             date: { type: 'keyword' },
-                            departure: { type: 'text' },
-                            arrival: { type: 'text' },
+                            departure: { type: 'keyword' },
+                            arrival: { type: 'keyword' },
                             rating: { type: 'float' },
                             price: { type: 'float' },
                         }
@@ -107,22 +107,16 @@ class VehicleRepository {
 
         if (departure) {
             mustQueries.push({
-                match: {
-                    departure: {
-                        query: departure,
-                        fuzziness: "AUTO"
-                    }
+                term: {
+                    departure: departure
                 }
             });
         }
     
         if (arrival) {
             mustQueries.push({
-                match: {
-                    arrival: {
-                        query: arrival,
-                        fuzziness: "AUTO"
-                    }
+                term: {
+                    arrival: arrival
                 }
             });
         }

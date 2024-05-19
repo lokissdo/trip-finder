@@ -1,4 +1,3 @@
-const Itinerary = require('./models/Itinerary');
 
 // database related modules
 module.exports = {
@@ -11,5 +10,4 @@ module.exports = {
 
 
 
-   ItineraryRepository: require('./repository/test'),
 }

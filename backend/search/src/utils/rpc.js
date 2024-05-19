@@ -1,7 +1,6 @@
 const amqplib = require("amqplib");
 const { v4: uuid4 } = require("uuid");
 const { MSG_QUEUE_URL } = require("../config");
-const {  } = require("../services/user-service");
 let amqplibConnection = null;
 
 const getChannel = async () => {
@@ -26,7 +25,8 @@ const RPCObserver = async (RPC_QUEUE_NAME, service) => {
       if (msg.content) {
         // DB Operation
         const payload = JSON.parse(msg.content.toString());
-        const response = await service.ProcessRPC(payload) ; // call fake DB operation
+        const response = await service.ProcessRPC(payload); // call fake DB operation
+
         channel.sendToQueue(
           msg.properties.replyTo,
           Buffer.from(JSON.stringify(response)),
@@ -46,9 +46,7 @@ const RPCObserver = async (RPC_QUEUE_NAME, service) => {
 const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
   try {
     const channel = await getChannel();
-
-    const q = await channel.assertQueue("", { exclusive: true });
-
+    let q = await channel.assertQueue("", { exclusive: true });
     channel.sendToQueue(
       RPC_QUEUE_NAME,
       Buffer.from(JSON.stringify(requestPayload)),
@@ -57,19 +55,22 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
         correlationId: uuid,
       }
     );
-
     return new Promise((resolve, reject) => {
       // timeout n
       const timeout = setTimeout(() => {
         channel.close();
         resolve("API could not fullfil the request!");
       }, MAX_TIME_OUT);
+
       channel.consume(
         q.queue,
         (msg) => {
-          if (msg.properties.correlationId == uuid) {
+          if (msg?.properties.correlationId == uuid) {
+
             resolve(JSON.parse(msg.content.toString()));
             clearTimeout(timeout);
+
+
           } else {
             reject("data Not found!");
           }
@@ -78,6 +79,9 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
           noAck: true,
         }
       );
+    }).finally(() => {
+      console.log("Closing queue", q.queue,);
+      channel.deleteQueue(q.queue);
     });
   } catch (error) {
     console.log(error);
@@ -87,6 +91,7 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
 
 const RPCRequest = async (RPC_QUEUE_NAME, requestPayload) => {
   const uuid = uuid4(); // correlationId
+  console.log("UUID", uuid);
   return await requestData(RPC_QUEUE_NAME, requestPayload, uuid);
 };
 

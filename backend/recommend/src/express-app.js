@@ -1,6 +1,6 @@
 const express = require('express');
 const cors  = require('cors');
-const { recommend, appEvents } = require('./api');
+const { recommend, dailySchedule } = require('./api');
 const { CreateChannel, SubscribeMessage } = require('./utils')
 
 module.exports = async (app) => {
@@ -16,6 +16,7 @@ module.exports = async (app) => {
 
     
     recommend(app, channel);
+    dailySchedule(app, channel);   
     // error handling
     
 }

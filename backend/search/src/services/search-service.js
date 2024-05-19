@@ -170,18 +170,20 @@ class SearchService {
                     location:{
                         latitude: location.lat,
                         longitude: location.long,
-                        distanceSearch: "100km"
+                        distanceSearch: "10km"
                     },
                     page: 1,
                     pageSize: 10,
                     sort: 'location:asc'
                 }
                 if (bestPrice) {
-                    query.sort += ',price:asc'
+                    query.sort = 'price:asc,'+ query.sort
                 }else {
                     query.start = startPrice
                     query.end = endPrice
                 }
+                console.log("Restaurant query from RPC",query);
+
                 const restaurants =  await this.GetRestaurantsByParameters(query)
                 if (restaurants.length == 0) {
                     return  { error: 'Not enough restaurants data' }
@@ -203,7 +205,7 @@ class SearchService {
                     location:{
                         latitude: location.lat,
                         longitude: location.long,
-                        distanceSearch: "100km"
+                        distanceSearch: "50km"
                     },
                     page: 1,
                     pageSize: 10,
@@ -211,7 +213,7 @@ class SearchService {
                    
                 }   
                 if (bestPrice) {
-                    query.sort += ',price:asc'
+                    query.sort = 'price:asc,' + query.sort
                 } else {
                     query.start = startPrice
                     query.end = endPrice
