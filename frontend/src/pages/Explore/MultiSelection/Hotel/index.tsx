@@ -6,6 +6,8 @@ import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
 import { fetchHotel } from "./hooks/fetchHotel";
 import Navbar from "../../../../components/Navbar";
+import { THotel } from "./hotel";
+import HotelCard from "./components/HotelCard";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -19,6 +21,7 @@ const Hotel: React.FC = () => {
   const [date, setDate] = useState<string | string[]>();
   const [startPrice, setStartPrice] = useState<number>(0);
   const [endPrice, setEndPrice] = useState<number>(0);
+  const [result, setResult] = useState<THotel[]>();
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
     setDate(dateString);
@@ -58,9 +61,17 @@ const Hotel: React.FC = () => {
           setEndPrice(parseInt(e.target.value));
         }}
       />
-      <button onClick={() => fetchHotel(province, date, startPrice, endPrice)}>
+      <button
+        onClick={() =>
+          fetchHotel(setResult, province, date, startPrice, endPrice)
+        }
+      >
         Search
       </button>
+      {result &&
+        result.map((hotel: THotel) => {
+          return <HotelCard data={hotel} />;
+        })}
     </div>
   );
 };
