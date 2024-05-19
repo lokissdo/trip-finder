@@ -7,6 +7,7 @@ import { SwapRightOutlined } from "@ant-design/icons";
 import { getRecommend } from "./hooks/getRecommend";
 import { useNavigate } from "react-router-dom";
 import { options } from "../../assets/locationSelecion";
+import { NumericFormat } from "react-number-format";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -75,7 +76,19 @@ const SearchBar: React.FC = () => {
         </div>
         <div className="flex-1 px-2 flex flex-col gap-1">
           <div className="self-start font-semibold text-lg">Budget</div>
-          <input
+          <NumericFormat
+            thousandSeparator
+            displayType="input"
+            placeholder="Your budget"
+            style={{ height: 38, borderRadius: 5 }}
+            className="border border-gray-300 outline-none pl-2"
+            onValueChange={(values) => {
+              console.log(values);
+              setPrice(values.floatValue ?? 0);
+              console.log(price);
+            }}
+          />
+          {/* <input
             type="number"
             style={{ height: 38, borderRadius: 5 }}
             className="border border-gray-300 outline-none pl-2"
@@ -84,7 +97,7 @@ const SearchBar: React.FC = () => {
               console.log("end:", e.target.value);
               setPrice(parseInt(e.target.value));
             }}
-          />
+          /> */}
         </div>
         <button
           className="text-white border-none rounded-lg bg-green-400 px-4 py-2 font-bold text-xl"
@@ -107,7 +120,7 @@ const SearchBar: React.FC = () => {
         </button>
       </div>
       {isLoading && (
-        <div className="px-4 py-3 flex flex-row items-center gap-3">
+        <div className="m-auto px-4 py-3 flex flex-row items-center gap-3">
           <Spin size="large" />
           <span>Finding a journey for you</span>
         </div>

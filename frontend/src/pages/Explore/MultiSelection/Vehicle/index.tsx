@@ -43,6 +43,7 @@ const Vehicle: React.FC = () => {
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
+      <div>Transportattions</div>
       <Select
         isClearable
         isSearchable
@@ -101,7 +102,7 @@ const Vehicle: React.FC = () => {
       {result && (
         <div className="mx-auto w-3/4">
           <div className="flex flex-row gap-5">
-            <div className="basis-1/3">Sidebar</div>
+            <div className="basis-1/3 h-screen sticky">Sidebar</div>
             <div className="basis-2/3 flex flex-col gap-4">
               {result.map((res: TVehicle) => {
                 return (

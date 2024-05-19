@@ -2,6 +2,7 @@ import Navbar from "../../components/Navbar";
 import SearchBar from "../../components/Search";
 
 const Home: React.FC = () => {
+  document.title = "TripFinder";
   return (
     <div>
       <div className="relative">
