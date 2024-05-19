@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { DatePicker, Spin } from "antd";
-import type { GetProps } from "antd";
-import dayjs from "dayjs";
+import React, { useEffect } from "react";
 import { MdOutlineSchedule } from "react-icons/md";
 import recommends from "./fakerData"
 import { FaCarSide, FaHotel, FaLongArrowAltRight, FaStar } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 import { IoTodayOutline } from "react-icons/io5";
 import { TiWeatherPartlySunny } from "react-icons/ti";
-type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
-const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  // Can not select days before today and today
-  return current && current < dayjs().endOf("day");
-};
 const formatDate = (date: Date) => {
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
@@ -135,15 +127,10 @@ const renderRecommendation = (recommend: any) => {
     </div>
   )
 }
-const { RangePicker } = DatePicker;
 const TopRecommendations: React.FC = () => {
-  const [from, setFrom] = useState<{ value: string; label: string } | null>(
-    null
-  );
-  const [to, setTo] = useState<{ value: string; label: string } | null>(null);
+
   // const [recommends, setRecommends] = useState<any>([]);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     // getTopRecommend().then((response) => {
     //   setRecommends(response);
