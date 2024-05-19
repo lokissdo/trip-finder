@@ -6,7 +6,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <div className="relative">
-        <div style={{ height: 450 }} className="overflow-hidden">
+        <div style={{ height: 550 }} className="overflow-hidden">
           <img src="https://images.unsplash.com/photo-1605036687969-9c2878c7395b" />
         </div>
         <div className="absolute top-0 w-full px-12 py-8">
