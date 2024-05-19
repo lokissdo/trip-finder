@@ -20,6 +20,7 @@ export const getRecommend = async (
     vehicle: price / 4,
     restaurant: price / 4,
   };
+  console.log(cost.itineray);
   const response = await fetch(
     backend_dev.recommend +
       `?costOptions={"itinerary": ${cost.itineray},"hotel": ${cost.hotel},"vehicle": ${cost.vehicle}, "restaurant": ${cost.restaurant}}&departure=${standardFrom}&destination=${standardTo}&startDate=${startDate}&endDate=${endDate}`
