@@ -68,6 +68,11 @@ class UserService {
         return FormateData(recommends);
     }
 
+    async UpdateRecommendationNote(userId, recommendId, note) {
+        const recommends = await this.repository.UpdateRecommendationNote(userId, recommendId, note);
+        return FormateData(recommends);
+    }
+
 
     async SubscribeEvents(payload) {
         try {

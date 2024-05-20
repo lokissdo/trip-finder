@@ -58,7 +58,7 @@ const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL || "ht
 
 app.use("/user", proxy(USER_SERVICE_URL));
 app.use("/search", rateLimiter(WINDOW_DURATION, NUM_REQUESTS), proxy(SEARCH_SERVICE_URL));
-app.use("/recommend", rateLimiter(WINDOW_DURATION, NUM_REQUESTS), proxy(RECOMMENDATION_SERVICE_URL));
+app.use("/recommend",  proxy(RECOMMENDATION_SERVICE_URL));
 
 app.listen(8000, () => {
   console.log("Gateway is Listening to Port 8000");
