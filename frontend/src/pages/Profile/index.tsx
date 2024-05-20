@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Navbar from "../../components/Navbar";
-import TopRecommendations from "../../components/TopRecommendations";
-import { GetRecommendationHistories, PutRecommendationToHistories, UpdateRecommendationNote } from "./hooks/history";
+import { GetRecommendationHistories, UpdateRecommendationNote } from "./hooks/history";
 import RecommendItem from "../../components/RecommendItem";
 import { formatDate } from "../../utils/date-formatter";
 import { SlCalender } from "react-icons/sl";
