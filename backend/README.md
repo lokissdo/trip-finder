@@ -5,9 +5,9 @@ Trip Finder is a comprehensive backend system designed to enhance the travel exp
 - **User Service**: Handles user authentication (login and signup), user profile management, and historical data tracking for recommendations.
 - **Search Service**: Provides search functionality for hotels, attractions, restaurants, and vehicles. Utilizes Redis for caching and Elasticsearch for high performance.
 - **Recommendation Service**: Offers personalized trip recommendations by analyzing user preferences and incorporating various travel factors.
-- **Analytics Service**: Analyzes user behavior to extract preferences and generate actionable insights to improve recommendation accuracy.
+- **Task Scheduler Service**: Performs periodic tasks to ensure data relevance and maintain system efficiency. 
 - **Gateway Service**: Gateway for end user access to system , applying rate limiter and proxy
-- **Synchronization Service**: Indexing data to Elastic Search Database from MongoDB through RabbitMQ
+
 
 
 ## Technologies Used
@@ -34,10 +34,15 @@ Brief overview of some key API endpoints for each service, for example:
 - `GET /vehicles`: Retrieves a list of vehicles based on search criteria.
 
 ### Recommendation Service
-- `GET /recommendations`: Retrieves personalized trip recommendations for a user.
+- `GET /recommend`: Retrieves personalized trip recommendations for a user.
 
-### Analytics Service
-- Tracks user behavior and sends data for analysis.
-- Generating popular chosen recommendation from system
+### Task Scheduler Service
+Handles periodic tasks such as:
+
+- Generating effective recommendations
+- Indexing newly crawled data
+- Removing outdated data
+- Updating top 8 recommendations
+- Automatically generating daily schedules
 
 
