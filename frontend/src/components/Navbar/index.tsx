@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const isLogin = localStorage.getItem("token");
   return (
     <div className="flex flex-row items-center justify-between bg-transparent">
       <div>
@@ -30,14 +31,17 @@ const Navbar: React.FC = () => {
         <Link to={"/explore"}>
           <span className="text-xl font-bold">Explore</span>
         </Link>
-        <Link to={"/profile"}>
-          <span className="text-xl font-bold">Profile</span>
-        </Link>
-        <Link to={"/login"}>
-          <span className="text-xl font-bold text-white px-3 py-1.5 rounded-md bg-green-400">
-            Login
-          </span>
-        </Link>
+        {isLogin ? (
+          <Link to={"/profile"}>
+            <span className="text-xl font-bold">Profile</span>
+          </Link>
+        ) : (
+          <Link to={"/login"}>
+            <span className="text-xl font-bold text-white px-3 py-1.5 rounded-md bg-green-400">
+              Login
+            </span>
+          </Link>
+        )}
       </div>
     </div>
   );

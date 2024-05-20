@@ -27,31 +27,35 @@ const Login: React.FC = () => {
           <h2 className="text-2xl font-bold text-start">Login</h2>
           <p className="text-start">Login to access your account</p>
           <div className="my-2 flex flex-col gap-5">
-          <InformationInput  labelName="Email"  ref = {emailRef} />
+            <InformationInput labelName="Email" ref={emailRef} />
 
-            <InformationInput  labelName="Password" isPassword={true} ref = {passwordRef} />
+            <InformationInput
+              labelName="Password"
+              isPassword={true}
+              ref={passwordRef}
+            />
 
-            <button onClick={()=>{
-              console.log(emailRef.current?.value);
-              console.log(passwordRef.current?.value);
-              let email = emailRef.current?.value;
-              let password = passwordRef.current?.value;
-              if (email && password) {
-                LoginHooks({ email,  password}).then((res) => {
-                  if (res.token) {
-                   // window.location.href = "/home";
-                  // set token to local storage
-                  localStorage.setItem("token", res.token);
-                  navigate("/");
-                  } else {
-                    alert("Login failed");
-                  }});
-
-              }
-             
-
-
-            }} className="bg-green-400 text-xl rounded-lg p-2 w-full border-none focus:outline-none hover:border-none text-white font-bold">
+            <button
+              onClick={() => {
+                console.log(emailRef.current?.value);
+                console.log(passwordRef.current?.value);
+                const email = emailRef.current?.value;
+                const password = passwordRef.current?.value;
+                if (email && password) {
+                  LoginHooks({ email, password }).then((res) => {
+                    if (res.token) {
+                      // window.location.href = "/home";
+                      // set token to local storage
+                      localStorage.setItem("token", res.token);
+                      navigate("/");
+                    } else {
+                      alert("Login failed");
+                    }
+                  });
+                }
+              }}
+              className="bg-green-400 text-xl rounded-lg p-2 w-full border-none focus:outline-none hover:border-none text-white font-bold"
+            >
               Login
             </button>
             <Link to={"/"}>

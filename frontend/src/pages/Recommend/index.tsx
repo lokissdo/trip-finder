@@ -7,6 +7,9 @@ import { FaLocationDot } from "react-icons/fa6";
 const Recommend: React.FC = () => {
   const { state } = useLocation();
   console.log(state.myObj); // {myOgj: obj}
+  if (!state.myObj.length) {
+    state.myObj = [state.myObj];
+  }
   const data = state.myObj;
   const weather = data.weather;
   const dailySchedules = data.dailySchedules;
