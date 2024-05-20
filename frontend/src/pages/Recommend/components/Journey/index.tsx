@@ -10,7 +10,7 @@ const Journey: React.FC<{ data: any }> = ({ data }) => {
   return (
     <div className="flex flex-col gap-4">
       <div>{weather.city}</div>
-      <div>temperature: {weather.temperature}</div>
+      <div>temperature: {weather.temperature} ℃</div>
       <div>{weather.description}</div>
       <div>Hotel</div>
       <HotelCard data={data.hotel} />

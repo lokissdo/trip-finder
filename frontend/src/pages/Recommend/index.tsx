@@ -6,7 +6,11 @@ import Journey from "./components/Journey";
 
 const Recommend: React.FC = () => {
   const { state } = useLocation();
+  // if(typeOf(state.myObj))
   console.log(state.myObj); // {myOgj: obj}
+  if (!state.myObj.length) {
+    state.myObj = [state.myObj];
+  }
   const data = state.myObj[0];
   return (
     <div>
