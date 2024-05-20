@@ -3,7 +3,7 @@ import DailySchedule from "../DailySchedule";
 import HotelCard from "../../../Explore/MultiSelection/Hotel/components/HotelCard";
 import VehicleCard from "../../../Explore/MultiSelection/Vehicle/components/VehicleCard";
 
-const Journey: React.FC<{ data: any }> = ({ data }) => {
+const Journey: React.FC<{ data?: any }> = ({ data }) => {
   const weather = data.weather;
   const dailySchedules = data.dailySchedules;
   const vehicles = data.vehicles;

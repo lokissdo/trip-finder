@@ -15,6 +15,7 @@ import Vehicle from "./pages/Explore/MultiSelection/Vehicle";
 import Hotel from "./pages/Explore/MultiSelection/Hotel";
 import Recommend from "./pages/Recommend";
 import Profile from "./pages/Profile";
+import Journey from "./pages/Recommend/components/Journey";
 const router = createBrowserRouter([{ path: "*", element: <Root /> }]);
 function Root() {
   return (
@@ -30,6 +31,7 @@ function Root() {
       <Route path="/transportations" element={<Vehicle />} />
       <Route path="/hotels" element={<Hotel />} />
       <Route path="/recommend" element={<Recommend />} />
+      <Route path="/recommendDetail" element={<Journey />} />
     </Routes>
   );
 }
