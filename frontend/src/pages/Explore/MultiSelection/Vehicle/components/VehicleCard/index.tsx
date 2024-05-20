@@ -11,9 +11,6 @@ const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -28,16 +25,11 @@ const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
       <Modal
         centered
         width={800}
-        title="Basic Modal"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={[]}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
         <div>{data._id}</div>
-        <p>Some contents...</p>
       </Modal>
       <button
         onClick={showModal}
