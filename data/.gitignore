@@ -1,0 +1,6 @@
+pyvenv.cfg
+venv/
+*.pyc
+scripts/
+.DS_Store
+utils/
