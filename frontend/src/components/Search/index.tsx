@@ -88,19 +88,9 @@ const SearchBar: React.FC = () => {
               console.log(price);
             }}
           />
-          {/* <input
-            type="number"
-            style={{ height: 38, borderRadius: 5 }}
-            className="border border-gray-300 outline-none pl-2"
-            placeholder="Your budget"
-            onChange={(e) => {
-              console.log("end:", e.target.value);
-              setPrice(parseInt(e.target.value));
-            }}
-          /> */}
         </div>
         <button
-          className="text-white border-none rounded-lg bg-green-400 px-4 py-2 font-bold text-xl"
+          className="text-white border-none rounded-lg bg-green-400 align-middle px-8 font-bold text-xl"
           onClick={async () => {
             setIsLoading(true);
             const response = await getRecommend(

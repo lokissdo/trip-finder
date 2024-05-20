@@ -1,6 +1,9 @@
+import { Dispatch, SetStateAction } from "react";
 import { backend_dev } from "../../../../../service";
+import { THotel } from "../hotel";
 
 export const fetchHotel = async (
+  setResult: Dispatch<SetStateAction<THotel[] | undefined>>,
   province?: { value: string; label: string } | null,
   date?: string | string[],
   startPrice?: number,
@@ -23,5 +26,6 @@ export const fetchHotel = async (
   );
   const result = await response.json();
   console.log(await result);
+  setResult(result);
   return result;
 };
