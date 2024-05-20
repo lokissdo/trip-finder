@@ -70,23 +70,8 @@ module.exports = (app, channel) => {
     }
     );
 
-    app.post('/add-itinerary', UserAuth, async (req, res, next) => {
-        const { _id } = req.user;
-        const { itineraryId } = req.body;
-        const { data } = await service.AddItineraryToUser(_id, itineraryId);
-        res.json(data);
-    });
 
-    app.post('/create-itinerary', UserAuth, async (req, res, next) => {
-        const { itinerary } = req.body;
-        const { data } = await service.CreateItinerary({ ...itinerary });
-        // const payload = {
-        //     event: 'CREATE_ITINERARY',
-        //     data: { ...itinerary }
-        // }
-        //PublishMessage(channel,USER_SERVICE,JSON.stringify(FormateData(payload)));
-        res.json(data);
-    });
+    
 
 
     app.get('/whoami', (req, res, next) => {
