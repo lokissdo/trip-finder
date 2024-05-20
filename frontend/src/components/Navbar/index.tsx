@@ -30,6 +30,9 @@ const Navbar: React.FC = () => {
         <Link to={"/explore"}>
           <span className="text-xl font-bold">Explore</span>
         </Link>
+        <Link to={"/profile"}>
+          <span className="text-xl font-bold">Profile</span>
+        </Link>
         <Link to={"/login"}>
           <span className="text-xl font-bold text-white px-3 py-1.5 rounded-md bg-green-400">
             Login

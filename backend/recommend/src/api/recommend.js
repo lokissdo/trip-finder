@@ -16,7 +16,7 @@ module.exports = (app, channel) => {
     //RPCObserver(Recommend_SERVICE, service);
 
  
-    app.get('/recommend', async (req, res) => {
+    app.get('/', async (req, res) => {
         try{
             const { costOptions, startDate, endDate,departure, destination, userOptions } = req.query;
             console.log('userOptions Options:', userOptions);
@@ -33,7 +33,7 @@ module.exports = (app, channel) => {
     });
 
 
-    app.get('/recommend/generator', async (req, res) => {
+    app.get('/generator', async (req, res) => {
         try{
             const { costOptions, startDate, endDate,departure, destination, userOptions } = req.query;
             console.log('userOptions Options:', userOptions);
@@ -53,7 +53,7 @@ module.exports = (app, channel) => {
 
 
 
-    app.get('/recommend/top', async (req, res) => {
+    app.get('/top', async (req, res) => {
         try{
             const result = await service.getTopRecommendations();
             res.send(result);
@@ -64,7 +64,7 @@ module.exports = (app, channel) => {
     });
 
 
-    app.patch('/recommend/:recommendId',UserAuth, async (req, res) => {
+    app.patch('/:recommendId',UserAuth, async (req, res) => {
         try{
             const { recommendId } = req.params;
             console.log('Recommendation ID:', recommendId);

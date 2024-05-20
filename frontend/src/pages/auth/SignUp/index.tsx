@@ -2,9 +2,13 @@ import { Carousel, Image } from "antd";
 import { Link } from "react-router-dom";
 import { carouselListImage } from "../../../assets/carouselListImage";
 import InformationInput from "../../../components/InfomationInput";
+import React from "react";
+import { SignupHooks } from "./hooks/login";
 
 const SignUp: React.FC = () => {
   document.title = "SignUp";
+  const emailRef = React.useRef<HTMLInputElement>(null);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
   return (
     <>
       <div className="h-screen flex flex-row justify-center items-center gap-8 bg-white">
@@ -37,16 +41,29 @@ const SignUp: React.FC = () => {
           <h2 className="text-2xl font-bold text-start">Sign Up</h2>
           <p className="text-start">Let's sign up and explore TripFinder</p>
           <div className="my-2 flex flex-col gap-4">
-            <InformationInput labelName="Email" />
+            <InformationInput labelName="Email" ref={emailRef}/>
             <InformationInput labelName="First Name" />
             <InformationInput labelName="Last Name" />
             <InformationInput labelName="Phone number" />
-            <InformationInput labelName="Password" isPassword={true} />
+            <InformationInput labelName="Password" isPassword={true} ref={passwordRef} />
             <InformationInput
               labelName="Reconfirm Password"
               isPassword={true}
             />
-            <button className="bg-green-400 rounded-lg text-xl p-2 border-none focus:outline-none hover:border-none text-white font-bold">
+            <button onClick={()=>{
+              let email = emailRef.current?.value;
+              let password = passwordRef.current?.value;
+              if (email && password) {
+                console.log(email, password);
+                SignupHooks({ email,  password}).then((res) => {
+                  if (res.token) {
+                    localStorage.setItem("token", res.token);
+                    window.location.href = "/";
+                  } else {
+                    alert("Sign up failed");
+                  }});
+              }
+            }} className="bg-green-400 rounded-lg text-xl p-2 border-none focus:outline-none hover:border-none text-white font-bold">
               Create Account
             </button>
             <div className="text-black">

@@ -19,6 +19,7 @@ const UserSchema = new Schema({
    
     histories: [
         {
+            _id: false,
             note : String,
             date: Date,
             recommend: {

@@ -62,6 +62,15 @@ class UserRepository {
 
     async AddRecommendationToUser(UserId, recommendId) {
         const user = await UserModel.findById(UserId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // check if exist recommend, not push
+        const existRecommend = user.histories.find(h => h.recommend.toString() === recommendId);
+        if (existRecommend) {
+            return user.histories;
+        }
         if (!user.histories) {
             user.histories = [];
         }
@@ -106,6 +115,18 @@ class UserRepository {
             user.histories.sort((a, b) => new Date(b.updated_At) - new Date(a.updated_At));
         }
         return user ? user.histories : [];
+    }
+
+    async UpdateRecommendationNote(UserId, recommendId, note) {
+        console.log(UserId, recommendId, note)
+        const user = await UserModel.findById(UserId);
+        const history = user.histories.find(h => h.recommend.toString() === recommendId);
+        if (!history) {
+            throw new Error('Recommendation not found');
+        }
+        history.note = note;
+        await user.save();
+        return history;
     }
 }
 

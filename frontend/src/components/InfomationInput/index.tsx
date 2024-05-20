@@ -1,11 +1,14 @@
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
-
-const InformationInput: React.FC<{
+import { useState, forwardRef } from "react";
+interface InformationInputProps {
   labelName: string;
   isPassword?: boolean;
-}> = ({ labelName, isPassword }) => {
-  const [isVisible, setIsVisible] = useState(!isPassword);
+}
+const InformationInput = forwardRef<HTMLInputElement, InformationInputProps>(
+  ({ labelName, isPassword }, ref) => {
+    const [isVisible, setIsVisible] = useState(!isPassword);
+
+  console.log(ref);
   return (
     <>
       {isPassword ? (
@@ -15,6 +18,7 @@ const InformationInput: React.FC<{
             id="floating_outlined"
             className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-green-400 peer"
             placeholder=" "
+            ref={ref}
           />
           <button
             className="end-2.5 bottom-2.5 absolute bg-transparent border-none p-0 focus:outline-none"
@@ -36,6 +40,7 @@ const InformationInput: React.FC<{
             id="floating_outlined"
             className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-green-400 peer"
             placeholder=" "
+            ref={ref}
           />
           <label
             htmlFor="floating_outlined"
@@ -47,6 +52,6 @@ const InformationInput: React.FC<{
       )}
     </>
   );
-};
+})
 
 export default InformationInput;
