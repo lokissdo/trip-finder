@@ -46,7 +46,7 @@ const Explore: React.FC = () => {
           {cardExplore.map((card, index) => {
             return (
               <motion.div
-                className="my-8 hover:mt-10 hover:mb-10 hover:shadow-xl"
+                className="my-8 hover:shadow-xl"
                 initial="offscreen"
                 whileInView="onscreen"
                 key={card.name}

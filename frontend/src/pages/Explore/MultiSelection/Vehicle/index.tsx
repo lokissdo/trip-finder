@@ -58,119 +58,115 @@ const Vehicle: React.FC = () => {
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
-      <div>Transportations</div>
-      <div className="flex flex-row justify-center">
-        <Select
-          isClearable
-          isSearchable
-          options={options}
-          defaultValue={from}
-          onChange={setFrom}
-          placeholder="From"
-          className="min-w-44 h-10"
-        />
-        <Select
-          isClearable
-          isSearchable
-          options={options}
-          defaultValue={to}
-          onChange={setTo}
-          placeholder="To"
-          className="min-w-44 h-10"
-        />
-        <Select
-          isClearable
-          isSearchable
-          options={optionsVehicle}
-          defaultValue={vehicle}
-          onChange={setVehicle}
-          placeholder="Vehicle type"
-          className="min-w-44 h-10"
-        />
-        <DatePicker
-          size="large"
-          style={{ height: 38, borderRadius: 4 }}
-          disabledDate={disabledDate}
-          onChange={onChange}
-        />
-        <button
-          className="bg-green-400 px-4 py-2 text-white font-bold rounded-lg"
-          onClick={() => {
-            fetchVehicle(
-              setResult,
-              from,
-              to,
-              date,
-              vehicle,
-              endPrice,
-              startPrice
-            );
-            setPage(2);
-          }}
-        >
-          Search
-        </button>
-      </div>
-      {result.length !== 0 && (
-        <div className="mx-auto w-3/4">
-          <div className="flex flex-row gap-5 overflow-hidden">
-            <div className="basis-1/3 h-screen top-0">
-              <div>Sidebar</div>
-              <div>dieu chinh gia tien</div>
-              <NumericFormat
-                thousandSeparator
-                displayType="input"
-                placeholder="start price"
-                style={{ height: 38, borderRadius: 5 }}
-                className="border border-gray-300 outline-none pl-2"
-                onValueChange={(values) => {
-                  console.log("start: ", values);
-                  setStartPrice(values.floatValue ?? 0);
+      <div className="mx-auto w-5/6">
+        <div className="flex flex-row gap-5 overflow-hidden">
+          <div className="basis-1/3 h-screen top-0">
+            <div>Transportations</div>
+            <div>Sidebar</div>
+            <div>dieu chinh gia tien</div>
+            <Select
+              isClearable
+              isSearchable
+              options={options}
+              defaultValue={from}
+              onChange={setFrom}
+              placeholder="From"
+              className="min-w-44 h-10"
+            />
+            <Select
+              isClearable
+              isSearchable
+              options={options}
+              defaultValue={to}
+              onChange={setTo}
+              placeholder="To"
+              className="min-w-44 h-10"
+            />
+            <Select
+              isClearable
+              isSearchable
+              options={optionsVehicle}
+              defaultValue={vehicle}
+              onChange={setVehicle}
+              placeholder="Vehicle type"
+              className="min-w-44 h-10"
+            />
+            <DatePicker
+              size="large"
+              style={{ height: 38, borderRadius: 4 }}
+              disabledDate={disabledDate}
+              onChange={onChange}
+            />
+            <button
+              className="bg-green-400 px-4 py-2 text-white font-bold rounded-lg"
+              onClick={() => {
+                fetchVehicle(
+                  setResult,
+                  from,
+                  to,
+                  date,
+                  vehicle,
+                  endPrice,
+                  startPrice
+                );
+                setPage(2);
+              }}
+            >
+              Search
+            </button>
+            <NumericFormat
+              thousandSeparator
+              displayType="input"
+              placeholder="start price"
+              style={{ height: 38, borderRadius: 5 }}
+              className="border border-gray-300 outline-none pl-2"
+              onValueChange={(values) => {
+                console.log("start: ", values);
+                setStartPrice(values.floatValue ?? 0);
+              }}
+            />
+            <NumericFormat
+              thousandSeparator
+              displayType="input"
+              placeholder="end price"
+              style={{ height: 38, borderRadius: 5 }}
+              className="border border-gray-300 outline-none pl-2"
+              onValueChange={(values) => {
+                console.log("end: ", values);
+                setEndPrice(values.floatValue ?? 0);
+              }}
+            />
+            <div>Slider</div>
+            <button className="bg-green-400 px-4 py-2">Filter</button>
+          </div>
+          <div className="basis-2/3 flex flex-col gap-4 overflow-y-auto">
+            {result.map((res: TVehicle) => {
+              return <VehicleCard data={res} key={res._id} />;
+            })}
+            {result.length && (
+              <button
+                className="bg-green-400 text-white font-bold py-2 mb-4 rounded w-2/5 self-center"
+                onClick={async () => {
+                  await fetchMoreVehicle(
+                    setResult,
+                    result,
+                    page,
+                    from,
+                    to,
+                    date,
+                    vehicle,
+                    endPrice,
+                    startPrice
+                  );
+                  setPage(page + 1);
                 }}
-              />
-              <NumericFormat
-                thousandSeparator
-                displayType="input"
-                placeholder="end price"
-                style={{ height: 38, borderRadius: 5 }}
-                className="border border-gray-300 outline-none pl-2"
-                onValueChange={(values) => {
-                  console.log("end: ", values);
-                  setEndPrice(values.floatValue ?? 0);
-                }}
-              />
-              <div>Slider</div>
-              <button className="bg-green-400 px-4 py-2">Filter</button>
-            </div>
-            <div className="basis-2/3 flex flex-col gap-4 overflow-y-auto">
-              {result.map((res: TVehicle) => {
-                return <VehicleCard data={res} key={res._id} />;
-              })}
-              {result && (
-                <button
-                  className="bg-green-400 text-white font-bold py-2 mb-4 rounded w-2/5 self-center"
-                  onClick={async () => {
-                    await fetchMoreVehicle(
-                      setResult,
-                      result,
-                      page,
-                      from,
-                      to,
-                      date,
-                      vehicle,
-                      endPrice,
-                      startPrice
-                    );
-                    setPage(page + 1);
-                  }}
-                >
-                  More
-                </button>
-              )}
-            </div>
+              >
+                More
+              </button>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
