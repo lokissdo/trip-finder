@@ -2,7 +2,6 @@ import Navbar from "../../components/Navbar";
 import SearchBar from "../../components/Search";
 import TopRecommendations from "../../components/TopRecommendations";
 
-
 const Home: React.FC = () => {
   document.title = "TripFinder";
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 import { DatePicker, DatePickerProps, GetProps } from "antd";
@@ -10,6 +10,7 @@ import { TVehicle } from "./vehicle";
 import Navbar from "../../../../components/Navbar";
 import { NumericFormat } from "react-number-format";
 import VehicleCard from "./components/VehicleCard";
+import { fetchMoreVehicle } from "./hooks/fetchMoreVehicle";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -37,14 +38,28 @@ const Vehicle: React.FC = () => {
     console.log(date, dateString);
     setDate(dateString);
   };
-
+  const [page, setPage] = useState<number>(2);
+  useEffect(() => {
+    const readyVehicle = async () => {
+      await fetchVehicle(
+        setResult,
+        from,
+        to,
+        date,
+        vehicle,
+        endPrice,
+        startPrice
+      );
+    };
+    readyVehicle();
+  }, []);
   return (
     <div>
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
       <div>Transportations</div>
-      <div className="flex flex-row">
+      <div className="flex flex-row justify-center">
         <Select
           isClearable
           isSearchable
@@ -74,11 +89,13 @@ const Vehicle: React.FC = () => {
         />
         <DatePicker
           size="large"
+          style={{ height: 38, borderRadius: 4 }}
           disabledDate={disabledDate}
           onChange={onChange}
         />
         <button
-          onClick={() =>
+          className="bg-green-400 px-4 py-2 text-white font-bold rounded-lg"
+          onClick={() => {
             fetchVehicle(
               setResult,
               from,
@@ -87,20 +104,19 @@ const Vehicle: React.FC = () => {
               vehicle,
               endPrice,
               startPrice
-            )
-          }
+            );
+            setPage(2);
+          }}
         >
           Search
         </button>
       </div>
-
-      {result && (
+      {result.length !== 0 && (
         <div className="mx-auto w-3/4">
           <div className="flex flex-row gap-5 overflow-hidden">
             <div className="basis-1/3 h-screen top-0">
               <div>Sidebar</div>
               <div>dieu chinh gia tien</div>
-              <div>Slider</div>
               <NumericFormat
                 thousandSeparator
                 displayType="input"
@@ -123,12 +139,34 @@ const Vehicle: React.FC = () => {
                   setEndPrice(values.floatValue ?? 0);
                 }}
               />
+              <div>Slider</div>
+              <button className="bg-green-400 px-4 py-2">Filter</button>
             </div>
             <div className="basis-2/3 flex flex-col gap-4 overflow-y-auto">
               {result.map((res: TVehicle) => {
                 return <VehicleCard data={res} key={res._id} />;
               })}
-              {result && <button>More</button>}
+              {result && (
+                <button
+                  className="bg-green-400 text-white font-bold py-2 mb-4 rounded w-2/5 self-center"
+                  onClick={async () => {
+                    await fetchMoreVehicle(
+                      setResult,
+                      result,
+                      page,
+                      from,
+                      to,
+                      date,
+                      vehicle,
+                      endPrice,
+                      startPrice
+                    );
+                    setPage(page + 1);
+                  }}
+                >
+                  More
+                </button>
+              )}
             </div>
           </div>
         </div>

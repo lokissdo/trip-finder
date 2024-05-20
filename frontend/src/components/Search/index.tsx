@@ -90,7 +90,7 @@ const SearchBar: React.FC = () => {
           />
         </div>
         <button
-          className="text-white border-none rounded-lg bg-green-400 px-4 py-2 font-bold text-xl"
+          className="text-white border-none rounded-lg bg-green-400 align-middle px-8 font-bold text-xl"
           onClick={async () => {
             setIsLoading(true);
             const response = await getRecommend(
