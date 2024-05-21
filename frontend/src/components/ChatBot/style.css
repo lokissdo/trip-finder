@@ -1,26 +1,42 @@
+.message {
+  position: relative; /* Position relative for absolute positioning of time */
+  padding: 3px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 0.5px solid #616060;
+}
+
+.time {
+  padding: 3px;
+  position: absolute;
+  bottom: 0;
+  right: 3px;
+  font-size: 10px;
+  color: #fff;
+}
+
 .message.user {
   align-self: flex-end;
-  background-color: #bdc2ce;
+  background-color: #fff;
   color: #000;
+  /* position: absolute;
+  align-self: right; */
 }
 
 .message.user p {
   color: #000;
+  margin: 0; /* Remove default margin */
 }
 
 .message.ai {
   align-self: flex-start;
-  background-color: #333;
+  background-color: #31c48d;
   color: #fff;
 }
 
 .message.ai p {
   color: #fff;
-}
-
-.time {
-  font-size: 12px;
-  color: #fff;
+  margin: 0; /* Remove default margin */
 }
 
 .time.user {
@@ -49,6 +65,7 @@ body.dark-mode {
 
 .chat-window {
   position: fixed;
+  padding: 5px;
   bottom: 20px;
   right: 20px;
   z-index: 999;
@@ -70,13 +87,7 @@ body.dark-mode {
 .chat-container {
   flex-grow: 1;
   overflow-y: auto;
-}
-
-.message {
-  padding: 12px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid #616060;
+  padding-top: 10px;
 }
 
 /* Light Mode */
@@ -111,7 +122,7 @@ body.light-mode {
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 0.5px solid #ccc;
 }
 
 .chat-title {
@@ -127,7 +138,33 @@ body.light-mode {
   right: 8px;
 }
 
-
 .message-text {
   color: #fff;
+  align-self: flex-start;
+}
+.input-box-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.input-box {
+  flex: 1; /* Take remaining space */
+}
+
+.input-box input {
+  width: calc(100% - 10px); 
+  padding: 10px; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #007bff; 
+}
+
+.send-icon {
+  margin-left: 2px; 
+  background-color: #31c48d;
 }

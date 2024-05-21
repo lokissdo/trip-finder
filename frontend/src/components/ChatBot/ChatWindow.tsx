@@ -4,9 +4,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import MDEditor from "@uiw/react-md-editor";
 import InputBox from "./InputBox";
 import { Avatar } from 'antd';
-import { MessageOutlined, CloseOutlined } from '@ant-design/icons';
+import { MessageOutlined, CloseOutlined, SendOutlined } from '@ant-design/icons';
 
-import "./ChatWindow.css"; 
+import "./style.css"; 
 
 const API_KEY: string = "AIzaSyDINuMsM7lgc2JLtSS5ZpVBFasC1g2PIvA";
 const genAI = new GoogleGenerativeAI(API_KEY || "");
@@ -22,9 +22,6 @@ interface Message {
 const Header: React.FC = () => {
   return (
     <div className="header">
-      {/* <h1 id="chat-header">
-        <b style={{ marginLeft: 5 }}>Chatbot</b>
-      </h1> */}
       <small>Xin chào, tôi có thể giúp gì cho bạn?</small>
     </div>
   );
@@ -78,7 +75,9 @@ const ChatWindow: React.FC = () => {
       console.error("generateContent error: ", error);
     }
   };
+
   const [chatVisible, setChatVisible] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null); // Ref for input field
 
   const toggleChatWindow = () => {
     setChatVisible(!chatVisible);
@@ -88,14 +87,27 @@ const ChatWindow: React.FC = () => {
     setChatVisible(false);
   };
 
+  const handleSendButtonClick = () => {
+    // Retrieve the input text from the input field
+    const inputText = inputRef.current?.value || '';
+    // Call sendMessage with the input text
+    sendMessage(inputText);
+    // Clear the input field after sending the message
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
   return (
     <>
-      <Avatar
-        className="chat-icon"
-        size={48}
-        icon={<MessageOutlined />}
-        onClick={toggleChatWindow}
-      />
+      {!chatVisible && (
+        <Avatar
+          className="chat-icon"
+          size={48}
+          icon={<MessageOutlined />}
+          onClick={toggleChatWindow}
+        />
+      )}
       <div id="chat-window" className={`chat-window ${chatVisible ? '' : 'hidden'}`}>
         <div className="chat-header">
           <span className="chat-title">Chatbot</span>
@@ -103,37 +115,36 @@ const ChatWindow: React.FC = () => {
             <CloseOutlined />
           </button>
         </div>
-      <Header />
-      <div className="chat-container" ref={chatContainerRef}>
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`message ${message.sender === "user" ? "user" : "ai"
-              }`}
-          >
-            {message.isCode ? (
-              <MDEditor.Markdown
-                source={message.text}
-                style={{ whiteSpace: "pre-wrap" }}
-              />
-            ) : (
-              <>
-                <p className="message-text">{message.text}</p>
-                <span
-                  className={`time ${message.sender === "user" ? "user" : "ai"
-                    }`}
-                >
-                  {message.timestamp
-                    ? dayjs(message.timestamp).format("HH:mm")
-                    : ""}
-                </span>
-              </>
-            )}
-          </div>
-        ))}
+        <div className="chat-container" ref={chatContainerRef}>
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`message ${message.sender === "user" ? "user" : "ai"
+                }`}
+            >
+              {message.isCode ? (
+                <MDEditor.Markdown
+                  source={message.text}
+                  style={{ whiteSpace: "pre-wrap" }}
+                />
+              ) : (
+                <>
+                  <p className="message-text">{message.text}</p>
+                  <span
+                    className={`time ${message.sender === "user" ? "user" : "ai"
+                      }`}
+                  >
+                    {message.timestamp
+                      ? dayjs(message.timestamp).format("HH:mm")
+                      : ""}
+                  </span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <InputBox sendMessage={sendMessage} loading={loading} />
       </div>
-      <InputBox sendMessage={sendMessage} loading={loading} />
-    </div>
     </>
   );
 };
