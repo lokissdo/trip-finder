@@ -142,7 +142,12 @@ const Hotel: React.FC = () => {
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-6">
-          {result &&
+          {result.length === 0 && (
+            <div className="text-xl font-bold font-customCardTitle">
+              No Results Found
+            </div>
+          )}
+          {result.length !== 0 &&
             result.map((hotel: THotel, index: number) => {
               return <HotelCard data={hotel} key={index} />;
             })}
