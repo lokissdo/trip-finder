@@ -18,7 +18,6 @@ const disabledDate: RangePickerProps["disabledDate"] = (current) => {
 };
 import { costRateOptions } from "../../assets/costOptions";
 import { UserOptions, defaultUserOptions } from "../../components/Search/UserOption";
-import { CostOptions } from "../../components/Search/CostOption";
 import { caculateCost } from "./hooks/caculateCost";
 import { generateRecommend } from "../../components/Search/hooks/generteRecommend";
 import { existInRecommendArray } from "./hooks/normalizeData";
