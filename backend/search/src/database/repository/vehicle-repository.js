@@ -159,6 +159,7 @@ class VehicleRepository {
             });
 
             console.log('Search - vehicle - Quẻy:', query.bool.must)
+            console.log('Search - vehicle - price:',  start," - ", end);
             const hits = response.hits.hits;
             console.log('Hits:', hits[1]);
     
