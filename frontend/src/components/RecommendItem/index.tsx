@@ -13,6 +13,7 @@ import { IoTodayOutline } from "react-icons/io5";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/date-formatter";
+import { RiRestaurantFill } from "react-icons/ri";
 
 const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
           <p className="m-2">{startDate}</p> <FaLongArrowAltRight />{" "}
           <span className="m-2">{endDate}</span>
         </div>
-        {output.vehicles && (
+        {(output.vehicles && output.vehicles.length > 0) && (
           <div className="flex justify-start items-center text-sm mt-2">
             <FaCarSide />
             <span className="ml-2"></span> {output.vehicles[0]?.type} -{" "}
@@ -111,12 +112,20 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
                 {index + 1}:{" "}
               </div>
 
-              <ul className="">
-                <li className="text-left">
-                  {dailySchedule.schedule.morning.name}
+              <ul className="flex-1">
+                <li className="flex justify-between gap-1 items-center">
+                  <span>{dailySchedule.schedule.morning.name}</span>
+                   {dailySchedule.midDayRestaurant && (
+                    <div className=" flex justify-start gap-1 items-center">
+                      <RiRestaurantFill /> {dailySchedule.midDayRestaurant.name} 
+                    </div>)}
                 </li>
-                <li className="text-left">
-                  {dailySchedule.schedule.afternoon.name}
+                <li className="flex justify-between gap-1 items-center">
+                  <span> {dailySchedule.schedule.afternoon.name}</span>
+                   {dailySchedule.afternoonRestaurant && (
+                   <div className="flex justify-start gap-1 items-center" >
+                      <RiRestaurantFill /> {dailySchedule.afternoonRestaurant.name} 
+                      </div>)}
                 </li>
               </ul>
             </div>
@@ -134,7 +143,7 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
         <button
           className=" self-center w-3/4 text-white border-none rounded-lg bg-green-400 px-4 py-2 font-bold text-xl mt-auto mb-2"
           onClick={async () => {
-            navigate("/recommendDetail", { state: { data: recommend.output } });
+            navigate("/recommendDetail", { state: { data: recommend } });
           }}
         >
           View More

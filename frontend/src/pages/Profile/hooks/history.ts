@@ -9,6 +9,7 @@ export const GetRecommendationHistories = async () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+  console.log("GetRecommendationHistories Response", response);
   const result = await response.json();
   console.log(await result);
   return await result;
@@ -23,9 +24,11 @@ export const PutRecommendationToHistories = async (id: string) => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-  const result = await response.json();
-  console.log("PutRecommendationToHistories Result", result);
-  return response.status === 200;
+  console.log("UpdateRecommendationNote Response", response);
+
+  return {
+    status: response.status,
+  };
 };
 
 export const UpdateRecommendationNote = async (
