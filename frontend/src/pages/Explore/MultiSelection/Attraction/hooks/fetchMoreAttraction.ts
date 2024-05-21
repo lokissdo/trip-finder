@@ -2,8 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 import { backend_dev } from "../../../../../service";
 import { TAttraction } from "../attraction";
 
-export const fetchAttraction = async (
+export const fetchMoreAttraction = async (
   setResult: Dispatch<SetStateAction<TAttraction[]>>,
+  setIsEnd: Dispatch<SetStateAction<boolean>>,
+  result: TAttraction[],
+  page: number,
   province?: { value: string; label: string } | null,
   name?: string,
   platform?: { value: string; label: string } | null,
@@ -20,10 +23,15 @@ export const fetchAttraction = async (
   };
   const response = await fetch(
     backend_dev.search +
-      `attractions?province=${params.province}&sort=${params.sort}&name=${params.name}&platform=${params.platform}`
+      `attractions?province=${params.province}&sort=${params.sort}&name=${params.name}&platform=${params.platform}&page=${page}`
   );
-  const result = await response.json();
-  console.log(await result);
-  setResult(result);
+  const moreResult = await response.json();
+  console.log("result: ", result);
+  const final = [...result, ...moreResult];
+  if ((await moreResult.length) < 20) {
+    setIsEnd(true);
+  }
+  console.log(await moreResult);
+  setResult(final);
   return result;
 };

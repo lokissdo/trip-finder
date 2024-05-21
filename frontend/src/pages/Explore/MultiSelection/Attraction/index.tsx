@@ -1,75 +1,139 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { options } from "../../../../assets/locationSelecion";
 import { fetchAttraction } from "./hooks/fetchAttraction";
 import { TAttraction } from "./attraction";
-import { FaLocationDot } from "react-icons/fa6";
 import Navbar from "../../../../components/Navbar";
+import { Divider } from "antd";
+import { optionsPlatform } from "../../../../assets/webSource";
+import { optionsSort } from "../../../../assets/sortType";
+import { fetchMoreAttraction } from "./hooks/fetchMoreAttraction";
+import AttractionCard from "./components/AttractionCard";
 
 const Attraction: React.FC = () => {
   const [province, setProvince] = useState<{
     value: string;
     label: string;
   } | null>(null);
-  const [result, setResult] = useState<TAttraction[]>();
+  const [name, setName] = useState("");
+  const [platform, setPlatform] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+  const [sort, setSort] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+  const [result, setResult] = useState<TAttraction[]>([]);
+  const [page, setPage] = useState<number>(2);
+  const [isEnd, setIsEnd] = useState<boolean>(false);
+  useEffect(() => {
+    const readyAttraction = async () => {
+      await fetchAttraction(setResult, province, name, platform, sort);
+    };
+    readyAttraction();
+  }, []);
   return (
     <div>
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
-      <Select
-        options={options}
-        isClearable
-        isSearchable
-        defaultValue={province}
-        onChange={setProvince}
-        placeholder="Province"
-      />
-      <button onClick={() => fetchAttraction(setResult, province)}>
-        Search
-      </button>
-      {result && (
-        <div className="mx-auto w-4/5">
-          <div className="flex flex-row gap-5">
-            <div className="basis-1/3">Sidebar</div>
-            <div className="basis-2/3 flex flex-col gap-4">
-              {result.map((res: TAttraction) => {
-                return (
-                  <button
-                    key={res._id}
-                    className="flex flex-row border-gray-100 border-t bg-white items-center shadow-md rounded-lg"
-                  >
-                    <img src={res.img_url} className="h-40 w-60 rounded-lg" />
-                    <div className="w-full flex flex-row px-4 justify-between items-center">
-                      <div className="self-start flex flex-col gap-4">
-                        <div className="flex font-semibold text-2xl font-customTitle">
-                          {res.name}
-                        </div>
-                        <div className="flex flex-row gap-1.5 items-center">
-                          <FaLocationDot size={20} color="#858585CC" />
-                          <p className="font-customDetail text-lg text-gray-400 max-w-96">
-                            {res.address}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col place-items-end">
-                        <div className="text-green-400 font-bold font-customDetail text-xl">
-                          {res.price === 0 ? "Free" : res.price + " VND"}
-                        </div>
-                        {res.price !== 0 && (
-                          <div className="text-gray-400 text-sm font-customDetail font-semibold">
-                            / person
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+      <div className="flex flex-row gap-5 px-24 my-6">
+        <div className="basis-1/3 h-screen sticky top-20 px-4">
+          <div className="font-customCardTitle text-xl font-bold">
+            Filter for attraction
           </div>
+          <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
+            Province
+          </div>
+          <Select
+            options={options}
+            isClearable
+            isSearchable
+            defaultValue={province}
+            onChange={setProvince}
+            placeholder="Province"
+          />
+          <Divider />
+          <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
+            Name
+          </div>
+          <input
+            type="text"
+            className="w-full rounded-md border-gray-300"
+            placeholder="Name of attraction"
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+          <Divider />
+          <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
+            Platform
+          </div>
+          <Select
+            options={optionsPlatform}
+            isClearable
+            isSearchable
+            defaultValue={platform}
+            onChange={setPlatform}
+            placeholder="Platform"
+          />
+          <Divider />
+          <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
+            Sort by price
+          </div>
+          <Select
+            options={optionsSort}
+            isClearable
+            isSearchable
+            defaultValue={sort}
+            onChange={setSort}
+            placeholder="Sort by price"
+          />
+          <button
+            className="bg-green-400 text-white text-xl font-bold py-2 px-8 rounded-lg mt-8"
+            onClick={() => {
+              window.scrollTo(0, 0);
+              fetchAttraction(setResult, province, name, platform, sort);
+              setIsEnd(false);
+              setPage(2);
+            }}
+          >
+            Search
+          </button>
         </div>
-      )}
+        <div className="basis-2/3 flex flex-col gap-4">
+          {result.length === 0 && (
+            <div className="text-xl font-bold font-customCardTitle">
+              No Results Found
+            </div>
+          )}
+          {result.length !== 0 &&
+            result.map((data: TAttraction, index: number) => {
+              return <AttractionCard data={data} key={index} />;
+            })}
+          {result.length !== 0 && !isEnd && (
+            <button
+              className="bg-green-400 text-white font-bold py-2 px-2 rounded w-2/5 self-center"
+              onClick={async () => {
+                await fetchMoreAttraction(
+                  setResult,
+                  setIsEnd,
+                  result,
+                  page,
+                  province,
+                  name,
+                  platform,
+                  sort
+                );
+                setPage(page + 1);
+              }}
+            >
+              More
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
