@@ -181,7 +181,7 @@ const Recommend: React.FC = () => {
                 Price (unit : VND)
               </div>
               <Slider
-                max={4000000}
+                max={10000000}
                 step={100000}
                 defaultValue={price}
                 tooltip={{ open: true, placement: 'bottom' }}
@@ -201,6 +201,11 @@ const Recommend: React.FC = () => {
                   let userOptionsQuery: UserOptions = defaultUserOptions;
                   if (checkboxGroupRef.current) {
                     userOptionsQuery = checkboxGroupRef.current.getValues() as unknown as UserOptions;
+                    if (userOptionsQuery.vehicleType) {
+                      userOptionsQuery.vehicleType = "Máy Bay"
+                    } else {
+                      userOptionsQuery.vehicleType = "Xe Khách"
+                    }
                   }
                   console.log("Filtering with", departure, arrival, startDate, endDate, price);
                   console.log("costOption", costOption)
@@ -251,8 +256,13 @@ const Recommend: React.FC = () => {
                           let userOptionsQuery: UserOptions = defaultUserOptions;
                           if (checkboxGroupRef.current) {
                             userOptionsQuery = checkboxGroupRef.current.getValues() as unknown as UserOptions;
+                            if (userOptionsQuery.vehicleType) {
+                              userOptionsQuery.vehicleType = "Máy Bay"
+                            } else {
+                              userOptionsQuery.vehicleType = "Xe Khách"
+                            }
                           }
-                          console.log("Filtering with", departure, arrival, startDate, endDate, price);
+                          console.log("Filtering with", departure, arrival, startDate, endDate, price, userOptionsQuery);
 
                           let costOptionQuery = caculateCost(price, costOption);
                           if (!departure || !arrival || !startDate || !endDate || !price) {
