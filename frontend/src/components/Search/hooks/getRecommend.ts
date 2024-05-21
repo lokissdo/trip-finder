@@ -1,8 +1,8 @@
 import { backend_dev } from "../../../service";
 
 export const getRecommend = async (
-  from: { value: string; label: string } | null,
-  to: { value: string; label: string } | null,
+  from: string,
+  to: string ,
   startDate: string,
   endDate: string,
   price: number
@@ -12,8 +12,8 @@ export const getRecommend = async (
   console.log(startDate);
   console.log(endDate);
   console.log(price);
-  const standardFrom = from?.label.replace(" ", "+");
-  const standardTo = to?.label.replace(" ", "+");
+  const standardFrom = from.replace(" ", "+");
+  const standardTo = to.replace(" ", "+");
   const cost = {
     itineray: price / 4,
     hotel: price / 4,

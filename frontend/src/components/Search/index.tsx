@@ -5,9 +5,11 @@ import dayjs from "dayjs";
 import Select from "react-select";
 import { SwapRightOutlined } from "@ant-design/icons";
 import { getRecommend } from "./hooks/getRecommend";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { options } from "../../assets/locationSelecion";
 import { NumericFormat } from "react-number-format";
+import { ensureArray } from "../../utils/object";
+import { toast, ToastContainer } from "react-toastify";
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   // Can not select days before today and today
@@ -27,6 +29,7 @@ const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
+      <ToastContainer />
       <div className="flex flex-row divide-x-2 gap-2 p-4">
         <div className="flex-2 flex flex-col gap-1">
           <div className="flex flex-row gap-1">
@@ -93,16 +96,34 @@ const SearchBar: React.FC = () => {
           className="text-white border-none rounded-lg bg-green-400 align-middle px-8 font-bold text-xl"
           onClick={async () => {
             setIsLoading(true);
-            const response = await getRecommend(
-              from,
-              to,
+            let response = await getRecommend(
+              from?.label || "",
+              to?.label || "",
               startDate,
               endDate,
               price
             );
-            if (await response) {
+            if (response) {
               setIsLoading(false);
-              navigate("/recommend", { state: { myObj: response } });
+              console.log(response);
+              try {
+                response = ensureArray(response);
+              } catch (e) {
+                toast.error("No journey found for your criteria");
+              }
+
+
+              navigate({
+                pathname: "/recommend",
+                search: `?${createSearchParams({
+                  departure: from?.label || "",
+                  arrival: to?.label || "",
+                  startDate,
+                  endDate,
+                  price: String(price),
+                })}`,
+              }, { state: { myObj: response } });
+
             }
           }}
         >
