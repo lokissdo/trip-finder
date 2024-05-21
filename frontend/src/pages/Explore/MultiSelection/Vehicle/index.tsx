@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
-import { DatePicker, DatePickerProps, Divider, GetProps, Slider } from "antd";
+import {
+  DatePicker,
+  DatePickerProps,
+  Divider,
+  FloatButton,
+  GetProps,
+  Slider,
+} from "antd";
 import { optionsVehicle } from "../../../../assets/vehicleType";
 import { fetchVehicle } from "./hooks/fetchVehicle";
 import dayjs from "dayjs";
@@ -72,7 +79,7 @@ const Vehicle: React.FC = () => {
       <div className="px-12 py-4 shadow-md">
         <Navbar />
       </div>
-      <div className="my-6 px-24 flex flex-row gap-5">
+      <div className="my-2 px-24 flex flex-row gap-5">
         <div className="basis-1/3 h-screen sticky top-10 px-10">
           <div className="font-customCardTitle text-xl font-bold">
             Filter for Transportations
@@ -187,7 +194,7 @@ const Vehicle: React.FC = () => {
               No Results Found
             </div>
           )}
-          {result.length !== 0 &&
+          {result &&
             result.map((res: TVehicle) => {
               return <VehicleCard data={res} key={res._id} />;
             })}
@@ -216,6 +223,10 @@ const Vehicle: React.FC = () => {
             </button>
           )}
         </div>
+        <FloatButton.BackTop
+          style={{ bottom: 30, right: 30 }}
+          visibilityHeight={1000}
+        />
       </div>
     </div>
   );

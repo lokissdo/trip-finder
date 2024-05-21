@@ -4,7 +4,7 @@ import { options } from "../../../../assets/locationSelecion";
 import { fetchAttraction } from "./hooks/fetchAttraction";
 import { TAttraction } from "./attraction";
 import Navbar from "../../../../components/Navbar";
-import { Divider } from "antd";
+import { Divider, FloatButton } from "antd";
 import { optionsPlatform } from "../../../../assets/webSource";
 import { optionsSort } from "../../../../assets/sortType";
 import { fetchMoreAttraction } from "./hooks/fetchMoreAttraction";
@@ -108,7 +108,7 @@ const Attraction: React.FC = () => {
               No Results Found
             </div>
           )}
-          {result.length !== 0 &&
+          {result &&
             result.map((data: TAttraction, index: number) => {
               return <AttractionCard data={data} key={index} />;
             })}
@@ -133,6 +133,10 @@ const Attraction: React.FC = () => {
             </button>
           )}
         </div>
+        <FloatButton.BackTop
+          style={{ bottom: 30, right: 30 }}
+          visibilityHeight={1000}
+        />
       </div>
     </div>
   );

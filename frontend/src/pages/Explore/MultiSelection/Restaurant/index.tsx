@@ -6,9 +6,8 @@ import { TRestaurant } from "./restaurant";
 import Navbar from "../../../../components/Navbar";
 import RestaurantCard from "./components/RestaurantCard";
 import { optionsSort } from "../../../../assets/sortType";
-import { BackTop, Divider, Slider } from "antd";
+import { Divider, FloatButton, Slider } from "antd";
 import { fetchMoreRestaurant } from "./hooks/fetchMoreRestaurant";
-import { FaArrowAltCircleUp } from "react-icons/fa";
 
 const Restaurant: React.FC = () => {
   const [province, setProvince] = useState<{
@@ -52,7 +51,7 @@ const Restaurant: React.FC = () => {
       <div className="flex flex-row gap-5 py-4 px-24">
         <div className="basis-1/3 h-screen sticky top-10 px-6">
           <div className="font-customCardTitle text-xl font-bold">
-            Filter for attraction
+            Filter for restaurant
           </div>
           <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
             Province
@@ -119,6 +118,11 @@ const Restaurant: React.FC = () => {
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-6">
+          {result.length === 0 && (
+            <div className="text-xl font-bold font-customCardTitle">
+              No Results Found
+            </div>
+          )}
           {result &&
             result.map((data: TRestaurant, index: number) => {
               return <RestaurantCard data={data} key={index} />;
@@ -145,9 +149,10 @@ const Restaurant: React.FC = () => {
             </button>
           )}
         </div>
-        <BackTop style={{ bottom: 30, right: 10 }} visibilityHeight={1000}>
-          <FaArrowAltCircleUp color="#858585CC" size={30} />
-        </BackTop>
+        <FloatButton.BackTop
+          style={{ bottom: 30, right: 30 }}
+          visibilityHeight={1000}
+        />
       </div>
     </div>
   );
