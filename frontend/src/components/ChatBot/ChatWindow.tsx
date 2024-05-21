@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import MDEditor from "@uiw/react-md-editor";
 import InputBox from "./InputBox";
 import { Avatar } from 'antd';
-import { MessageOutlined, CloseOutlined, SendOutlined } from '@ant-design/icons';
+import { MessageOutlined, CloseOutlined } from '@ant-design/icons';
 
 import "./style.css"; 
 

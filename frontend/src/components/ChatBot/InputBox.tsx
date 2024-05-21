@@ -32,6 +32,7 @@ const InputBox: React.FC<InputBoxProps> = ({ sendMessage, loading }) => {
         <input
           disabled={loading}
           type="text"
+          style={{width:200}}
           className="form-control"
           placeholder="Type a message..."
           value={loading ? "Loading..." : input}
