@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import SearchBar from "../../components/Search";
 import RecommendItem from "../../components/RecommendItem";
 import { ensureArray } from "../../utils/object";
