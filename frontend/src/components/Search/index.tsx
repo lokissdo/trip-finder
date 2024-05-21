@@ -106,6 +106,10 @@ const SearchBar: React.FC = () => {
             if (response) {
               setIsLoading(false);
               console.log(response);
+              if (response.error) {
+                toast.error(response.error);
+                return;
+              }
               try {
                 response = ensureArray(response);
               } catch (e) {
