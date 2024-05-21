@@ -233,7 +233,7 @@ const Recommend: React.FC = () => {
               </button>)}
 
             </div>
-            <div className="basis-2/3 center flex flex-col m-auto mt-7">
+            <div className="basis-1/2 center flex flex-col m-auto mt-7">
               <div className="w-100 flex flex-col basis-2">
                 {data.map((item: any, index: number) => (
                   <RecommendItem key={index} recommend={item} />
