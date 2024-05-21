@@ -15,9 +15,11 @@ const DailySchedule: React.FC<{ dayData: any; index: number }> = ({
         Day {index + 1} : {schedule.morning.name}, {schedule.afternoon.name}
       </div>
       <MidDaySchedule data={schedule.morning} />
-      <MidDayRestaurant data={morningRestaurant} />
+      {morningRestaurant &&  <MidDayRestaurant data={morningRestaurant} /> }
+
       <MidDaySchedule data={schedule.afternoon} />
-      <MidDayRestaurant data={afternoonRestaurant} />
+
+      {afternoonRestaurant &&  <MidDayRestaurant data={afternoonRestaurant} /> }
     </div>
   );
 };
