@@ -115,17 +115,17 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
               <ul className="flex-1">
                 <li className="flex justify-between gap-1 items-center">
                   <span>{dailySchedule.schedule.morning.name}</span>
-                   {dailySchedule.midDayRestaurant && (
+                   {/* {dailySchedule.midDayRestaurant && (
                     <div className=" flex justify-start gap-1 items-center">
                       <RiRestaurantFill /> {dailySchedule.midDayRestaurant.name} 
-                    </div>)}
+                    </div>)} */}
                 </li>
                 <li className="flex justify-between gap-1 items-center">
                   <span> {dailySchedule.schedule.afternoon.name}</span>
-                   {dailySchedule.afternoonRestaurant && (
+                   {/* {dailySchedule.afternoonRestaurant && (
                    <div className="flex justify-start gap-1 items-center" >
                       <RiRestaurantFill /> {dailySchedule.afternoonRestaurant.name} 
-                      </div>)}
+                      </div>)} */}
                 </li>
               </ul>
             </div>
