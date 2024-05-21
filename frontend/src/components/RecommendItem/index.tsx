@@ -134,7 +134,7 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
         <button
           className=" self-center w-3/4 text-white border-none rounded-lg bg-green-400 px-4 py-2 font-bold text-xl mt-auto mb-2"
           onClick={async () => {
-            navigate("/recommend", { state: { myObj: recommend.output } });
+            navigate("/recommendDetail", { state: { data: recommend.output } });
           }}
         >
           View More

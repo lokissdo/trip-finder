@@ -215,18 +215,12 @@ class RecommendRepository {
         console.log("Daily schedules:", dailySchedules);
 
         const recommend = new Recommend();
-
-        if (!existUserOptions) {
-            userOptions = undefined;
-        }
-        if (!existCostOptions) {
-            costOptions = undefined;
-        }
-        Recommend.create({
+        const bodyRecommend = {
             _id: recommend._id,
             destination,
             departure,
             startDate,
+            count:0,
             endDate,
             costOptions,
             userOptions,
@@ -234,22 +228,22 @@ class RecommendRepository {
                 hotel,
                 vehicles,
                 dailySchedules,
-                weather: weatherData._id
+                weather: weatherData
             }
-
-        }).then((recommend) => {
+        };
+        if (!existUserOptions) {
+            userOptions = undefined;
+        }
+        if (!existCostOptions) {
+            costOptions = undefined;
+        }
+        Recommend.create(bodyRecommend).then((recommend) => {
             console.log("Recommendation created:", recommend);
         }).catch((err) => {
             console.log("Error creating recommendation:", err);
         });
 
-        return {
-            _id: recommend._id,
-            weather: weatherData,
-            hotel,
-            vehicles,
-            dailySchedules
-        };
+        return bodyRecommend;
 
     }
 
@@ -397,13 +391,7 @@ class RecommendRepository {
             { path: 'output.weather' }
         ]);
 
-        return recommendations.map(rec => ({
-            _id: rec._id,
-            weather: rec.output.weather,
-            hotel: rec.output.hotel,
-            vehicles: rec.output.vehicles,
-            dailySchedules: rec.output.dailySchedules
-        }));
+        return recommendations;
     }
 
 
