@@ -6,6 +6,8 @@ export type TAttraction = {
   long: string;
   name: string;
   platform: string;
+  rating: number;
+  likn: string;
   price: number;
   province: string;
   _id: string;
