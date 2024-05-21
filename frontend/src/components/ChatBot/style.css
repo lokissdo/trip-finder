@@ -4,6 +4,8 @@
   margin-bottom: 16px;
   border-radius: 8px;
   border: 0.5px solid #616060;
+  padding-top:12px;
+  padding-bottom:12px;
 }
 
 .time {
@@ -85,6 +87,8 @@ body.dark-mode {
 
 
 .chat-container {
+  display:flex;
+  flex-direction: column;
   flex-grow: 1;
   overflow-y: auto;
   padding-top: 10px;

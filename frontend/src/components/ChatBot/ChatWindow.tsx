@@ -19,13 +19,13 @@ interface Message {
   isCode?: boolean;
 }
 
-const Header: React.FC = () => {
-  return (
-    <div className="header">
-      <small>Xin chào, tôi có thể giúp gì cho bạn?</small>
-    </div>
-  );
-};
+// const Header: React.FC = () => {
+//   return (
+//     <div className="header">
+//       <small>Xin chào, tôi có thể giúp gì cho bạn?</small>
+//     </div>
+//   );
+// };
 
 const ChatWindow: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ const ChatWindow: React.FC = () => {
   };
 
   const [chatVisible, setChatVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null); // Ref for input field
+  // const inputRef = useRef<HTMLInputElement>(null); // Ref for input field
 
   const toggleChatWindow = () => {
     setChatVisible(!chatVisible);
@@ -87,16 +87,16 @@ const ChatWindow: React.FC = () => {
     setChatVisible(false);
   };
 
-  const handleSendButtonClick = () => {
-    // Retrieve the input text from the input field
-    const inputText = inputRef.current?.value || '';
-    // Call sendMessage with the input text
-    sendMessage(inputText);
-    // Clear the input field after sending the message
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
+  // const handleSendButtonClick = () => {
+  //   // Retrieve the input text from the input field
+  //   const inputText = inputRef.current?.value || '';
+  //   // Call sendMessage with the input text
+  //   sendMessage(inputText);
+  //   // Clear the input field after sending the message
+  //   if (inputRef.current) {
+  //     inputRef.current.value = '';
+  //   }
+  // };
 
   return (
     <>
