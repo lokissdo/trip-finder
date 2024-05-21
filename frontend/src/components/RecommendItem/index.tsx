@@ -13,7 +13,6 @@ import { IoTodayOutline } from "react-icons/io5";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/date-formatter";
-import { RiRestaurantFill } from "react-icons/ri";
 
 const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
   const navigate = useNavigate();
