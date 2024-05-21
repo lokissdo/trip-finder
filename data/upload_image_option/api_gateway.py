@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import os
 import PIL.Image
 import google.generativeai as genai
@@ -38,6 +38,11 @@ with open("api_key.txt", "r") as file:
 generative_model_service = GenerativeModelService(api_key)
 # Initialize ContentGenerator with GenerativeModelService dependency
 content_generator = ContentGenerator(generative_model_service)
+
+# Endpoint to serve UI
+@app.route('/')
+def serve_ui():
+    return send_from_directory('', 'ui.html')
 
 # Endpoint to generate content from uploaded image
 @app.route('/generate-content', methods=['POST'])
