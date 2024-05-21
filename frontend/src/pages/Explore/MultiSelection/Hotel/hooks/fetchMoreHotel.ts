@@ -28,10 +28,6 @@ export const fetchMoreHotel = async (
     end: endPrice || "",
     start: startPrice || "0",
   };
-  console.log(
-    backend_dev.search +
-      `hotels?province=${params.province}&checkinDate=${params.checkinDate}&start=${params.start}&end=${params.end}&page=${page}`
-  );
   const response = await fetch(
     backend_dev.search +
       `hotels?province=${params.province}&checkinDate=${params.checkinDate}&start=${params.start}&end=${params.end}&page=${page}`

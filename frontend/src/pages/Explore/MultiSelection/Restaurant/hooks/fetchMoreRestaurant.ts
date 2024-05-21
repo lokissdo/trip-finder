@@ -2,8 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 import { backend_dev } from "../../../../../service";
 import { TRestaurant } from "../restaurant";
 
-export const fetchRestaurant = async (
+export const fetchMoreRestaurant = async (
   setResult: Dispatch<SetStateAction<TRestaurant[]>>,
+  setIsEnd: Dispatch<SetStateAction<boolean>>,
+  result: TRestaurant[],
+  page: number,
   province?: { value: string; label: string } | null,
   name?: string,
   startPrice?: number,
@@ -21,10 +24,15 @@ export const fetchRestaurant = async (
   };
   const response = await fetch(
     backend_dev.search +
-      `restaurants?province=${params.province}&sort=${params.sort}&name=${params.name}&start=${params.startPrice}&end=${params.endPrice}`
+      `restaurants?province=${params.province}&sort=${params.sort}&page=${page}&name=${params.name}&start=${params.startPrice}&end=${params.endPrice}`
   );
-  const result = await response.json();
-  console.log(await result);
-  setResult(result);
+  const moreResult = await response.json();
+  console.log("result: ", result);
+  const final = [...result, ...moreResult];
+  if ((await moreResult.length) < 20) {
+    setIsEnd(true);
+  }
+  console.log(await moreResult);
+  setResult(final);
   return result;
 };
