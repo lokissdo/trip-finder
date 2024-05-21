@@ -4,14 +4,17 @@ import { TVehicle } from "../vehicle";
 
 export const fetchMoreVehicle = async (
   setResult: Dispatch<SetStateAction<TVehicle[]>>,
+  setIsEnd: Dispatch<SetStateAction<boolean>>,
   result: TVehicle[],
   page: number,
   from?: { value: string; label: string } | null,
   to?: { value: string; label: string } | null,
   date?: string | string[],
   vehicle?: { value: string; label: string } | null,
+  brand?: string,
   endPrice?: number,
-  startPrice?: number
+  startPrice?: number,
+  sort?: { value: string; label: string } | null
 ) => {
   const standardFrom = from?.label.replace(" ", "+");
   const standardTo = to?.label.replace(" ", "+");
@@ -20,19 +23,23 @@ export const fetchMoreVehicle = async (
     departure: standardFrom || "",
     arrival: standardTo || "",
     vehicle: standardVehicle || "",
+    brand: brand || "",
     start: startPrice || "0",
     end: endPrice || "",
     departureTime: date || "",
+    sort: sort?.value || "",
   };
   const response = await fetch(
     backend_dev.search +
-      `vehicles?departure=${params.departure}&arrival=${params.arrival}&type=${params.vehicle}&start=${params.start}&end=${params.end}&date=${params.departureTime}&page=${page}`
+      `vehicles?departure=${params.departure}&arrival=${params.arrival}&type=${params.vehicle}&start=${params.start}&end=${params.end}&date=${params.departureTime}&brand=${params.brand}&sort=${params.sort}&page=${page}`
   );
   const moreResult = await response.json();
   console.log("result: ", result);
   const final = [...result, ...moreResult];
+  if ((await moreResult.length) < 20) {
+    setIsEnd(true);
+  }
   console.log(await moreResult);
-  console.log("final: ", final);
   setResult(final);
-  return final;
+  return result;
 };
