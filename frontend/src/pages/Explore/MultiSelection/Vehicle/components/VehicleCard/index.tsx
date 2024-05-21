@@ -28,7 +28,7 @@ const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
             className="w-96 h-60 rounded-lg"
           />
         </div>
-        <div className="basis-3/5 w-full h-full flex flex-col px-4 py-4 justify-between items-start">
+        <div className="basis-3/5 w-full h-60 flex flex-col px-4 py-4 justify-between items-start">
           <div className="flex flex-row w-full justify-between">
             <div className="self-start flex flex-col gap-4">
               <div className="flex font-semibold text-2xl font-customCardTitle">

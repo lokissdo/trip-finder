@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { options } from "../../../../assets/locationSelecion";
 import Select from "react-select";
-import { DatePicker, Divider, GetProps, Slider } from "antd";
+import { DatePicker, Divider, FloatButton, GetProps, Slider } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
 import { fetchHotel } from "./hooks/fetchHotel";
@@ -147,7 +147,7 @@ const Hotel: React.FC = () => {
               No Results Found
             </div>
           )}
-          {result.length !== 0 &&
+          {result &&
             result.map((hotel: THotel, index: number) => {
               return <HotelCard data={hotel} key={index} />;
             })}
@@ -174,6 +174,10 @@ const Hotel: React.FC = () => {
             </button>
           )}
         </div>
+        <FloatButton.BackTop
+          style={{ bottom: 30, right: 30 }}
+          visibilityHeight={1000}
+        />
       </div>
     </div>
   );
