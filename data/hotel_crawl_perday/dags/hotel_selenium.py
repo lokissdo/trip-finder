@@ -7,6 +7,31 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import time
+from azure.storage.blob import BlobServiceClient
+import io
+
+connection_string = "DefaultEndpointsProtocol=https;AccountName=datalakegroup10;AccountKey=OaZXaAK7tDLzMih9jwkU57hXfyus9mDCXxO4HVtKrCr9Y2PYx9QvKQhFrRfvB0z895rH9wvFwPa3+AStq6y0aQ==;EndpointSuffix=core.windows.net"
+blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+def save_to_azure_blob(hotel_data, province):
+    container_name = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+    blob_name = f"{province.replace(' ', '_')}_hotels.csv"
+    
+    try:
+        container_client = blob_service_client.get_container_client(container_name)
+        if not container_client.exists():
+            container_client.create_container()
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+        blob_data = io.BytesIO()
+        writer = csv.DictWriter(blob_data, fieldnames=hotel_data[0].keys())
+        writer.writeheader()
+        writer.writerows(hotel_data)
+        blob_data.seek(0)
+        blob_client.upload_blob(blob_data, overwrite=True)
+
+        print(f"Saved {blob_name} to Azure Blob Storage in container {container_name}.")
+    except Exception as e:
+        print(f"Error saving {blob_name} to Azure Blob Storage: {e}")
 
 def get_current_utc_time():
     return datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
@@ -167,8 +192,11 @@ def get_hotel_names(driver, url, province, checkin, checkout):
 
 def main():
     provinces = [
+        ("TP Hồ Chí Minh", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+h%E1%BB%93+ch%C3%AD+minh/@10.8023364,106.635526,13z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?hl=vi-VN&entry=ttu"),
+        ("Đà Nẵng", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+%C4%91%C3%A0+n%E1%BA%B5ng/@16.0551159,108.2063926,14z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?hl=vi-VN&entry=ttu"),
         ("Hà Nội", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+h%C3%A0+n%E1%BB%99i/@21.0293273,105.8390507,14z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?hl=vi&entry=ttu"),
-        ("Phú Quốc", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+ph%C3%BA+qu%E1%BB%91c/@10.1836554,103.766236,11z/data=!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?authuser=0&hl=vi&entry=ttu")
+        ("Phú Quốc", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+ph%C3%BA+qu%E1%BB%91c/@10.1836554,103.766236,11z/data=!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?authuser=0&hl=vi&entry=ttu"),
+        ("Quảng Nam", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+qu%E1%BA%A3ng+nam/@15.7000862,108.2734714,10.45z/data=!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?hl=vi-VN&entry=ttu"),
     ]
 
     start_date = datetime.datetime(2024, 6, 1)  
@@ -180,7 +208,7 @@ def main():
         for province, url_template in provinces:
             print(f"Scraping data for {province}:")
             current_date = start_date
-            province_data = {}  
+            province_data = []  
             while current_date <= end_date:
                 next_day = current_date + datetime.timedelta(days=1)
                 formatted_date = current_date.strftime("%Y-%m-%d")
@@ -193,27 +221,14 @@ def main():
                     print(name)
                 assert len(hotel_names) > 0, "No hotel names found"
 
-                province_data[formatted_date] = hotel_names 
-                province_data['current_time'] = get_current_utc_time()
-                print("-" * 50)  
+                province_data.extend(hotel_names)  
                 current_date = next_day  
 
-                # Lưu dữ liệu vào file CSV cho từng tỉnh/thành phố
-                csv_filename = f"/Users/thao/datalake/{province.replace(' ', '_')}_hotels.csv"
+                print("-" * 50)
 
-                # Viết dữ liệu vào CSV
-                csv_columns = ["name", "link", "rating", "image_url", "standard", "price", "description", "platform", "price_platform", "url_platform", "checkin", "checkout", "province", "current_time"]
 
-                try:
-                    file_exists = os.path.isfile(csv_filename)
-                    with open(csv_filename, 'a', newline='', encoding='utf-8') as csv_file:
-                        writer = csv.DictWriter(csv_file, fieldnames=csv_columns)
-                        if not file_exists:
-                            writer.writeheader()
-                        for hotel in hotel_names:
-                            writer.writerow(hotel)
-                except Exception as e:
-                    print(f"Error saving data to CSV file for {province}: {e}")
+            if province_data:
+                save_to_azure_blob(province_data, province)
 
     except WebDriverException as e:
         print(f"Error initiating WebDriver: {e}")
@@ -222,5 +237,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-       
