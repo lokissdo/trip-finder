@@ -1,6 +1,7 @@
 import Navbar from "../../components/Navbar";
 import SearchBar from "../../components/Search";
 import TopRecommendations from "../../components/TopRecommendations";
+import ChatWindow from "../../components/ChatBot/ChatWindow";
 
 const Home: React.FC = () => {
   document.title = "TripFinder";
@@ -20,6 +21,7 @@ const Home: React.FC = () => {
       <div className="mt-5 w-full ">
         <TopRecommendations />
       </div>
+      <ChatWindow/>
     </div>
   );
 };

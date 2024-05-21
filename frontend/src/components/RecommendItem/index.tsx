@@ -13,7 +13,6 @@ import { IoTodayOutline } from "react-icons/io5";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/date-formatter";
-import { RiRestaurantFill } from "react-icons/ri";
 
 const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
   const navigate = useNavigate();
@@ -115,17 +114,17 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
               <ul className="flex-1">
                 <li className="flex justify-between gap-1 items-center">
                   <span>{dailySchedule.schedule.morning.name}</span>
-                   {dailySchedule.midDayRestaurant && (
+                   {/* {dailySchedule.midDayRestaurant && (
                     <div className=" flex justify-start gap-1 items-center">
                       <RiRestaurantFill /> {dailySchedule.midDayRestaurant.name} 
-                    </div>)}
+                    </div>)} */}
                 </li>
                 <li className="flex justify-between gap-1 items-center">
                   <span> {dailySchedule.schedule.afternoon.name}</span>
-                   {dailySchedule.afternoonRestaurant && (
+                   {/* {dailySchedule.afternoonRestaurant && (
                    <div className="flex justify-start gap-1 items-center" >
                       <RiRestaurantFill /> {dailySchedule.afternoonRestaurant.name} 
-                      </div>)}
+                      </div>)} */}
                 </li>
               </ul>
             </div>
