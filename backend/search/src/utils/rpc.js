@@ -11,10 +11,11 @@ const getChannel = async () => {
 };
 
 
-const MAX_TIME_OUT = 8000;
+const MAX_TIME_OUT = 80000;
 
 const RPCObserver = async (RPC_QUEUE_NAME, service) => {
   const channel = await getChannel();
+  console.log("RPC Observer started", RPC_QUEUE_NAME);
   await channel.assertQueue(RPC_QUEUE_NAME, {
     durable: false,
   });
@@ -69,8 +70,7 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
 
             resolve(JSON.parse(msg.content.toString()));
             clearTimeout(timeout);
-
-
+            channel.close();
           } else {
             reject("data Not found!");
           }
@@ -79,10 +79,11 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
           noAck: true,
         }
       );
-    }).finally(() => {
-      console.log("Closing queue", q.queue,);
-      channel.deleteQueue(q.queue);
-    });
+    })
+    // .finally(() => {
+    //   console.log("Closing queue", q.queue,);
+    //   channel.deleteQueue(q.queue);
+    // });
   } catch (error) {
     console.log(error);
     return "error";

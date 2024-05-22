@@ -5,7 +5,7 @@ const IndexingService = require('../services/indexing-service');
 
 
 
-module.exports = (app, channel) => {
+module.exports = (app) => {
 
     const service = new IndexingService();
 

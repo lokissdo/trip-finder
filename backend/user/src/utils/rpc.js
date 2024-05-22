@@ -11,7 +11,7 @@ const getChannel = async () => {
 };
 
 
-const MAX_TIME_OUT = 8000;
+const MAX_TIME_OUT = 80000;
 
 const RPCObserver = async (RPC_QUEUE_NAME, service) => {
   const channel = await getChannel();
