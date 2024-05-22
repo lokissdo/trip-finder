@@ -1,7 +1,8 @@
+import React from "react";
 import Navbar from "../../components/Navbar";
 import SearchBar from "../../components/Search";
 import TopRecommendations from "../../components/TopRecommendations";
-import ChatWindow from "../../components/ChatBot/ChatWindow";
+import ImageUploader from "../../components/ImageAi/ImageUploader"; 
 
 const Home: React.FC = () => {
   document.title = "TripFinder";
@@ -9,7 +10,7 @@ const Home: React.FC = () => {
     <div>
       <div className="relative">
         <div style={{ height: 550 }} className="overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1605036687969-9c2878c7395b" />
+          <img src="https://images.unsplash.com/photo-1605036687969-9c2878c7395b" alt="Background" />
         </div>
         <div className="absolute top-0 w-full px-12 py-8">
           <Navbar />
@@ -18,10 +19,10 @@ const Home: React.FC = () => {
           <SearchBar />
         </div>
       </div>
-      <div className="mt-5 w-full ">
+      <div className="mt-5 w-full">
         <TopRecommendations />
       </div>
-      <ChatWindow/>
+      <ImageUploader /> {/* Add the ImageUploader component here */}
     </div>
   );
 };
