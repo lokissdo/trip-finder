@@ -8,7 +8,7 @@ import re
 def parse_duration(duration):
     """
     Parse a duration string and return a timedelta object.
-
+    
     Args:
         duration (str): A string representing a duration in the format 'X giờ Y phút'.
 
