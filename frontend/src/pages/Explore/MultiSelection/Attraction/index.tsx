@@ -4,11 +4,11 @@ import { options } from "../../../../assets/locationSelecion";
 import { fetchAttraction } from "./hooks/fetchAttraction";
 import { TAttraction } from "./attraction";
 import Navbar from "../../../../components/Navbar";
-import { Divider, FloatButton } from "antd";
-import { optionsPlatform } from "../../../../assets/webSource";
+import { Divider, FloatButton, Spin } from "antd";
 import { optionsSort } from "../../../../assets/sortType";
 import { fetchMoreAttraction } from "./hooks/fetchMoreAttraction";
 import AttractionCard from "./components/AttractionCard";
+import { optionsAttractionPlatform } from "../../../../assets/attractionSource";
 
 const Attraction: React.FC = () => {
   const [province, setProvince] = useState<{
@@ -27,9 +27,13 @@ const Attraction: React.FC = () => {
   const [result, setResult] = useState<TAttraction[]>([]);
   const [page, setPage] = useState<number>(2);
   const [isEnd, setIsEnd] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const readyAttraction = async () => {
+      window.scrollTo(0, 0);
+      setIsLoading(true);
       await fetchAttraction(setResult, province, name, platform, sort);
+      setIsLoading(false);
     };
     readyAttraction();
   }, []);
@@ -71,7 +75,7 @@ const Attraction: React.FC = () => {
             Platform
           </div>
           <Select
-            options={optionsPlatform}
+            options={optionsAttractionPlatform}
             isClearable
             isSearchable
             defaultValue={platform}
@@ -94,7 +98,9 @@ const Attraction: React.FC = () => {
             className="bg-green-400 text-white text-xl font-bold py-2 px-8 rounded-lg mt-8"
             onClick={() => {
               window.scrollTo(0, 0);
+              setIsLoading(true);
               fetchAttraction(setResult, province, name, platform, sort);
+              setIsLoading(false);
               setIsEnd(false);
               setPage(2);
             }}
@@ -103,7 +109,17 @@ const Attraction: React.FC = () => {
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-4">
-          {result.length === 0 && (
+          {isLoading && (
+            <div className="flex flex-col">
+              <div className="px-4 py-3 self-center flex flex-row items-center gap-3">
+                <Spin size="large" />
+                <span className="text-lg font-customCardTitle font-semibold">
+                  Loading attraction
+                </span>
+              </div>
+            </div>
+          )}
+          {!isLoading && result.length === 0 && (
             <div className="text-xl font-bold font-customCardTitle">
               No Results Found
             </div>

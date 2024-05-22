@@ -61,7 +61,7 @@ const Hotel: React.FC = () => {
         <Navbar />
       </div>
       <div className="my-6 flex flex-row gap-2 px-24">
-        <div className="basis-1/3 h-screen sticky top-10 px-4">
+        <div className="basis-1/3 h-screen sticky top-2 px-4">
           <div className="font-customCardTitle text-xl font-bold">
             Filter for Hotels
           </div>
@@ -107,6 +107,7 @@ const Hotel: React.FC = () => {
             isClearable
             isSearchable
             defaultValue={platform}
+            maxMenuHeight={150}
             onChange={setPlatform}
             placeholder="Platform"
           />

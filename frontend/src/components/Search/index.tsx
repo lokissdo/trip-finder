@@ -116,18 +116,19 @@ const SearchBar: React.FC = () => {
                 toast.error("No journey found for your criteria");
               }
 
-
-              navigate({
-                pathname: "/recommend",
-                search: `?${createSearchParams({
-                  departure: from?.label || "",
-                  arrival: to?.label || "",
-                  startDate,
-                  endDate,
-                  price: String(price),
-                })}`,
-              }, { state: { myObj: response } });
-
+              navigate(
+                {
+                  pathname: "/recommend",
+                  search: `?${createSearchParams({
+                    departure: from?.label || "",
+                    arrival: to?.label || "",
+                    startDate,
+                    endDate,
+                    price: String(price),
+                  })}`,
+                },
+                { state: { myObj: response } }
+              );
             }
           }}
         >
@@ -135,9 +136,13 @@ const SearchBar: React.FC = () => {
         </button>
       </div>
       {isLoading && (
-        <div className="m-auto px-4 py-3 self-center flex flex-row items-center gap-3">
-          <Spin size="large" />
-          <span>Finding a journey for you</span>
+        <div className="flex flex-col">
+          <div className="px-4 py-3 self-center flex flex-row items-center gap-3">
+            <Spin size="large" />
+            <span className="text-lg font-customCardTitle font-semibold">
+              Finding a journey for you
+            </span>
+          </div>
         </div>
       )}
     </>

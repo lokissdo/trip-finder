@@ -80,7 +80,7 @@ const Vehicle: React.FC = () => {
         <Navbar />
       </div>
       <div className="my-2 px-24 flex flex-row gap-5">
-        <div className="basis-1/3 h-screen sticky top-10 px-10">
+        <div className="basis-1/3 h-screen sticky top-2 px-10">
           <div className="font-customCardTitle text-xl font-bold">
             Filter for Transportations
           </div>

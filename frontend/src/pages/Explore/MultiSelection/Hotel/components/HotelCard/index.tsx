@@ -4,12 +4,7 @@ import { Divider, Modal } from "antd";
 import { FaLocationDot, FaStar } from "react-icons/fa6";
 import { NumericFormat } from "react-number-format";
 import { BsDot } from "react-icons/bs";
-import {
-  Agoda,
-  Booking,
-  Traveloka,
-  TripAdvisor,
-} from "../../../../../../assets/WebAvatar";
+import HotelAvatar from "../HotelAvatar";
 
 const HotelCard: React.FC<{ data: THotel }> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -141,7 +136,6 @@ const HotelCard: React.FC<{ data: THotel }> = ({ data }) => {
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-col place-items-end">
                 <div className="flex flex-row items-start gap-1">
                   <NumericFormat
@@ -158,29 +152,10 @@ const HotelCard: React.FC<{ data: THotel }> = ({ data }) => {
                 <span className="text-gray-400 text-md font-semibold">
                   / day
                 </span>
-                {data.platform === "Traveloka.com" ? (
-                  <img
-                    src={Traveloka}
-                    className="mt-1"
-                    width={100}
-                    height={80}
-                  />
-                ) : data.platform === "Booking.com" ? (
-                  <img src={Booking} className="mt-1" width={100} height={80} />
-                ) : data.platform === "Agoda" ? (
-                  <img src={Agoda} className="mt-1" width={90} height={70} />
-                ) : data.platform === "Tripadvisor.com.vn" ? (
-                  <img
-                    src={TripAdvisor}
-                    className="mt-1"
-                    width={100}
-                    height={80}
-                  />
-                ) : (
-                  <div className="font-semibold text-gray-600">
-                    {data.platform}
-                  </div>
-                )}
+                <HotelAvatar
+                  platform={data.platform}
+                  page_url={data.page_url}
+                />
               </div>
             </div>
             <div className="flex flex-row gap-2 items-center">
