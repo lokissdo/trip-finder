@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { getRecommend } from "../../components/Search/hooks/getRecommend";
 import { Collapse, DatePicker, Divider, GetProps, Slider, Spin } from "antd";
 import dayjs from "dayjs";
-import Select from 'react-select';
+import Select from "react-select";
 import { options } from "../../assets/locationSelecion";
 import CheckboxGroup from "../../components/Search/checkbox";
 import { checkboxes } from "../../assets/userOption";
@@ -17,12 +17,13 @@ const disabledDate: RangePickerProps["disabledDate"] = (current) => {
   return current && current < dayjs().endOf("day");
 };
 import { costRateOptions } from "../../assets/costOptions";
-import { UserOptions, defaultUserOptions } from "../../components/Search/UserOption";
+import {
+  UserOptions,
+  defaultUserOptions,
+} from "../../components/Search/UserOption";
 import { caculateCost } from "./hooks/caculateCost";
 import { generateRecommend } from "../../components/Search/hooks/generteRecommend";
 import { existInRecommendArray } from "./hooks/normalizeData";
-
-
 
 const { RangePicker } = DatePicker;
 const Recommend: React.FC = () => {
@@ -41,26 +42,23 @@ const Recommend: React.FC = () => {
   const [arrival, setArrival] = useState<string>(to);
   const [costOption, setCostOption] = useState<any>(costRateOptions[0].value);
 
-  let priceStr = searchParams.get("price") ?? "";
+  const priceStr = searchParams.get("price") ?? "";
   // label is string, value is number
   const [price, setPrice] = useState<number>(parseInt(priceStr) || 0);
 
-
-
-  const checkboxGroupRef = useRef<{ getValues: () => { [key: string]: boolean } }>(null);
-
+  const checkboxGroupRef = useRef<{
+    getValues: () => { [key: string]: boolean };
+  }>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFilterLoading, setIsFilterLoading] = useState<boolean>(false);
   const [enableGenerate, setEnableGenerate] = useState<boolean>(true);
 
   useEffect(() => {
-
     const fetchRecommendations = async () => {
-
-      let price = parseInt(priceStr);
+      const price = parseInt(priceStr);
       if (!from || !to || !startDate || !endDate || !price) {
-        setData([])
+        setData([]);
         return;
       }
 
@@ -105,7 +103,7 @@ const Recommend: React.FC = () => {
                   options={options}
                   onChange={(value) => {
                     console.log("From", value);
-                    let valueStr = value!.label;
+                    const valueStr = value!.label;
                     setDeparture(valueStr);
                   }}
                   placeholder="From"
@@ -119,7 +117,7 @@ const Recommend: React.FC = () => {
                   placeholder="To"
                   onChange={(value) => {
                     console.log("From", value);
-                    let valueStr = value!.label;
+                    const valueStr = value!.label;
                     setArrival(valueStr);
                   }}
                   className="min-w-44 h-10"
@@ -130,8 +128,7 @@ const Recommend: React.FC = () => {
                 Date
               </div>
               <div className="flex-2 flex flex-col gap-1">
-                <div className="flex flex-row gap-1">
-                </div>
+                <div className="flex flex-row gap-1"></div>
                 <RangePicker
                   style={{ height: 38 }}
                   disabledDate={disabledDate}
@@ -148,10 +145,6 @@ const Recommend: React.FC = () => {
               </div>
               <Divider />
 
-
-
-
-
               <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
                 Interest In
               </div>
@@ -161,19 +154,27 @@ const Recommend: React.FC = () => {
                 defaultValue={costRateOptions[0]}
                 onChange={(value) => {
                   setCostOption(value!.value);
-
                 }}
                 isSearchable
                 placeholder="Sort by price"
               />
-              <Divider />
-
               <Collapse
-                items={[{
-                  key: '1', label: <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
-                    More
-                  </div>, children: <CheckboxGroup ref={checkboxGroupRef} checkboxes={checkboxes} />
-                }]}
+                items={[
+                  {
+                    key: "1",
+                    label: (
+                      <div className="text-start font-customDetail text-lg text-gray-600 font-semibold">
+                        More
+                      </div>
+                    ),
+                    children: (
+                      <CheckboxGroup
+                        ref={checkboxGroupRef}
+                        checkboxes={checkboxes}
+                      />
+                    ),
+                  },
+                ]}
               />
 
               <Divider />
@@ -184,54 +185,75 @@ const Recommend: React.FC = () => {
                 max={10000000}
                 step={100000}
                 defaultValue={price}
-                tooltip={{ open: true, placement: 'bottom' }}
+                tooltip={{ open: true, placement: "bottom" }}
                 onChangeComplete={(e) => {
                   console.log("Price changed", e);
                   setPrice(e);
                 }}
               />
 
-
-              {isFilterLoading ? <Spin className="mt-10" size="large" /> : (<button
-
-                className="mt-10 mb-10 bg-green-400 text-white text-xl font-bold py-2 px-6 rounded-lg"
-                onClick={async () => {
-                  if (isFilterLoading)
-                    return;
-                  let userOptionsQuery: UserOptions = defaultUserOptions;
-                  if (checkboxGroupRef.current) {
-                    userOptionsQuery = checkboxGroupRef.current.getValues() as unknown as UserOptions;
-                    if (userOptionsQuery.vehicleType) {
-                      userOptionsQuery.vehicleType = "Máy Bay"
-                    } else {
-                      userOptionsQuery.vehicleType = "Xe Khách"
+              {isFilterLoading ? (
+                <Spin className="mt-10" size="large" />
+              ) : (
+                <button
+                  className="mt-10 mb-10 bg-green-400 text-white text-xl font-bold py-2 px-6 rounded-lg"
+                  onClick={async () => {
+                    if (isFilterLoading) return;
+                    let userOptionsQuery: UserOptions = defaultUserOptions;
+                    if (checkboxGroupRef.current) {
+                      userOptionsQuery =
+                        checkboxGroupRef.current.getValues() as unknown as UserOptions;
+                      if (userOptionsQuery.vehicleType) {
+                        userOptionsQuery.vehicleType = "Máy Bay";
+                      } else {
+                        userOptionsQuery.vehicleType = "Xe Khách";
+                      }
                     }
-                  }
-                  console.log("Filtering with", departure, arrival, startDate, endDate, price);
-                  console.log("costOption", costOption)
+                    console.log(
+                      "Filtering with",
+                      departure,
+                      arrival,
+                      startDate,
+                      endDate,
+                      price
+                    );
+                    console.log("costOption", costOption);
 
-                  if (!departure || !arrival || !startDate || !endDate || !price) {
-                    toast.error("Please fill in all the fields");
-                    return;
-                  }
-                  setIsFilterLoading(true);
-                  let costOptionQuery = caculateCost(price, costOption);
-                  let newData = await getRecommend(departure, arrival, startDate, endDate, price, costOptionQuery, userOptionsQuery);
-                  if (newData) {
-                    newData = ensureArray(newData);
-                    setEnableGenerate(true);
-                    setData(newData);
-                  } else {
-                    // Handle error or no data
-                    toast.error("No journey found for your criteria");
-                  }
-                  setIsFilterLoading(false);
-
-                }}
-              >
-                Filter
-              </button>)}
-
+                    if (
+                      !departure ||
+                      !arrival ||
+                      !startDate ||
+                      !endDate ||
+                      !price
+                    ) {
+                      toast.error("Please fill in all the fields");
+                      return;
+                    }
+                    setIsFilterLoading(true);
+                    const costOptionQuery = caculateCost(price, costOption);
+                    let newData = await getRecommend(
+                      departure,
+                      arrival,
+                      startDate,
+                      endDate,
+                      price,
+                      costOptionQuery,
+                      userOptionsQuery
+                    );
+                    if (newData) {
+                      newData = ensureArray(newData);
+                      setEnableGenerate(true);
+                      setData(newData);
+                    } else {
+                      // Handle error or no data
+                      toast.error("No journey found for your criteria");
+                    }
+                    setIsFilterLoading(false);
+                  }}
+                >
+                  Filter
+                </button>
+              )}
             </div>
             <div className="basis-1/2 center flex flex-col m-auto mt-7">
               <div className="w-100 flex flex-col basis-2">
@@ -239,72 +261,94 @@ const Recommend: React.FC = () => {
                   <RecommendItem key={index} recommend={item} />
                 ))}
                 <div>
+                  {enableGenerate && (
+                    <div className="relative inline-flex  group">
+                      <div className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#a5fcdc] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
 
-                  {enableGenerate && <div className="relative inline-flex  group">
-                    <div className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#a5fcdc] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
-                    </div>
+                      {isLoading ? (
+                        <Spin size="large" />
+                      ) : (
+                        <div
+                          onClick={async () => {
+                            if (isFilterLoading) return;
 
-
-
-                    {isLoading ? <Spin size="large" /> : (<div
-                      onClick={
-                        async () => {
-                          if (isFilterLoading)
-                            return;
-
-
-                          let userOptionsQuery: UserOptions = defaultUserOptions;
-                          if (checkboxGroupRef.current) {
-                            userOptionsQuery = checkboxGroupRef.current.getValues() as unknown as UserOptions;
-                            if (userOptionsQuery.vehicleType) {
-                              userOptionsQuery.vehicleType = "Máy Bay"
-                            } else {
-                              userOptionsQuery.vehicleType = "Xe Khách"
+                            let userOptionsQuery: UserOptions =
+                              defaultUserOptions;
+                            if (checkboxGroupRef.current) {
+                              userOptionsQuery =
+                                checkboxGroupRef.current.getValues() as unknown as UserOptions;
+                              if (userOptionsQuery.vehicleType) {
+                                userOptionsQuery.vehicleType = "Máy Bay";
+                              } else {
+                                userOptionsQuery.vehicleType = "Xe Khách";
+                              }
                             }
-                          }
-                          console.log("Filtering with", departure, arrival, startDate, endDate, price, userOptionsQuery);
+                            console.log(
+                              "Filtering with",
+                              departure,
+                              arrival,
+                              startDate,
+                              endDate,
+                              price,
+                              userOptionsQuery
+                            );
 
-                          let costOptionQuery = caculateCost(price, costOption);
-                          if (!departure || !arrival || !startDate || !endDate || !price) {
-                            toast.error("Please fill in all the fields");
-                            return;
-                          }
-                          setIsLoading(true);
-
-                          let res = await generateRecommend(departure, arrival, startDate, endDate, price, costOptionQuery, userOptionsQuery);
-                          console.log("Reponse from generating", res);
-                          if (!res || res.error || !res.result) {
-                            console.log("Error", res.error, res.result)
-                            let err: string = "No journey found for your criteria"
-                            if (res.error && res.result.error) {
-                              err = res.result.error;
-
+                            const costOptionQuery = caculateCost(
+                              price,
+                              costOption
+                            );
+                            if (
+                              !departure ||
+                              !arrival ||
+                              !startDate ||
+                              !endDate ||
+                              !price
+                            ) {
+                              toast.error("Please fill in all the fields");
+                              return;
                             }
-                            toast.error(err);
+                            setIsLoading(true);
+
+                            const res = await generateRecommend(
+                              departure,
+                              arrival,
+                              startDate,
+                              endDate,
+                              price,
+                              costOptionQuery,
+                              userOptionsQuery
+                            );
+                            console.log("Reponse from generating", res);
+                            if (!res || res.error || !res.result) {
+                              console.log("Error", res.error, res.result);
+                              let err: string =
+                                "No journey found for your criteria";
+                              if (res.error && res.result.error) {
+                                err = res.result.error;
+                              }
+                              toast.error(err);
+                              setIsLoading(false);
+                              return;
+                            }
+
+                            if (
+                              res.result &&
+                              existInRecommendArray(res.result, data)
+                            ) {
+                              setEnableGenerate(false);
+                            }
+                            setData([...data, res.result]);
+
                             setIsLoading(false);
-                            return;
-                          }
-
-                          if (res.result && existInRecommendArray(res.result, data)) {
-                            setEnableGenerate(false);
-                          }
-                          setData([...data, res.result]);
-
-                          setIsLoading(false);
-                        }}
-                      className=" bg-white  items-center justify-center px-2 py-3 text-sm font-bold leading-6 capitalize duration-100 transform border-2 cursor-pointer border-green-300 focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1 rounded-2xl">
-                      Generate more
-
-
-                    </div>)}
-
-
-
-                  </div>}
-
+                          }}
+                          className=" bg-white  items-center justify-center px-2 py-3 text-sm font-bold leading-6 capitalize duration-100 transform border-2 cursor-pointer border-green-300 focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1 rounded-2xl"
+                        >
+                          Generate more
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-
-
               </div>
             </div>
           </div>
@@ -314,9 +358,6 @@ const Recommend: React.FC = () => {
           <span>Please search for more recommedations</span>
         </div>
       )}
-
-
-
     </div>
   );
 };

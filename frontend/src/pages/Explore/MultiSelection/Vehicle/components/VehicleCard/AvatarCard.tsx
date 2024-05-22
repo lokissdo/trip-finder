@@ -5,12 +5,6 @@ import {
   VietJet,
   Vietravel,
 } from "../../../../../../assets/FlightBrand";
-// import {
-//   BambooAirway,
-//   VietJet,
-//   VietnamAirline,
-//   VietravelAirline,
-// } from "../../../../../../assets/Flight";
 
 const AvatarCard: React.FC<{ brand: string; imageLink: string }> = ({
   brand,

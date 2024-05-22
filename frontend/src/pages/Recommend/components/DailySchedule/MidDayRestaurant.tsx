@@ -121,7 +121,7 @@ const MidDayRestaurant: React.FC<{ data: any }> = ({ data }) => {
         />
       </button>
       <div className="flex flex-col">
-        <img src={data.image} className="self-center mt-4 w-2/5 rounded-xl" />
+        <img src={data.image} className="self-center mt-4 w-full rounded-xl" />
       </div>
     </div>
   );

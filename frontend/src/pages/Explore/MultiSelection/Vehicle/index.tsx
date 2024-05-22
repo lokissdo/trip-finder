@@ -8,6 +8,7 @@ import {
   FloatButton,
   GetProps,
   Slider,
+  Spin,
 } from "antd";
 import { optionsVehicle } from "../../../../assets/vehicleType";
 import { fetchVehicle } from "./hooks/fetchVehicle";
@@ -47,6 +48,7 @@ const Vehicle: React.FC = () => {
     label: string;
   } | null>(null);
   const [isEnd, setIsEnd] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
     setDate(dateString);
@@ -60,6 +62,7 @@ const Vehicle: React.FC = () => {
   useEffect(() => {
     const readyVehicle = async () => {
       window.scrollTo(0, 0);
+      setIsLoading(true);
       await fetchVehicle(
         setResult,
         from,
@@ -71,6 +74,7 @@ const Vehicle: React.FC = () => {
         startPrice,
         sort
       );
+      setIsLoading(false);
     };
     readyVehicle();
   }, []);
@@ -189,7 +193,17 @@ const Vehicle: React.FC = () => {
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-4">
-          {result.length === 0 && (
+          {isLoading && (
+            <div className="flex flex-col">
+              <div className="px-4 py-3 self-center flex flex-row items-center gap-3">
+                <Spin size="large" />
+                <span className="text-lg font-customCardTitle font-semibold">
+                  Loading attraction
+                </span>
+              </div>
+            </div>
+          )}
+          {!isLoading && result.length === 0 && (
             <div className="text-xl font-bold font-customCardTitle">
               No Results Found
             </div>

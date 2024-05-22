@@ -6,7 +6,7 @@ import { TRestaurant } from "./restaurant";
 import Navbar from "../../../../components/Navbar";
 import RestaurantCard from "./components/RestaurantCard";
 import { optionsSort } from "../../../../assets/sortType";
-import { Divider, FloatButton, Slider } from "antd";
+import { Divider, FloatButton, Slider, Spin } from "antd";
 import { fetchMoreRestaurant } from "./hooks/fetchMoreRestaurant";
 
 const Restaurant: React.FC = () => {
@@ -24,6 +24,7 @@ const Restaurant: React.FC = () => {
   const [name, setName] = useState("");
   const [startPrice, setStartPrice] = useState<number>(0);
   const [endPrice, setEndPrice] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeComplete = (value: number[]) => {
     console.log("onChangeComplete: ", value);
     setStartPrice(value[0]);
@@ -32,6 +33,7 @@ const Restaurant: React.FC = () => {
   useEffect(() => {
     const readyRestaurant = async () => {
       window.scrollTo(0, 0);
+      setIsLoading(true);
       await fetchRestaurant(
         setResult,
         province,
@@ -40,6 +42,7 @@ const Restaurant: React.FC = () => {
         endPrice,
         sort
       );
+      setIsLoading(false);
     };
     readyRestaurant();
   }, []);
@@ -118,7 +121,17 @@ const Restaurant: React.FC = () => {
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-6">
-          {result.length === 0 && (
+          {isLoading && (
+            <div className="flex flex-col">
+              <div className="px-4 py-3 self-center flex flex-row items-center gap-3">
+                <Spin size="large" />
+                <span className="text-lg font-customCardTitle font-semibold">
+                  Loading attraction
+                </span>
+              </div>
+            </div>
+          )}
+          {!isLoading && result.length === 0 && (
             <div className="text-xl font-bold font-customCardTitle">
               No Results Found
             </div>
