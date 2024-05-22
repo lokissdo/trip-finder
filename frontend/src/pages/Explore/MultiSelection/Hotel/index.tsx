@@ -167,7 +167,7 @@ const Hotel: React.FC = () => {
             result.map((hotel: THotel, index: number) => {
               return <HotelCard data={hotel} key={index} />;
             })}
-          {result.length && !isEnd && (
+          {result.length !== 0 && !isEnd && (
             <button
               className="bg-green-400 text-white font-bold py-2 px-2 rounded w-2/5 self-center"
               onClick={async () => {

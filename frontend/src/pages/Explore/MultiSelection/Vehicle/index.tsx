@@ -209,10 +209,10 @@ const Vehicle: React.FC = () => {
             </div>
           )}
           {result &&
-            result.map((res: TVehicle) => {
-              return <VehicleCard data={res} key={res._id} />;
+            result.map((res: TVehicle, index: number) => {
+              return <VehicleCard data={res} key={index} />;
             })}
-          {result.length && !isEnd && (
+          {result.length !== 0 && !isEnd && (
             <button
               className="bg-green-400 text-white font-bold py-2 rounded w-2/5 self-center"
               onClick={async () => {
