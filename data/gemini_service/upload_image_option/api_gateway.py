@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 import PIL.Image
 import google.generativeai as genai
@@ -28,6 +29,8 @@ class ContentGenerator:
         return result
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
