@@ -130,9 +130,13 @@ def get_vehicle_names(driver, url, departure, arrival):
     return flights
 
 def main():
-    provinces = [
-        ("Hà Nội", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+h%C3%A0+n%E1%BB%99i/@21.0293273,105.8390507,14z/data=!3m1!4b1!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?hl=vi&entry=ttu"),
-        ("Phú Quốc", "https://www.google.com/maps/search/kh%C3%A1ch+s%E1%BA%A1n+%E1%BB%9F+ph%C3%BA+qu%E1%BB%91c/@10.1836554,103.766236,11z/data=!4m7!2m6!5m4!5m3!1s{formatted_date}!4m1!1i1!6e3?authuser=0&hl=vi&entry=ttu")
+    routes = [
+        ("SGN-DAD", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDREFEcgcIARIDU0dOQAFIAXABggELCP___________wGYAQI"),
+        ("DAD-SGN", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDU0dOcgcIARIDREFEQAFIAXABggELCP___________wGYAQI"),
+        ("SGN-HAN", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDU0dOcgcIARIDSEFOQAFIAXABggELCP___________wGYAQI"),
+        ("HAN-SGN", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDSEFOcgcIARIDU0dOQAFIAXABggELCP___________wGYAQI"),
+        ("SGN-PQC", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDU0dOcgcIARIDUFFDQAFIAXABggELCP___________wGYAQI"),
+        ("PQC-SGN", "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI0LTA2LTAxagcIARIDUFFDcgcIARIDU0dOQAFIAXABggELCP___________wGYAQI")
     ]
 
     start_date = datetime.datetime(2024, 6, 1)  
@@ -141,8 +145,8 @@ def main():
     try:
         driver = webdriver.Chrome()
 
-        for province, url_template in provinces:
-            print(f"Scraping data for {province}:")
+        for route, url_template in routes:
+            print(f"Scraping data for {route}:")
             current_date = start_date
             province_data = {}  
             while current_date <= end_date:
@@ -151,21 +155,19 @@ def main():
                 next_formatted_date = next_day.strftime("%Y-%m-%d")
                 url = url_template.format(formatted_date=formatted_date)
                 print(f"Scraping data from URL: {url}")
-                hotel_names = get_vehicle_names(driver, url, province, formatted_date, next_formatted_date)
+                flight_names = get_vehicle_names(driver, url, route, formatted_date, next_formatted_date)
                 print("Scraping completed. Found names for the following hotels:")
-                for name in hotel_names:
+                for name in flight_names:
                     print(name)
-                assert len(hotel_names) > 0, "No hotel names found"
+                assert len(flight_names) > 0, "No hotel names found"
 
-                province_data[formatted_date] = hotel_names 
+                province_data[formatted_date] = flight_names 
                 province_data['current_time'] = get_current_utc_time()
                 print("-" * 50)  
                 current_date = next_day  
 
-                # Lưu dữ liệu vào file CSV cho từng tỉnh/thành phố
-                csv_filename = f"/Users/thao/datalake/{province.replace(' ', '_')}_hotels.csv"
+                csv_filename = f"/Users/thao/datalake/{route.replace(' ', '_')}_hotels.csv"
 
-                # Viết dữ liệu vào CSV
                 csv_columns = ["name", "link", "rating", "image_url", "standard", "price", "description", "platform", "price_platform", "url_platform", "checkin", "checkout", "province", "current_time"]
 
                 try:
@@ -174,10 +176,10 @@ def main():
                         writer = csv.DictWriter(csv_file, fieldnames=csv_columns)
                         if not file_exists:
                             writer.writeheader()
-                        for hotel in hotel_names:
+                        for hotel in flight_names:
                             writer.writerow(hotel)
                 except Exception as e:
-                    print(f"Error saving data to CSV file for {province}: {e}")
+                    print(f"Error saving data to CSV file for {route}: {e}")
 
     except WebDriverException as e:
         print(f"Error initiating WebDriver: {e}")

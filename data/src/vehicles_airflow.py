@@ -2,9 +2,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-from hotel_selenium import main as run_selenium
-from processing_spark import main as run_spark
-from mongodbpush import compare_and_update
+from vehicles import main as run_selenium
+from spark import main as run_spark
+from mongodb import compare_and_update
 
 default_args = {
     'owner': 'airflow',
@@ -17,7 +17,6 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-# Khởi tạo một DAG
 dag = DAG(
     'hotel_processing_workflow',
     default_args=default_args,
@@ -25,7 +24,6 @@ dag = DAG(
     schedule_interval=timedelta(days=1),
 )
 
-# Định nghĩa các công việc
 scrape_hotel_data = PythonOperator(
     task_id='scrape_hotel_data',
     python_callable=run_selenium,
@@ -41,9 +39,8 @@ process_data = PythonOperator(
 push_to_mongodb = PythonOperator(
     task_id='push_to_mongodb',
     python_callable=compare_and_update,
-    op_kwargs={'json_folder_path': '/Users/thao/datalake'},  # Thêm đối số op_kwargs
+    op_kwargs={'json_folder_path': '/Users/haqn/datalake'},  # Thêm đối số op_kwargs
     dag=dag,
 )
 
-# Xác định phụ thuộc giữa các công việc
 scrape_hotel_data >> process_data >> push_to_mongodb
