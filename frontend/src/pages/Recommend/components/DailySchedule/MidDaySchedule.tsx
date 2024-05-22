@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { FaLocationDot, FaMap } from "react-icons/fa6";
 
 const MidDaySchedule: React.FC<{ data: any }> = ({ data }) => {
-  console.log("attraction: ", data);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -65,7 +64,7 @@ const MidDaySchedule: React.FC<{ data: any }> = ({ data }) => {
           {data.description}
         </p>
       </div>
-      <img src={data.img_url} className="w-full rounded-xl" />
+      <img src={data.img_url} className="mt-4 w-full rounded-xl" />
     </div>
   );
 };

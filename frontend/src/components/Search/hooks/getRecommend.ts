@@ -3,9 +3,6 @@ import { backend_dev } from "../../../service";
 import { CostOptions } from "../CostOption";
 import { UserOptions, defaultUserOptions } from "../UserOption";
 
-
-
-
 export const getRecommend = async (
   from: string,
   to: string,
@@ -15,20 +12,12 @@ export const getRecommend = async (
   costOptions?: CostOptions,
   userOptions?: UserOptions
 ) => {
-  console.log(from);
-  console.log(to);
-  console.log(startDate);
-  console.log(endDate);
-  console.log(price);
-  console.log(costOptions);
-
-
   if (!costOptions) {
     if (!price) {
       console.error("Price is required");
       return;
     }
-    let costRateOption = costRateOptions[0].value;
+    const costRateOption = costRateOptions[0].value;
     costOptions = {
       itinerary: price * costRateOption.itineraryRate,
       hotel: price * costRateOption.hotelRate,
@@ -43,10 +32,12 @@ export const getRecommend = async (
     destination: to,
     startDate,
     endDate,
-    userOptions: userOptions ? JSON.stringify(userOptions) : JSON.stringify(defaultUserOptions),
+    userOptions: userOptions
+      ? JSON.stringify(userOptions)
+      : JSON.stringify(defaultUserOptions),
   };
 
-  console.log("Query params",queryParams);
+  console.log("Query params", queryParams);
   const queryString = Object.entries(queryParams)
     .filter(([_, value]) => value !== undefined)
     .map(([key, value]) => `${key}=${encodeURIComponent(value!)}`)

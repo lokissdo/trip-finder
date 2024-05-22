@@ -6,7 +6,6 @@ import { NumericFormat } from "react-number-format";
 import { TripAdvisor } from "../../../../assets/WebAvatar";
 
 const MidDayRestaurant: React.FC<{ data: any }> = ({ data }) => {
-  console.log("restaurant: ", data);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -121,7 +120,9 @@ const MidDayRestaurant: React.FC<{ data: any }> = ({ data }) => {
           }}
         />
       </button>
-      <img src={data.image} className="mt-4 h-96 w-full rounded-xl" />
+      <div className="flex flex-col">
+        <img src={data.image} className="self-center mt-4 w-full rounded-xl" />
+      </div>
     </div>
   );
 };

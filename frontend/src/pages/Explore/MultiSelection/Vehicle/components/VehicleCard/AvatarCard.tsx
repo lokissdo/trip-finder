@@ -1,26 +1,37 @@
 import React from "react";
 import {
-  BambooAirway,
+  Bamboo,
+  VNAirline,
   VietJet,
-  VietnamAirline,
-  VietravelAirline,
-} from "../../../../../../assets/Flight";
+  Vietravel,
+} from "../../../../../../assets/FlightBrand";
 
-const AvatarCard: React.FC<{ brand: string }> = ({ brand }) => {
+const AvatarCard: React.FC<{ brand: string; imageLink: string }> = ({
+  brand,
+  imageLink,
+}) => {
+  const initialImage =
+    "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YnVzfGVufDB8MHwwfHx8MA%3D%3D";
   return (
-    <>
+    <div className="basis-2/5">
       {brand === "Vietravel Airlines" ? (
-        <img src={VietravelAirline} className="mt-2" width={100} height={100} />
+        <div className="flex flex-col h-60 justify-center">
+          <img src={Vietravel} className="m-auto w-72 h-28 rounded-lg" />
+        </div>
       ) : brand === "VietJet Air" ? (
-        <img src={VietJet} className="mt-2" width={100} height={100} />
+        <div className="flex flex-col h-60 justify-center">
+          <img src={VietJet} className="m-auto w-80 h-60 rounded-lg" />
+        </div>
       ) : brand === "Bamboo Airways" ? (
-        <img src={BambooAirway} className="mt-2" width={100} height={100} />
+        <div className="flex flex-col h-60 justify-center">
+          <img src={Bamboo} className="m-auto w-80 h-40 rounded-lg" />
+        </div>
       ) : brand === "Vietnam Airlines" ? (
-        <img src={VietnamAirline} className="mt-2" width={100} height={100} />
+        <img src={VNAirline} className="w-96 h-60 rounded-lg" />
       ) : (
-        <div className="font-semibold mt-2 text-gray-600">{brand}</div>
+        <img src={imageLink ?? initialImage} className="w-96 h-60 rounded-lg" />
       )}
-    </>
+    </div>
   );
 };
 

@@ -13,10 +13,6 @@ export const fetchHotel = async (
 ) => {
   const standardLocation = province?.label.replace(" ", "+");
   const standardName = name?.replace(" ", "+");
-  console.log(standardLocation);
-  console.log(date);
-  console.log(startPrice);
-  console.log(endPrice);
   const params = {
     platform: platform?.value || "",
     province: standardLocation || "",

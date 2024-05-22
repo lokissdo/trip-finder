@@ -16,10 +16,6 @@ export const fetchMoreHotel = async (
 ) => {
   const standardLocation = province?.label.replace(" ", "+");
   const standardName = name?.replace(" ", "+");
-  console.log(standardLocation);
-  console.log(date);
-  console.log(startPrice);
-  console.log(endPrice);
   const params = {
     platform: platform?.value || "",
     province: standardLocation || "",
@@ -30,15 +26,15 @@ export const fetchMoreHotel = async (
   };
   const response = await fetch(
     backend_dev.search +
-      `hotels?province=${params.province}&checkinDate=${params.checkinDate}&start=${params.start}&end=${params.end}&page=${page}`
+      `hotels?province=${params.province}&checkinDate=${params.checkinDate}&start=${params.start}&end=${params.end}&page=${page}&platform=${params.platform}`
   );
   const moreResult = await response.json();
-  console.log("result: ", result);
+  // console.log("result: ", result);
   const final = [...result, ...moreResult];
   if ((await moreResult.length) < 20) {
     setIsEnd(true);
   }
-  console.log(await moreResult);
+  // console.log(await moreResult);
   setResult(final);
   return result;
 };

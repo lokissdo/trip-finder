@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { options } from "../../../../assets/locationSelecion";
 import Select from "react-select";
-import { DatePicker, Divider, FloatButton, GetProps, Slider } from "antd";
+import { DatePicker, Divider, FloatButton, GetProps, Slider, Spin } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
 import { fetchHotel } from "./hooks/fetchHotel";
@@ -31,6 +31,7 @@ const Hotel: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [page, setPage] = useState<number>(2);
   const [isEnd, setIsEnd] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
     setDate(dateString);
@@ -43,6 +44,7 @@ const Hotel: React.FC = () => {
   useEffect(() => {
     const readyHotel = async () => {
       window.scrollTo(0, 0);
+      setIsLoading(true);
       await fetchHotel(
         setResult,
         name,
@@ -52,6 +54,7 @@ const Hotel: React.FC = () => {
         startPrice,
         endPrice
       );
+      setIsLoading(false);
     };
     readyHotel();
   }, []);
@@ -61,7 +64,7 @@ const Hotel: React.FC = () => {
         <Navbar />
       </div>
       <div className="my-6 flex flex-row gap-2 px-24">
-        <div className="basis-1/3 h-screen sticky top-10 px-4">
+        <div className="basis-1/3 h-screen sticky top-2 px-4">
           <div className="font-customCardTitle text-xl font-bold">
             Filter for Hotels
           </div>
@@ -107,6 +110,7 @@ const Hotel: React.FC = () => {
             isClearable
             isSearchable
             defaultValue={platform}
+            maxMenuHeight={150}
             onChange={setPlatform}
             placeholder="Platform"
           />
@@ -125,6 +129,7 @@ const Hotel: React.FC = () => {
             className="bg-green-400 text-white text-xl font-bold py-2 px-6 rounded-lg"
             onClick={() => {
               window.scrollTo(0, 0);
+              setIsLoading(true);
               fetchHotel(
                 setResult,
                 name,
@@ -134,15 +139,26 @@ const Hotel: React.FC = () => {
                 startPrice,
                 endPrice
               );
+              setIsLoading(false);
               setIsEnd(false);
               setPage(2);
             }}
           >
-            Filter
+            Search
           </button>
         </div>
         <div className="basis-2/3 flex flex-col gap-6">
-          {result.length === 0 && (
+          {isLoading && (
+            <div className="flex flex-col">
+              <div className="px-4 py-3 self-center flex flex-row items-center gap-3">
+                <Spin size="large" />
+                <span className="text-lg font-customCardTitle font-semibold">
+                  Loading hotel
+                </span>
+              </div>
+            </div>
+          )}
+          {!isLoading && result.length === 0 && (
             <div className="text-xl font-bold font-customCardTitle">
               No Results Found
             </div>

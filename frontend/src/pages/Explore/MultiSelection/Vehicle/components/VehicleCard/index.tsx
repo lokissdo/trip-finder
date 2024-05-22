@@ -8,26 +8,13 @@ import AvatarCard from "./AvatarCard";
 const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
   const isodate = new Date(data.date);
   const localedateformat = isodate.toLocaleDateString("en-US");
-  let initialImage = "";
-  if (data.type === "Máy Bay") {
-    initialImage =
-      "https://images.unsplash.com/photo-1529074963764-98f45c47344b?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cGxhbmV8ZW58MHwwfDB8fHww";
-  } else {
-    initialImage =
-      "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YnVzfGVufDB8MHwwfHx8MA%3D%3D";
-  }
   return (
     <>
       <div
         key={data._id}
         className="flex flex-row border-gray-100 border-t w-full bg-white items-start shadow-md rounded-lg hover:-translate-y-2 hover:shadow-xl transition ease-out"
       >
-        <div className="basis-2/5">
-          <img
-            src={data.img_url ?? initialImage}
-            className="w-96 h-60 rounded-lg"
-          />
-        </div>
+        <AvatarCard brand={data.brand} imageLink={data.img_url} />
         <div className="basis-3/5 w-full h-60 flex flex-col px-4 py-4 justify-between items-start">
           <div className="flex flex-row w-full justify-between">
             <div className="self-start flex flex-col gap-4">
@@ -48,7 +35,7 @@ const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
                 )}
               </div>
               <div className="flex flex-row gap-2 items-center font-semibold">
-                <div>Departure at : </div>
+                <div>Depart at : </div>
                 <p className="font-customDetail text-md font-thin text-icon">
                   {data.departureTime}
                 </p>
@@ -76,7 +63,6 @@ const VehicleCard: React.FC<{ data: TVehicle }> = ({ data }) => {
                   / person
                 </div>
               )}
-              <AvatarCard brand={data.brand} />
             </div>
           </div>
           <div className="flex flex-row w-full justify-around items-center">

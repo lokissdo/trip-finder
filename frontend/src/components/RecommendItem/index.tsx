@@ -16,7 +16,7 @@ import { formatDate } from "../../utils/date-formatter";
 
 const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
   const navigate = useNavigate();
-  console.log(recommend);
+  // console.log(recommend);
   // parse to dd-mm-yyyy
   const startDate = formatDate(new Date(recommend.startDate));
   const endDate = formatDate(new Date(recommend.endDate));
@@ -79,7 +79,7 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
           <p className="m-2">{startDate}</p> <FaLongArrowAltRight />{" "}
           <span className="m-2">{endDate}</span>
         </div>
-        {(output.vehicles && output.vehicles.length > 0) && (
+        {output.vehicles && output.vehicles.length > 0 && (
           <div className="flex justify-start items-center text-sm mt-2">
             <FaCarSide />
             <span className="ml-2"></span> {output.vehicles[0]?.type} -{" "}
@@ -114,14 +114,14 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
               <ul className="flex-1">
                 <li className="flex justify-between gap-1 items-center">
                   <span>{dailySchedule.schedule.morning.name}</span>
-                   {/* {dailySchedule.midDayRestaurant && (
+                  {/* {dailySchedule.midDayRestaurant && (
                     <div className=" flex justify-start gap-1 items-center">
                       <RiRestaurantFill /> {dailySchedule.midDayRestaurant.name} 
                     </div>)} */}
                 </li>
                 <li className="flex justify-between gap-1 items-center">
                   <span> {dailySchedule.schedule.afternoon.name}</span>
-                   {/* {dailySchedule.afternoonRestaurant && (
+                  {/* {dailySchedule.afternoonRestaurant && (
                    <div className="flex justify-start gap-1 items-center" >
                       <RiRestaurantFill /> {dailySchedule.afternoonRestaurant.name} 
                       </div>)} */}

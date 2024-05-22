@@ -73,7 +73,7 @@ const RestaurantCard: React.FC<{ data: TRestaurant }> = ({ data }) => {
               </div>
               {data.price !== 0 && (
                 <div className="text-gray-400 text-md font-customDetail font-semibold">
-                  / day
+                  / person
                 </div>
               )}
             </div>

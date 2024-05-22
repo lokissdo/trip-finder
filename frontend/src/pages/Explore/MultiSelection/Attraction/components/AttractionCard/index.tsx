@@ -50,22 +50,30 @@ const AttractionCard: React.FC<{ data: TAttraction }> = ({ data }) => {
               )}
             </div>
             <div className="flex flex-col place-items-end">
-              <div className="flex flex-row gap-1">
-                <NumericFormat
-                  thousandSeparator
-                  displayType="text"
-                  style={{ height: 38, borderRadius: 5 }}
-                  className="text-green-400 font-bold font-customDetail text-xl"
-                  value={Math.round(data.price)}
-                />
+              {data.price !== 0 ? (
+                <>
+                  <div className="flex flex-row gap-1">
+                    <NumericFormat
+                      thousandSeparator
+                      displayType="text"
+                      style={{ height: 38, borderRadius: 5 }}
+                      className="text-green-400 font-bold font-customDetail text-xl"
+                      value={Math.round(data.price)}
+                    />
+                    <span className="text-green-400 font-customDetail font-bold text-xl">
+                      VND
+                    </span>
+                  </div>
+                  {data.price !== 0 && (
+                    <div className="text-gray-400 text-md font-customDetail font-semibold">
+                      / person
+                    </div>
+                  )}
+                </>
+              ) : (
                 <span className="text-green-400 font-customDetail font-bold text-xl">
-                  VND
+                  Free
                 </span>
-              </div>
-              {data.price !== 0 && (
-                <div className="text-gray-400 text-md font-customDetail font-semibold">
-                  / person
-                </div>
               )}
             </div>
           </div>
@@ -139,22 +147,30 @@ const AttractionCard: React.FC<{ data: TAttraction }> = ({ data }) => {
               </div>
             </div>
             <div className="flex flex-col place-items-end">
-              <div className="flex flex-row gap-1">
-                <NumericFormat
-                  thousandSeparator
-                  displayType="text"
-                  style={{ height: 25, borderRadius: 5 }}
-                  className="text-green-400 font-bold font-customDetail text-xl"
-                  value={Math.round(data.price)}
-                />
+              {data.price !== 0 ? (
+                <>
+                  <div className="flex flex-row gap-1">
+                    <NumericFormat
+                      thousandSeparator
+                      displayType="text"
+                      style={{ height: 25, borderRadius: 5 }}
+                      className="text-green-400 font-bold font-customDetail text-xl"
+                      value={Math.round(data.price)}
+                    />
+                    <span className="text-green-400 font-customDetail font-bold text-xl">
+                      VND
+                    </span>
+                  </div>
+                  {data.price !== 0 && (
+                    <div className="text-gray-400 text-md font-customDetail font-semibold">
+                      / person
+                    </div>
+                  )}
+                </>
+              ) : (
                 <span className="text-green-400 font-customDetail font-bold text-xl">
-                  VND
+                  Free
                 </span>
-              </div>
-              {data.price !== 0 && (
-                <div className="text-gray-400 text-md font-customDetail font-semibold">
-                  / person
-                </div>
               )}
             </div>
           </div>
