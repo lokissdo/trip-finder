@@ -4,3 +4,6 @@ pandas
 azure-storage-blob
 selenium
 pyspark
+functools
+geopy.geocoders
+geopy.exc
