@@ -7,12 +7,11 @@ const { SEARCH_SERVICE } = require('../config');
 const cacheMiddleware = require('./middlewares/cache');
 
 
-module.exports = (app, channel) => {
+module.exports = (app) => {
 
     const service = new SearchService();
 
     // To listen
-    SubscribeMessage(channel, service, SEARCH_SERVICE);
 
     RPCObserver(SEARCH_SERVICE, service);
 

@@ -10,9 +10,8 @@ const StartServer = async() => {
     
     await databaseConnection();
 
-    const channel = await CreateChannel()
 
-    await expressApp(app, channel);
+    await expressApp(app);
     
 
     app.listen(PORT, () => {
@@ -22,9 +21,7 @@ const StartServer = async() => {
         console.log(err);
         process.exit();
     })
-    .on('close', () => {
-        channel.close();
-    })
+   
     
 
 }

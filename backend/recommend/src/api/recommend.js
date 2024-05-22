@@ -11,10 +11,6 @@ module.exports = (app, channel) => {
     const service = new RecommendService();
 
     // To listen
-    //SubscribeMessage(channel, service, Recommend_SERVICE);
-
-    //RPCObserver(Recommend_SERVICE, service);
-
  
     app.get('/', async (req, res) => {
         try{

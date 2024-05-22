@@ -15,6 +15,7 @@ const MAX_TIME_OUT = 80000;
 
 const RPCObserver = async (RPC_QUEUE_NAME, service) => {
   const channel = await getChannel();
+  console.log("RPC Observer started", RPC_QUEUE_NAME);
   await channel.assertQueue(RPC_QUEUE_NAME, {
     durable: false,
   });
