@@ -1,4 +1,4 @@
 export const optionsVehicle = [
-  { label: "Xe Khách", value: "Xe Khách" },
-  { label: "Máy Bay", value: "Máy Bay" },
+  { label: "Bus", value: "Xe Khách" },
+  { label: "Plane", value: "Máy Bay" },
 ];

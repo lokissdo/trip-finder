@@ -28,10 +28,6 @@ const Profile: React.FC = () => {
       console.log("History", res);
       setRecommendHistories(res);
     });
-    // PutRecommendationToHistories().then((res) => {
-    //   console.log("PutRecommendationToHistories",res);
-    // }
-    // );
   }, []);
 
   useEffect(() => {
@@ -143,7 +139,7 @@ const Profile: React.FC = () => {
           })}
       </div>
       <button
-        className="bg-green-400 px-4 py-2 text-white font-bold rounded-lg"
+        className="bg-green-400 px-4 py-2 mb-6 text-white font-bold rounded-lg"
         onClick={() => {
           localStorage.setItem("token", "");
           navigate("/");

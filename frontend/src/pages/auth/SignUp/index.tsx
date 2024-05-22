@@ -1,16 +1,38 @@
-import { Carousel, Image } from "antd";
+import { Carousel, Image, Spin, message } from "antd";
 import { Link } from "react-router-dom";
 import { carouselListImage } from "../../../assets/carouselListImage";
 import InformationInput from "../../../components/InfomationInput";
-import React from "react";
+import React, { useState } from "react";
 import { SignupHooks } from "./hooks/login";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const SignUp: React.FC = () => {
   document.title = "SignUp";
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Signed up successfully",
+    });
+  };
+  const noInput = () => {
+    messageApi.open({
+      type: "error",
+      content: "Please type username and password",
+    });
+  };
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Error occured, try again",
+    });
+  };
   return (
     <>
+      {contextHolder}
       <div className="h-screen flex flex-row justify-center items-center gap-8 bg-white">
         <div className="max-w-lg min-w-80">
           <Carousel autoplay>
@@ -56,23 +78,39 @@ const SignUp: React.FC = () => {
             />
             <button
               onClick={() => {
+                setIsLoading(true);
                 const email = emailRef.current?.value;
                 const password = passwordRef.current?.value;
+                if (!email || !password) {
+                  noInput();
+                }
                 if (email && password) {
-                  console.log(email, password);
                   SignupHooks({ email, password }).then((res) => {
                     if (res.token) {
+                      success();
+                      setIsLoading(false);
                       localStorage.setItem("token", res.token);
                       window.location.href = "/";
                     } else {
-                      alert("Sign up failed");
+                      error();
+                      setIsLoading(false);
                     }
                   });
                 }
               }}
               className="bg-green-400 rounded-lg text-xl p-2 border-none focus:outline-none hover:border-none text-white font-bold"
             >
-              Create Account
+              Create Account{" "}
+              {isLoading && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined
+                      style={{ fontSize: 24, color: "white" }}
+                      spin
+                    />
+                  }
+                />
+              )}
             </button>
             <div className="text-black">
               Already have an account ?{" "}
