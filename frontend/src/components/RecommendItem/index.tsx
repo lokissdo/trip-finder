@@ -133,7 +133,7 @@ const RecommendItem: React.FC<any> = ({ recommend }: { recommend: any }) => {
 
         <div className="flex justify-start items-center text-sm mt-2">
           <FcLike /> <span className="ml-2"></span>
-          {(recommend.count + 2) * 100} people interested
+          {recommend.count} people interested
         </div>
 
         <div className="font-bold mt-3 ">
