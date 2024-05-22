@@ -16,12 +16,8 @@ const TopRecommendations: React.FC = () => {
   return (
     <>
       <div className="center w-full">
-        <div className="text-3xl font-semibold">
-          Explore Our Popuplar Recommendations
-        </div>
-        <div className="center mt-3 text-xl font-thin">
-          Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-          sint. Velit officia consequat duis enim velit mollit
+        <div className="text-3xl font-customCardTitle text-gray-500 font-semibold">
+          Top destination for your trip
         </div>
       </div>
       {recommends.length >= 4 && (

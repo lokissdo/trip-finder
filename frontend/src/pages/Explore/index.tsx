@@ -36,7 +36,7 @@ const Explore: React.FC = () => {
         </div>
       </div>
       <div className="bg-neutral-50 pt-6 flex flex-col gap-3">
-        <div className="px-40 text-lg">
+        <div className="px-40 text-lg font-customCardTitle">
           Vietnam offers a thrilling mix of historical sites like tunnels and
           mausoleums, alongside stunning natural beauty with islands and
           breathtaking landscapes. Apart from that culinary is another aspect
