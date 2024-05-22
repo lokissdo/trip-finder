@@ -50,37 +50,38 @@ def get_hotel_names(driver, url, province, checkin, checkout):
     driver.set_script_timeout(300)
 
     driver.execute_script(
-        """
-          var scrollableDiv = arguments[0];
-          function scrollWithinElement(scrollableDiv) {
-              return new Promise((resolve, reject) => {
-                  var totalHeight = 0;
-                  var distance = 1000;
-                  var scrollDelay = 5000;
-                  
-                  var timer = setInterval(() => {
-                      var scrollHeightBefore = scrollableDiv.scrollHeight;
-                      scrollableDiv.scrollBy(0, distance);
-                      totalHeight += distance;
-                      if (totalHeight >= scrollHeightBefore) {
-                          totalHeight = 0;
-                          setTimeout(() => {
-                              var scrollHeightAfter = scrollableDiv.scrollHeight;
-                              if (scrollHeightAfter > scrollHeightBefore) {
-                                  return;
-                              } else {
-                                  clearInterval(timer);
-                                  resolve();
-                              }
-                          }, scrollDelay);
-                      }
-                  }, 5000);
-              });
-          }
-          return scrollWithinElement(scrollableDiv);
-        """,
-        scrollable_div,
-    )
+    """
+    var scrollableDiv = arguments[0];
+
+    function scrollWithinElement(scrollableDiv) {
+        return new Promise((resolve, reject) => {
+            var distance = 1000;
+            var scrollDelay = 5000;
+
+            function scrollStep() {
+                var scrollHeightBefore = scrollableDiv.scrollHeight;
+                scrollableDiv.scrollBy(0, distance);
+
+                setTimeout(() => {
+                    var scrollHeightAfter = scrollableDiv.scrollHeight;
+                    var reachedBottom = scrollableDiv.scrollTop + scrollableDiv.clientHeight >= scrollableDiv.scrollHeight;
+
+                    if (reachedBottom && scrollHeightAfter <= scrollHeightBefore) {
+                        resolve(); // Stop if no more content is loaded
+                    } else {
+                        scrollStep(); // Continue scrolling
+                    }
+                }, scrollDelay);
+            }
+
+            scrollStep();
+        });
+    }
+
+    return scrollWithinElement(scrollableDiv);
+    """,
+    scrollable_div,
+)
 
     items = driver.find_elements(
         By.XPATH, '//div[@role="feed"]//a[@aria-label and starts-with(@href, "https://www.google.com/maps")]'

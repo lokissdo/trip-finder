@@ -5,15 +5,11 @@ from io import StringIO
 import re
 from datetime import datetime
 
-# Initialize Spark session
 spark = SparkSession.builder \
     .appName("HotelDataProcessing") \
     .getOrCreate()
 
-# Connection string to Blob Storage
 connection_string = "DefaultEndpointsProtocol=https;AccountName=datalakegroup10;AccountKey=OaZXaAK7tDLzMih9jwkU57hXfyus9mDCXxO4HVtKrCr9Y2PYx9QvKQhFrRfvB0z895rH9wvFwPa3+AStq6y0aQ==;EndpointSuffix=core.windows.net"
-
-# Initialize BlobServiceClient
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
 # Function to process data from CSV file and return Spark DataFrame
@@ -69,18 +65,17 @@ def process_csv(blob):
 
     extended_info = pd.concat([df] + extended_info_list, ignore_index=True)
 
-    # Step 3: Drop rows with missing values in 'platform' column and replace values in 'image_url' column
+    # Step 3
     extended_info = extended_info.dropna(subset=['platform'])
     default_image_url = "https://media-cdn.tripadvisor.com/media/photo-s/1b/fa/f1/c9/diamond-stars-ben-tre.jpg"
     extended_info['image_url'] = extended_info['image_url'].apply(lambda x: default_image_url if 'lh3' in str(x) else x)
 
-    # Step 4: Convert data types of 'rating', 'current_time', 'checkin', 'checkout' columns and save the result to a Spark DataFrame
+    # Step 4
     extended_info['rating'] = extended_info['rating'].str.replace(',', '.').astype(float)
     extended_info['current_time'] = pd.to_datetime(extended_info['current_time'], utc=True)
     extended_info['checkin'] = pd.to_datetime(extended_info['checkin'])
     extended_info['checkout'] = pd.to_datetime(extended_info['checkout'])
 
-    # Convert Pandas DataFrame to Spark DataFrame
     spark_df = spark.createDataFrame(extended_info)
     
     return spark_df
@@ -94,16 +89,11 @@ blob_list = container_client.list_blobs()
 dfs = [process_csv(blob) for blob in blob_list]
 final_df = spark.union(dfs)
 
-# Step 5: Process data to rename columns and save the resulting DataFrame to Spark's temporary memory
+# Step 5
 final_df = final_df.drop('price', 'link') \
     .withColumnRenamed('price_platform', 'price') \
     .withColumnRenamed('url_platform', 'page_url')
 
-# Show the final result
-final_df.show()
+final_df.toPandas().to_csv("/Users/thao/hotel_processed.csv", index=False)\
 
-# Save the final DataFrame to a CSV file locally
-final_df.toPandas().to_csv("/Users/thao/hotel_processed.csv", index=False)
-
-# Stop Spark session
 spark.stop()
