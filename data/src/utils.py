@@ -8,7 +8,7 @@ import re
 def parse_duration(duration):
     """
     Parse a duration string and return a timedelta object.
-
+    
     Args:
         duration (str): A string representing a duration in the format 'X giờ Y phút'.
 
@@ -32,7 +32,6 @@ def parse_duration(duration):
 def bus_preprocess(data):
     """
     Preprocess bus data.
-
     Args:
         data (DataFrame): Input DataFrame containing bus data.
 
@@ -226,6 +225,7 @@ def get_long_lat(name):
     except (GeocoderTimedOut, Exception) as e:
         print("Error:", e)
         return None, None
+
 def extract_prices(text):
     prices = re.findall(r'\d{1,3}(?:\.\d{3})?(?:\.\d{3})?\s*', text)
     if prices:
@@ -242,6 +242,5 @@ def attraction_preprocess(df):
     def extract_name(description):
         parts = description.split("-")
         name = parts[0].split(".")[-1].strip()
-        
         return name
     df['name'] = df['name'].apply(extract_name)

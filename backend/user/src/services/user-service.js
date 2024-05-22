@@ -101,33 +101,7 @@ class UserService {
     }
 
 
-    async ProcessRPC(payload) {
 
-        console.log('Triggering.... RPC Call User')
-
-        payload = await JSON.parse(payload)
-
-        const { event, data } = payload;
-
-        console.log("event received", event)
-        console.log("data received", data)
-
-        switch (event) {
-            case 'GET_PROFILE':
-                return await this.GetProfile(data.userId)
-            case 'GET_HOBBY':
-                return await this.GetHobby(data.userId)
-            case 'ADD_HOBBY':
-                return await this.AddHobby(data.userId, data.hobby)
-            case 'SET_HOBBIES':
-                return await this.SetHobbies(data.userId, data.hobbies)
-            case 'ADD_ITINERARY_TO_USER':
-                return await this.AddRecommendToUser(data.userId, data.recommendId);
-            case 'CREATE_ITINERARY':
-                return await this.CreateRecommend(data.recommend);
-
-        }
-    }
 }
 
 module.exports = UserService;

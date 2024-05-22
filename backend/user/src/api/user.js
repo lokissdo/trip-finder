@@ -14,7 +14,7 @@ module.exports = (app, channel) => {
     // To listen
     SubscribeMessage(channel, service, USER_SERVICE);
 
-    RPCObserver(USER_SERVICE, service);
+    //RPCObserver(USER_SERVICE, service);
     app.post('/signup', async (req, res, next) => {
         try {
             const { email, password, phone, name } = req.body;
