@@ -70,8 +70,7 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
 
             resolve(JSON.parse(msg.content.toString()));
             clearTimeout(timeout);
-
-
+            channel.close();
           } else {
             reject("data Not found!");
           }
@@ -80,10 +79,11 @@ const requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
           noAck: true,
         }
       );
-    }).finally(() => {
-      console.log("Closing queue", q.queue,);
-      channel.deleteQueue(q.queue);
-    });
+    })
+    // .finally(() => {
+    //   console.log("Closing queue", q.queue,);
+    //   channel.deleteQueue(q.queue);
+    // });
   } catch (error) {
     console.log(error);
     return "error";
