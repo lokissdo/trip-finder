@@ -32,9 +32,19 @@ Brief overview of some key API endpoints for each service, for example:
 - `GET /attractions`: Retrieves a list of attractions based on search criteria.
 - `GET /restaurants`: Retrieves a list of restaurants based on search criteria.
 - `GET /vehicles`: Retrieves a list of vehicles based on search criteria.
+- `POST /index-hotels`: Synchronize newly crawled hotels data to Elastic Search manually (granted for admin).
+- `POST /index-attractions`: Synchronize newly crawled hotels data to Elastic Search manually (granted for admin).
+- `POST /index-restaurants`: Synchronize newly crawled hotels data to Elastic Search manually (granted for admin).
+- `POST /index-vehicles`: Synchronize newly crawled hotels data to Elastic Search manually (granted for admin).
+
+
 
 ### Recommendation Service
 - `GET /recommend`: Retrieves personalized trip recommendations for a user.
+- `GET /recommend/top`: Get top 4 recommendations for displaying at home page.
+- `Patch /recommend/:recommendID`: Update count for chosen recommendations from user.
+- `GET /recommend/generator`: Generate a customized recommendations.
+
 
 ### Task Scheduler Service
 Handles periodic tasks such as:

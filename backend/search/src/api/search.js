@@ -1,6 +1,5 @@
 const SearchService = require('../services/search-service');
 const UserAuth = require('./middlewares/auth');
-const { SubscribeMessage, PublishMessage, FormateData } = require('../utils');
 const { RPCObserver } = require('../utils/rpc');
 const { SEARCH_SERVICE } = require('../config');
 

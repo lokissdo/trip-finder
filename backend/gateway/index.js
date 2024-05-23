@@ -1,3 +1,4 @@
+// index file for development, production using index-product which applys Redis Rate Limiter
 const express = require("express");
 const cors = require("cors");
 const proxy = require("express-http-proxy");

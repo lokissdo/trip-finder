@@ -75,6 +75,7 @@ const Recommend: React.FC = () => {
     if (!state?.myObj || !ensureArray(state.myObj).length) {
       fetchRecommendations();
     } else {
+      console.log(state.myObj)
       setData(state.myObj);
     }
   }, [state, searchParams]);
