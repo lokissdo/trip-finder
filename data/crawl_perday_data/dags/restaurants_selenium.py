@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from azure.storage.blob import BlobServiceClient
 
 # Azure Blob Storage connection string
-connection_string = "Your_Connection_String"
+connection_string = "DefaultEndpointsProtocol=https;AccountName=datalakegroup10;AccountKey=OaZXaAK7tDLzMih9jwkU57hXfyus9mDCXxO4HVtKrCr9Y2PYx9QvKQhFrRfvB0z895rH9wvFwPa3+AStq6y0aQ==;EndpointSuffix=core.windows.net"
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
 def save_to_azure_blob(data, province, prefix):
