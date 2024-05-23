@@ -7,9 +7,46 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 import time
+import io
+
+# Azure Blob Storage connection string
+connection_string = "DefaultEndpointsProtocol=https;AccountName=datalakegroup10;AccountKey=OaZXaAK7tDLzMih9jwkU57hXfyus9mDCXxO4HVtKrCr9Y2PYx9QvKQhFrRfvB0z895rH9wvFwPa3+AStq6y0aQ==;EndpointSuffix=core.windows.net"
+blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+def save_to_azure_blob(data, province, prefix):
+    """
+    Saves restaurant data to Azure Blob Storage.
+
+    Args:
+        data (list): List of dictionaries containing restaurant data.
+        province (str): The province where the restaurants are located.
+        prefix (str): Prefix for the blob container.
+
+    Returns:
+        None
+    """
+    container_name = f"{prefix}_{datetime.datetime.utcnow().strftime('%Y-%m-%d')}"
+    blob_name = f"{province.replace(' ', '_')}.csv"
+    
+    try:
+        container_client = blob_service_client.get_container_client(container_name)
+        if not container_client.exists():
+            container_client.create_container()
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+        blob_data = io.BytesIO()
+        writer = csv.DictWriter(blob_data, fieldnames=data[0].keys())
+        writer.writeheader()
+        writer.writerows(data)
+        blob_data.seek(0)
+        blob_client.upload_blob(blob_data, overwrite=True)
+
+        print(f"Saved {blob_name} to Azure Blob Storage in container {container_name}.")
+    except Exception as e:
+        print(f"Error saving {blob_name} to Azure Blob Storage: {e}")
+
 
 def get_current_utc_time():
-    return datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+    return datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
 def get_vehicle_names(driver, url, departure, arrival):
     driver.get(url)
@@ -87,6 +124,8 @@ def get_vehicle_names(driver, url, departure, arrival):
                 price_text = price_element.text.strip()
                 price = float(price_text.replace('₫', '').replace('.', '').replace(',', ''))
                 data["price"] = price
+                data["departure"] = departure
+                data["arrival"] = arrival
         except Exception:
             pass
 
@@ -103,14 +142,6 @@ def get_vehicle_names(driver, url, departure, arrival):
             item2_elements = item.find_elements(By.XPATH, '//a[contains(@class, "SlvSdc") and contains(@class, "co54Ed")]')
             for item2 in item2_elements:
                 data1 = {}
-                platform = item2.find_element(By.CSS_SELECTOR, '.QVR4f').text.strip()
-                price_platform_text = item2.find_element(By.CSS_SELECTOR, '.pUBf3e').text.strip()
-                price_platform = float(price_platform_text.replace('₫', '').replace('.', '').replace(',', '.'))
-                url_platform = item2.get_attribute('data-attribution-url')
-   
-                data1["platform"] = platform
-                data1["price_platform"] = price_platform
-                data1["url_platform"] = url_platform  
                 suggestion.append(data1)
         except Exception:
             pass
@@ -156,19 +187,19 @@ def main():
                 url = url_template.format(formatted_date=formatted_date)
                 print(f"Scraping data from URL: {url}")
                 flight_names = get_vehicle_names(driver, url, route, formatted_date, next_formatted_date)
-                print("Scraping completed. Found names for the following hotels:")
+                print("Scraping completed. Found the following flights:")
                 for name in flight_names:
                     print(name)
-                assert len(flight_names) > 0, "No hotel names found"
+                assert len(flight_names) > 0, "No flights names found"
 
                 province_data[formatted_date] = flight_names 
                 province_data['current_time'] = get_current_utc_time()
                 print("-" * 50)  
                 current_date = next_day  
 
-                csv_filename = f"/Users/thao/datalake/{route.replace(' ', '_')}_hotels.csv"
+                csv_filename = f"/Users/haqn/datalake/{route.replace(' ', '_')}_flights.csv"
 
-                csv_columns = ["name", "link", "rating", "image_url", "standard", "price", "description", "platform", "price_platform", "url_platform", "checkin", "checkout", "province", "current_time"]
+                csv_columns = ["brand", "image_url", "price", "description", "departure", "arrival", "departureTime", "arrivalTime", "platform", "province", "current_time"]
 
                 try:
                     file_exists = os.path.isfile(csv_filename)
@@ -176,8 +207,8 @@ def main():
                         writer = csv.DictWriter(csv_file, fieldnames=csv_columns)
                         if not file_exists:
                             writer.writeheader()
-                        for hotel in flight_names:
-                            writer.writerow(hotel)
+                        for flight in flight_names:
+                            writer.writerow(flight)
                 except Exception as e:
                     print(f"Error saving data to CSV file for {route}: {e}")
 
